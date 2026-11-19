@@ -815,7 +815,7 @@ def render_cover(plan, out):
         d.line((x, 0, x, H), fill=(30, 30, 10, 255), width=3)
     paste(im, text_sprite(cv.get("top", "НОУТБУКСЫЗ"), 170, BLACK), 540, 430, 1, 1)
     paste(im, pill_sprite("CLAUDE", 230, L, BLACK), 540, 680, 1, 1, rot=-3)
-    paste(im, text_sprite(cv.get("mid", "МОНТАЖ"), 280, BLACK), 540, 960, 1, 1)
+    paste(im, text_sprite(cv.get("mid", "МОНТАЖ"), 250, BLACK), 540, 960, 1, 1)
     paste(im, pill_sprite(cv.get("bottom", "ТЕК ТЕЛЕФОН"), 90, L, BLACK), 540, 1210, 1, 1, rot=-4)
     f = rub(30, 600)
     d.text((92, 236), plan.get("theme", {}).get("label", "CLAUDE МОНТАЖ"), font=f, fill=(30, 30, 10, 255))
