@@ -717,6 +717,9 @@ def make_renderer(plan, tl):
     if plan.get("theme", {}).get("look") == "tech":
         import tech
         return tech.TechRenderer(plan, tl, Scene)
+    if plan.get("theme", {}).get("look") == "lime":
+        import lime
+        return lime.LimeRenderer(plan, tl)
     return Renderer(plan, tl)
 
 
@@ -724,13 +727,19 @@ def cmd_raskadrovka(a):
     plan, name, wd, tl = load_all(a.plan)
     r = make_renderer(plan, tl)
     frames, labels = [], []
-    for sc, t in zip(plan["scenes"], tl["scenes"]):
+    if hasattr(r, "sketch_times"):
+        for tt, lb in r.sketch_times():
+            fr = r.frame(tt)
+            M.guides(fr)
+            frames.append(fr)
+            labels.append("%.1f с · %s" % (tt, lb))
+    for sc, t in zip(plan["scenes"], tl["scenes"]) if not frames else []:
         for tt in (t["s"] + (t["speech_e"] - t["s"]) * 0.8,):
             fr = r.frame(tt)
             M.guides(fr)
             frames.append(fr)
             labels.append("%.1f с · %s" % (tt, sc.get("kind", "say")))
-    p = M.sheet(frames[:12], labels[:12], os.path.join(M.DIRS["sketch"], name + "_раскадровка.jpg"))
+    p = M.sheet(frames[:14], labels[:14], os.path.join(M.DIRS["sketch"], name + "_раскадровка.jpg"))
     print("раскадровка: " + p)
     print("сары сызық = қауіпсіз рамка, қызыл = Instagram батырмалары (видеода көрінбейді)")
 
@@ -753,6 +762,9 @@ def cmd_render(a):
     if plan.get("theme", {}).get("look") == "tech":
         import tech
         tech.sfx_tech(plan, tl, sfx, bed=not plan.get("music") and plan.get("bed", True))
+    elif plan.get("theme", {}).get("look") == "lime":
+        import lime
+        lime.sfx_lime(plan, tl, sfx)
     else:
         make_sfx(plan, tl, sfx)
     if plan.get("music") in ("none", False):
@@ -793,6 +805,10 @@ def cmd_oblozhka(a):
     import tech
     os.makedirs(M.DIRS["out"] if "out" in M.DIRS else "Дайын", exist_ok=True)
     out = os.path.join("Дайын", name + "_обложка.jpg")
+    if plan.get("theme", {}).get("look") == "lime":
+        import lime
+        print("обложка: " + lime.render_cover(plan, out))
+        return
     print("обложка: " + tech.render_cover(plan, tl, out))
 
 
