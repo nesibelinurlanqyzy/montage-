@@ -1,0 +1,23 @@
+{
+ "name": "claude-telefon",
+ "style": "robot",
+ "audio": ".matin/claude-telefon/voice.mp3",
+ "audio_orig": ".matin/claude-telefon/voice.mp3",
+ "tag": "сабақ · claude",
+ "scenes": [
+  {"card": "player", "title": "Мына *видео*", "label": "", "pose": "wave",
+   "text": "Мына *видеоны* көріп отырсыз ба?"},
+  {"card": "phone", "title": "тек *телефонмен*", "label": "", "pose": "talk",
+   "text": "Мұның бәрін мен Claude арқылы тек *телефонмен* жасадым!"},
+  {"card": "nolist", "title": "Не керек *емес*", "label": "", "pose": "point",
+   "text": "Ноутбуксыз. CapCut-сыз. *Күрделі монтажсыз!*"},
+  {"card": "checks", "title": "Claude *жасады*", "label": "", "pose": "talk",
+   "text": "Видеодағы *мәтіндер, анимациялар, эффектілер* — барлығын Claude жасады."},
+  {"card": "toggle", "title": "Сіз *де*", "label": "", "pose": "wave",
+   "text": "Ең қызығы, мұндай монтажды *сіз де* үйрене аласыз!"},
+  {"card": "zero", "title": "нөлден *бастап*", "label": "", "pose": "point",
+   "text": "Мен Claude монтажды телефон арқылы *нөлден бастап* үйретемін."},
+  {"card": "cta", "title": "", "label": "", "pose": "wave",
+   "text": "Толық ақпарат алу үшін төмендегі *«Подробнее»* батырмасын басыңыз!"}
+ ]
+}
