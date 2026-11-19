@@ -558,6 +558,16 @@ class Renderer:
         self.sw, self.sh = 270, 480
         yy = np.linspace(0, 1, self.sh)[:, None, None]
         self.grad = (self.bg1 * (1 - yy) + self.bg2 * yy) * np.ones((1, self.sw, 1), np.float32)
+        # сахнаға жеке фон: {"bg": ["#000000", "#1A1A1A"]} — түстер ауысып тұрады
+        self.sgrad = []
+        for sc in plan["scenes"]:
+            bg = sc.get("bg")
+            if bg:
+                b1 = np.array(M.hex2rgb(bg[0])[::-1], np.float32)
+                b2 = np.array(M.hex2rgb(bg[-1])[::-1], np.float32)
+                self.sgrad.append((b1 * (1 - yy) + b2 * yy) * np.ones((1, self.sw, 1), np.float32))
+            else:
+                self.sgrad.append(None)
         gy, gx = np.mgrid[0:self.sh, 0:self.sw].astype(np.float32)
         self.gx, self.gy = gx, gy
         rng = np.random.default_rng(3)
@@ -567,8 +577,18 @@ class Renderer:
     def background(self, t):
         import cv2
         np = self.np
-        img = self.grad.copy()
+        img = self.grad
+        k = 0
+        for i, s in enumerate(self.scenes):
+            if t >= s.tl["s"] - 0.15:
+                k = i
+        if self.sgrad and self.sgrad[k] is not None:
+            img = self.sgrad[k]
+        img = img.copy()
         acc = np.array(self.acc[::-1], np.float32)
+        glow = self.scenes[k].sc.get("glow") if self.scenes else None
+        if glow:
+            acc = np.array(M.hex2rgb(glow)[::-1], np.float32)
         for k, (ax, ay, sp, r, a) in enumerate(((0.32, 0.30, 0.11, 120, 0.30), (0.70, 0.72, 0.08, 150, 0.22),
                                                 (0.55, 0.12, 0.05, 90, 0.14))):
             cx = self.sw * (ax + 0.18 * np.sin(t * sp * 6.28 + k))
