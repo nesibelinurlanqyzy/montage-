@@ -159,7 +159,7 @@ class LimeRenderer:
         self.plan, self.tl = plan, tl
         th = plan.get("theme", {})
         self.L = M.hex2rgb(th.get("accent", "#E4FF1A"))
-        self.label = th.get("label", "CLAUDE МОНТАЖ")
+        self.label = th.get("label", "")
         self.sc = plan["scenes"]
         self.ts = tl["scenes"]
         self.n = len(self.sc)
@@ -244,7 +244,8 @@ class LimeRenderer:
             d.line((x, y, x + sx * a, y), fill=c + (255,), width=3)
             d.line((x, y, x, y + sy * a), fill=c + (255,), width=3)
         f = rub(28, 600)
-        d.text((92, 236), self.label, font=f, fill=c + (255,))
+        if self.label:
+            d.text((92, 236), self.label, font=f, fill=c + (255,))
         cnt = "%02d / %02d" % (k + 1, self.n)
         bb = f.getbbox(cnt)
         d.text((988 - bb[2], 236), cnt, font=f, fill=c + (255,))
@@ -283,7 +284,7 @@ class LimeRenderer:
                     d.rounded_rectangle((x - pad, 1360, x + ww + pad, 1420), 10, fill=BLACK + (255,))
                     col = self.L
             else:
-                col = base if on else ((120, 130, 20) if bgk == "L" else (95, 95, 95))
+                col = base if on else ((110, 45, 0) if bgk == "L" else (95, 95, 95))
             d.text((x, 1390), w, font=f, fill=col + (255,), anchor="lm")
             x += ww + sp
 
@@ -312,7 +313,7 @@ class LimeRenderer:
             px = fit_px("НОУТБУГЫҢ", 200, 880)
             self.pop(im, text_sprite("НОУТБУГЫҢ", px, BLACK), 92, 560, tn, t, anchor="l")
             if t >= tn:
-                self.laptop(im, 330, 880, 0.82, BLACK, t - tn, cross=t - tn - 0.35)
+                self.laptop(im, 330, 880, 0.82, BLACK, t - tn, cross=t - tn - 0.35, xcol=WHITE)
             tj = self.wt(k, "жоқ")
             self.pop(im, text_sprite("ЖОҚ ПА", 180, BLACK), 92, 1220, tj, t, anchor="l")
             if t >= tj:
@@ -320,7 +321,7 @@ class LimeRenderer:
                 wob = math.sin((t - tj) * 5) * 6
                 paste(im, q, 800, 900, back((t - tj) / 0.35), 1, rot=-12 + wob)
 
-    def laptop(self, im, cx, cy, s, col, u, cross=-1.0, glow=False):
+    def laptop(self, im, cx, cy, s, col, u, cross=-1.0, glow=False, xcol=RED):
         d = ImageDraw.Draw(im)
         e = back(u / 0.35)
         w, h = 420 * s * e, 270 * s * e
@@ -331,10 +332,10 @@ class LimeRenderer:
         if cross > 0:
             c = ease(cross / 0.25)
             r = 190 * s
-            d.line((cx - r, cy - r, cx - r + 2 * r * c, cy - r + 2 * r * c), fill=RED + (255,), width=int(26 * s))
+            d.line((cx - r, cy - r, cx - r + 2 * r * c, cy - r + 2 * r * c), fill=xcol + (255,), width=int(26 * s))
             if cross > 0.12:
                 c2 = ease((cross - 0.12) / 0.25)
-                d.line((cx + r, cy - r, cx + r - 2 * r * c2, cy - r + 2 * r * c2), fill=RED + (255,), width=int(26 * s))
+                d.line((cx + r, cy - r, cx + r - 2 * r * c2, cy - r + 2 * r * c2), fill=xcol + (255,), width=int(26 * s))
 
     def v_laptop(self, im, k, t, u, bgk):
         L = self.L
@@ -397,7 +398,7 @@ class LimeRenderer:
     def v_phone(self, im, k, t, u, bgk):
         L = self.L
         self.pop(im, text_sprite("ТЕК", 140, BLACK), 540, 360, self.wt(k, "тек") - 0.3, t)
-        self.pop(im, pill_sprite("ТЕЛЕФОН", 170, L, BLACK), 540, 540, self.wt(k, "телефонның"), t)
+        self.pop(im, pill_sprite("ТЕЛЕФОННЫҢ", fit_px("ТЕЛЕФОННЫҢ", 170, 760), L, BLACK), 540, 540, self.wt(k, "телефонның"), t)
         tp = self.wt(k, "тек") - 0.3
         if t >= tp:
             e = ease((t - tp) / 0.6)
@@ -405,7 +406,7 @@ class LimeRenderer:
             self.phone(im, 540, top, 400, 640, t - tp, k, t)
         tj = self.wt(k, "жеткілікті")
         if t >= tj:
-            st = pill_sprite("ЖЕТКІЛІКТІ!", 96, WHITE, RED)
+            st = pill_sprite("ЖЕТКІЛІКТІ", 96, WHITE, BLACK)
             paste(im, st, 540, 1240, 1.4 - 0.4 * back((t - tj) / 0.25), cl((t - tj) / 0.1), rot=-6)
             self.hit(tj, "stamp")
 
@@ -432,8 +433,8 @@ class LimeRenderer:
         if t >= tq:
             d = ImageDraw.Draw(im)
             e = ease((t - tq) / 0.22)
-            d.line((150, 820, 150 + 780 * e, 700), fill=RED + (255,), width=36)
-            st = pill_sprite("ҚОЛДАНБАДЫМ!", 110, WHITE, RED)
+            d.line((150, 820, 150 + 780 * e, 700), fill=WHITE + (255,), width=36)
+            st = pill_sprite("ҚОЛДАНБАДЫМ!", 110, WHITE, BLACK)
             paste(im, st, 540, 1060, 1.5 - 0.5 * back((t - tq - 0.1) / 0.25), cl((t - tq - 0.1) / 0.1), rot=-7)
 
     # ---- тізім карточкалары
@@ -468,7 +469,7 @@ class LimeRenderer:
             d.rounded_rectangle((0, 0, cw - 1, ch - 1), 40, fill=(34, 40, 64, 255))
             d.ellipse((cw / 2 - 90, 90, cw / 2 + 90, 270), fill=(110, 120, 160, 255))
             d.rounded_rectangle((cw / 2 - 170, 290, cw / 2 + 170, 560), 120, fill=(110, 120, 160, 255))
-            words = ["ҚОЗҒАЛМАЛЫ", "СУБТИТР"]
+            words = ["ҚОЗҒАЛЫСТАҒЫ", "СУБТИТР"]
             j = int(u * 2.5) % 2
             f = font(50)
             xs = [60, 380]
@@ -541,7 +542,7 @@ class LimeRenderer:
         i = self.item_idx(k, t)
         if i < 0:
             self.pop(im, text_sprite("ОСЫ ӘДІСПЕН", 170, WHITE), 540, 680, self.ts[k]["s"] + 0.05, t)
-            self.pop(im, text_sprite("НЕ ЖАСАЙ АЛАСЫҢ?", 110, L), 540, 880, self.wt(k, "әдіспен"), t)
+            self.pop(im, text_sprite("ЖАСАЙ АЛАСЫҢ", 110, L), 540, 880, self.wt(k, "әдіспен"), t)
             return
         it = sc["items"][i]
         t0 = self.wt(k, it[1]) - 0.12
@@ -574,7 +575,6 @@ class LimeRenderer:
             self.pop(im, text_sprite("ХУК", 420, WHITE), 540, 800, t0, t, sc0=1.6)
             e = ease(uu / 0.3)
             d.line((690, 470, 690 - 20 * e, 470 + 520 * e), fill=L + (255,), width=18)
-            self.pop(im, pill_sprite("АЛҒАШҚЫ 2 СЕКУНД", 50, WHITE, RED, f=rub(50, 800)), 540, 1130, t0 + 0.2, t)
             return
         accent_word = L if (bgk == "B" and word == "МУЗЫКА") else fg
         self.pop(im, text_sprite(word, fit_px(word, 210, 880), accent_word), 540, 510, t0, t, sc0=1.35)
@@ -609,7 +609,7 @@ class LimeRenderer:
             d.line(pts, fill=BLACK + (255,), width=6)
             pts2 = [(x, 1120 + math.sin(x * 0.02 - uu * 6) * 35 * math.sin(x / 1080 * math.pi)) for x in range(110, 920, 6)]
             d.line(pts2, fill=(60, 70, 0, 255), width=4)
-        elif word == "КАДРЛАР":
+        elif word == "КАДРЛАРДЫ":
             x0, y0, x1, y1 = 120, 760, 900, 1180
             d.rounded_rectangle((x0, y0, x1, y1), 26, fill=(20, 20, 20, 255))
             for j in range(10):
@@ -714,7 +714,7 @@ class LimeRenderer:
 
 
 # ---------------------------------------------------------------- дыбыс
-def sfx_lime(plan, tl, path):
+def sfx_lime(plan, tl, path, bed=False):
     sr = 48000
     n = int((tl["dur"] + 1) * sr)
     out = np.zeros(n, np.float32)
@@ -777,26 +777,27 @@ def sfx_lime(plan, tl, path):
         elif viz == "cta":
             pop(word_time(ws, "подробнее", st), 0.22, 1100)
             pop(word_time(ws, "бас", st), 0.22, 1700)
-    # жеңіл бит (музыка орнына): 100 bpm kick + hat
-    T = np.arange(n) / sr
-    beat = 60 / 100
-    L = int(0.35 * sr)
-    x = np.arange(L) / sr
-    kick = np.sin(2 * np.pi * np.cumsum(95 * np.exp(-x * 22) + 48) / sr) * np.exp(-x * 9) * 0.16
-    hl = int(0.03 * sr)
-    hat = rng.standard_normal(hl) * np.exp(-np.arange(hl) / sr * 170) * 0.022
-    bass = np.sin(2 * np.pi * 55 * np.arange(int(beat * sr)) / sr) * np.exp(-np.arange(int(beat * sr)) / sr * 4) * 0.05
-    b = 0.0
-    j = 0
-    while b < tl["dur"] - 0.8:
-        add(b * sr, kick)
-        add((b + beat / 2) * sr, hat)
-        if j % 2 == 0:
-            add(b * sr, bass)
-        b += beat
-        j += 1
-    fade = np.clip((tl["dur"] + 0.6 - T) / 1.5, 0, 1).astype(np.float32)
-    out *= np.where(T > tl["dur"] - 1.5, fade, 1).astype(np.float32)
+    if bed:
+        # жеңіл бит (музыка орнына): 100 bpm kick + hat
+        T = np.arange(n) / sr
+        beat = 60 / 100
+        L = int(0.35 * sr)
+        x = np.arange(L) / sr
+        kick = np.sin(2 * np.pi * np.cumsum(95 * np.exp(-x * 22) + 48) / sr) * np.exp(-x * 9) * 0.16
+        hl = int(0.03 * sr)
+        hat = rng.standard_normal(hl) * np.exp(-np.arange(hl) / sr * 170) * 0.022
+        bass = np.sin(2 * np.pi * 55 * np.arange(int(beat * sr)) / sr) * np.exp(-np.arange(int(beat * sr)) / sr * 4) * 0.05
+        b = 0.0
+        j = 0
+        while b < tl["dur"] - 0.8:
+            add(b * sr, kick)
+            add((b + beat / 2) * sr, hat)
+            if j % 2 == 0:
+                add(b * sr, bass)
+            b += beat
+            j += 1
+        fade = np.clip((tl["dur"] + 0.6 - T) / 1.5, 0, 1).astype(np.float32)
+        out *= np.where(T > tl["dur"] - 1.5, fade, 1).astype(np.float32)
     with wave.open(path, "wb") as w:
         w.setnchannels(1)
         w.setsampwidth(2)
@@ -815,7 +816,7 @@ def render_cover(plan, out):
     paste(im, text_sprite(cv.get("top", "НОУТБУКСЫЗ"), 170, BLACK), 540, 430, 1, 1)
     paste(im, pill_sprite("CLAUDE", 230, L, BLACK), 540, 680, 1, 1, rot=-3)
     paste(im, text_sprite(cv.get("mid", "МОНТАЖ"), 280, BLACK), 540, 960, 1, 1)
-    paste(im, pill_sprite(cv.get("bottom", "ТЕК ТЕЛЕФОНМЕН"), 90, WHITE, RED), 540, 1210, 1, 1, rot=-4)
+    paste(im, pill_sprite(cv.get("bottom", "ТЕК ТЕЛЕФОН"), 90, L, BLACK), 540, 1210, 1, 1, rot=-4)
     f = rub(30, 600)
     d.text((92, 236), plan.get("theme", {}).get("label", "CLAUDE МОНТАЖ"), font=f, fill=(30, 30, 10, 255))
     im.convert("RGB").save(out, quality=93)
