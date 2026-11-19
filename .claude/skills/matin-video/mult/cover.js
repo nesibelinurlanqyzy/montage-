@@ -3,7 +3,7 @@ const {chromium}=require('playwright');const fs=require('fs');const path=require
 (async()=>{
  const [,,dataF,out,title,pose]=process.argv; const data=JSON.parse(fs.readFileSync(dataF,'utf8'));
  const b=await chromium.launch(); const p=await b.newPage({viewport:{width:360,height:640},deviceScaleFactor:3});
- await p.goto('file://'+path.join(__dirname,'page.html'));
+ await p.goto('file://'+path.join(__dirname,data.page||'page.html'));
  await p.evaluate(async()=>{for(const f of ['800 21px MS','italic 900 21px MS']) await document.fonts.load(f,'Aaәғқңөұүһі');});
  data.scenes[0].pose=pose||'thumb';
  data.env=data.env.map(()=>0.45); await p.evaluate(d=>window.setup(d),data); await p.evaluate(()=>window.draw(4.9)); await p.evaluate(()=>document.querySelector('#dots').style.display='none');

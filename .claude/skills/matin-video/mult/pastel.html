@@ -1,0 +1,257 @@
+<!doctype html><html><head><meta charset="utf-8">
+<style>
+@font-face{font-family:MS;font-weight:800;src:url(fonts/montserrat-cyrillic-ext-800-normal.woff2)}
+:root{--ink:#111216;--mut:#b7bac4;--blue:#3d5afe;--blueb:#e7ebff;--org:#ff6a1a;--grn:#22b45a;--red:#ef3b36}
+*{box-sizing:border-box}
+html,body{margin:0;width:360px;height:640px;overflow:hidden;background:#f6f3ef}
+#stage{position:absolute;inset:0;overflow:hidden;font-family:Inter,'DejaVu Sans',sans-serif;color:var(--ink);background:#f7f4f1}
+.blob{position:absolute;border-radius:50%;filter:blur(38px);opacity:.85}
+#b1{width:300px;height:300px;background:#ffcfb3}
+#b2{width:280px;height:280px;background:#c9d6ff}
+#b3{width:260px;height:260px;background:#fff0a8}
+#b4{width:260px;height:260px;background:#c6f2df}
+#veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.55),rgba(255,255,255,.15) 45%,rgba(255,255,255,.35))}
+.hl{position:absolute;left:20px;right:20px;top:58px;text-align:center;font:650 19.5px/1.32 Inter;letter-spacing:-.25px;font-weight:650}
+.hl span{display:inline-block;white-space:pre;color:var(--mut)}
+.hl span.on{color:var(--ink)}
+.hl .e{display:inline-block;padding:0 4px;border:1.6px solid #7d8fff;background:var(--blueb);border-radius:5px;line-height:1.18;color:inherit}
+.scene{position:absolute;inset:0}
+.el{position:absolute;transform-origin:50% 50%}
+.card{background:rgba(255,255,255,.94);border-radius:14px;box-shadow:0 14px 34px rgba(60,60,110,.14),0 2px 6px rgba(60,60,110,.06);border:1px solid rgba(255,255,255,.95);overflow:hidden}
+.bar{height:22px;display:flex;align-items:center;gap:4px;padding:0 9px;font:500 8.5px Inter;color:#8a8d97;border-bottom:1px solid #f0f0f3}
+.bar i{width:6px;height:6px;border-radius:50%;display:block}
+.bar i:nth-child(1){background:#ff5f57}.bar i:nth-child(2){background:#febc2e}.bar i:nth-child(3){background:#28c840;margin-right:5px}
+.mono{font-family:'JetBrains Mono',monospace}
+.tag{display:inline-block;padding:1px 6px;border:1.5px solid #7d8fff;background:var(--blueb);border-radius:5px;font:700 14px Inter}
+.tile{width:40px;height:44px;border-radius:9px;background:linear-gradient(#ff8a3d,#ff6a1a);box-shadow:0 4px 0 #c94d0c,0 10px 18px rgba(255,106,26,.35);color:#fff;font:800 24px/44px Inter;text-align:center}
+.row{display:flex;align-items:center;gap:10px;padding:10px 12px}
+.row b{font:700 13px Inter;display:block}.row small{font:500 9px Inter;color:#9a9da7}
+#guy{position:absolute;left:0;top:0}
+.sl{position:absolute;inset:0;display:block}
+</style></head><body><div id="stage">
+<div class="blob" id="b1"></div><div class="blob" id="b2"></div><div class="blob" id="b3"></div><div class="blob" id="b4"></div><div id="veil"></div>
+<div id="scenes"></div>
+<svg id="guy" width="360" height="640" viewBox="0 0 360 640" stroke="#16171c" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+ <g id="gall">
+  <path id="armL" d="M282 572 L262 596" fill="none" stroke-width="3"/>
+  <path d="M286 560 C278 600 276 625 278 650 L330 650 C332 625 330 600 322 560Z" fill="#ff7a24"/>
+  <path d="M296 566 Q304 576 312 566" fill="none" stroke="#e05c0e" stroke-width="2"/>
+  <g id="armR"><path id="armRp" d="M324 572 L344 548" fill="none" stroke-width="3"/><circle id="hand" cx="344" cy="548" r="4.2" fill="#16171c" stroke="none"/></g>
+  <g id="head">
+   <circle cx="304" cy="532" r="27" fill="#fff"/>
+   <path d="M277 527 C276 498 332 498 331 527 Q304 516 277 527Z" fill="#ff7a24"/>
+   <path d="M274 528 Q304 518 336 530" fill="none" stroke-width="3.2"/>
+   <circle cx="304" cy="501" r="4.5" fill="#ff7a24"/>
+   <g id="eyes"><ellipse cx="294" cy="536" rx="4.2" ry="5.2" fill="#16171c" stroke="none"/><ellipse cx="314" cy="536" rx="4.2" ry="5.2" fill="#16171c" stroke="none"/>
+    <circle cx="295.5" cy="534" r="1.4" fill="#fff" stroke="none"/><circle cx="315.5" cy="534" r="1.4" fill="#fff" stroke="none"/></g>
+   <g id="lids" style="display:none"><path d="M289 537 Q294 540 299 537 M309 537 Q314 540 319 537" fill="none"/></g>
+   <ellipse cx="287" cy="545" rx="4" ry="2.4" fill="#ff9e9e" stroke="none"/><ellipse cx="321" cy="545" rx="4" ry="2.4" fill="#ff9e9e" stroke="none"/>
+   <path id="mouth" d="" fill="#d6323f" stroke-width="2"/>
+  </g>
+ </g>
+</svg>
+</div>
+<script>
+const $=(s,r=document)=>r.querySelector(s);
+const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const eob=x=>{const c1=1.7,c3=c1+1;return 1+c3*Math.pow(x-1,3)+c1*Math.pow(x-1,2)};
+const eo=x=>1-Math.pow(1-x,3);
+let D=null;
+
+const IC={
+ laptop:`<svg width="30" height="24" viewBox="0 0 30 24" fill="none" stroke="#555" stroke-width="2" stroke-linejoin="round"><rect x="5" y="3" width="20" height="13" rx="2" fill="#dfe6ff"/><path d="M2 20 H28 L25 16 H5Z" fill="#fff"/></svg>`,
+ soft:`<svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="#555" stroke-width="2" stroke-linejoin="round"><rect x="3" y="4" width="22" height="20" rx="3" fill="#ffe7d6"/><path d="M3 9 H25"/><rect x="7" y="13" width="6" height="7" rx="1" fill="#ffb27a"/><path d="M16 14 H21 M16 18 H21"/></svg>`,
+ phone:`<svg width="22" height="30" viewBox="0 0 22 30" fill="none" stroke="#16171c" stroke-width="2" stroke-linejoin="round"><rect x="2" y="2" width="18" height="26" rx="4" fill="#fff"/><rect x="5" y="6" width="12" height="16" rx="1.5" fill="#cfe0ff" stroke="none"/><path d="M9 25 H13"/></svg>`,
+ slash:`<svg width="40" height="40" viewBox="0 0 40 40" style="position:absolute;left:-2px;top:-2px"><path d="M6 34 L34 6" stroke="#ef3b36" stroke-width="3.4" stroke-linecap="round"/></svg>`,
+ spark:`<svg width="13" height="13" viewBox="0 0 24 24"><path d="M12 1 L13.6 9 L21 5 L15.5 11.2 L23 12 L15.5 13 L21 19 L13.6 15 L12 23 L10.4 15 L3 19 L8.5 13 L1 12 L8.5 11.2 L3 5 L10.4 9Z" fill="#d97757"/></svg>`,
+ hand:`<svg width="40" height="46" viewBox="0 0 34 40" stroke="#16171c" stroke-width="2.2" stroke-linejoin="round"><path d="M12 22 V6 a3 3 0 0 1 6 0 V18 l9 2 a4 4 0 0 1 3 5 l-2 9 a5 5 0 0 1 -5 4 H15 a5 5 0 0 1 -4 -2 l-7 -9 a3 3 0 0 1 4 -4Z" fill="#fff"/></svg>`,
+ play:`<svg width="26" height="26" viewBox="0 0 26 26"><circle cx="13" cy="13" r="13" fill="rgba(255,255,255,.9)"/><path d="M10 7.5 L19 13 L10 18.5Z" fill="#16171c"/></svg>`
+};
+
+function card(kind){
+ switch(kind){
+ case 'stats': return [`
+  <div class="el card" id="s_c" style="left:22px;top:196px;width:316px;height:206px;padding:12px 14px">
+   <div class="mono" style="display:flex;justify-content:space-between;font-size:7.5px;color:#a3a6b0;letter-spacing:.6px"><span>МЕНІҢ REELS · ҚАРАЛЫМ</span><span style="color:#22b45a">● өсуде</span></div>
+   <div style="display:flex;align-items:center;gap:6px;margin-top:6px"><span id="s_n" style="font:800 40px Inter;letter-spacing:-1.5px">0</span><span style="font-size:24px">👁</span></div>
+   <svg width="288" height="60" viewBox="0 0 288 60" style="margin-top:4px"><path id="s_line" d="M2 54 L40 48 L78 50 L116 40 L154 42 L192 30 L230 26 L268 10" fill="none" stroke="#ef3b36" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/><circle id="s_dot" cx="268" cy="10" r="4" fill="#ef3b36" opacity="0"/></svg>
+   <div style="display:flex;gap:8px;margin-top:8px">
+    <div class="card" style="flex:1;padding:6px 8px;box-shadow:0 2px 8px rgba(0,0,0,.06)"><div class="mono" style="font-size:6.5px;color:#a3a6b0">ЛАЙК</div><b style="font:700 14px Inter">2 431</b></div>
+    <div class="card" style="flex:1;padding:6px 8px;box-shadow:0 2px 8px rgba(0,0,0,.06)"><div class="mono" style="font-size:6.5px;color:#a3a6b0">САҚТАУ</div><b style="font:700 14px Inter">4,2%</b></div>
+    <div class="card" style="flex:1;padding:6px 8px;box-shadow:0 2px 8px rgba(0,0,0,.06)"><div class="mono" style="font-size:6.5px;color:#a3a6b0">ЖАЗЫЛУ</div><b style="font:700 14px Inter">+58</b></div></div></div>
+  <div class="el card" id="s_q" style="left:84px;top:420px;padding:9px 14px;display:flex;align-items:center;gap:8px;font:700 14px Inter;border-radius:12px">🎬 <span class="tag">кәсіби монтажер</span><span style="font:800 20px Inter;color:#3d5afe">?</span></div>`,
+  [['#s_c',0.0,0],['#s_q','монтажер',0,'q']]];
+ case 'ai': return [`
+  <div class="el card" id="a_chip" style="left:62px;top:196px;padding:11px 16px;display:flex;align-items:center;gap:10px;border-radius:12px">
+   <span style="font-size:22px">🎬</span><div><b style="font:700 14px Inter;display:block" id="a_mt">Кәсіби монтажер</b><small style="font:500 9px Inter;color:#9a9da7">монтаж бағдарламасы, ноутбук</small></div>
+   <span id="a_x" style="width:24px;height:24px;border-radius:50%;background:#ef3b36;color:#fff;font:800 14px/24px Inter;text-align:center;margin-left:6px">✕</span></div>
+  <div class="el" id="a_dark" style="left:0;top:270px;width:360px;height:232px;background:#141418;overflow:hidden">
+   <div id="a_cubes" style="position:absolute;inset:0"></div>
+   <div style="position:absolute;left:22px;top:92px;font:800 26px/1.15 Inter;color:#fff;letter-spacing:-.6px">Бәрін жасаған —<br><span style="color:#ff7a24">жасанды интеллект.</span></div>
+   <div id="a_wave" style="position:absolute;left:22px;top:170px;display:flex;gap:3px;align-items:center;height:40px"></div></div>`,
+  [['#a_chip',0.0,0],['#a_x','жоқ',0,'x'],['#a_dark','жасанды',0,'wipe']]];
+ case 'chat': return [`
+  <div class="el card" id="c_w" style="left:22px;top:196px;width:316px;height:130px">
+   <div class="bar"><i></i><i></i><i></i>${IC.spark}&nbsp;Claude</div>
+   <div style="margin:10px;height:84px;border:1px solid #eceef3;border-radius:10px;padding:10px;font:500 12.5px/1.4 Inter;position:relative">
+    <span id="c_txt"></span><span id="c_cur" style="display:inline-block;width:1.5px;height:14px;background:#16171c;vertical-align:-2px"></span>
+    <div id="c_send" style="position:absolute;right:8px;bottom:8px;width:22px;height:22px;border-radius:6px;background:#d97757;color:#fff;font:800 13px/22px Inter;text-align:center">↑</div></div></div>
+  <div class="el card" id="c_ph" style="left:22px;top:338px;width:68px;height:68px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font:600 8.5px Inter;color:#666">${IC.phone}телефон</div>
+  <div class="el" id="c_t" style="left:100px;top:338px;width:238px;height:96px;background:#141418;border-radius:14px;box-shadow:0 14px 30px rgba(0,0,0,.25);padding:9px 11px;font:500 8.5px/1.6 'JetBrains Mono';color:#d6d6dc">
+   <div style="display:flex;gap:4px;margin-bottom:5px"><i style="width:6px;height:6px;border-radius:50%;background:#ff5f57"></i><i style="width:6px;height:6px;border-radius:50%;background:#febc2e"></i><i style="width:6px;height:6px;border-radius:50%;background:#28c840"></i></div>
+   <div><b style="color:#fff">✳ Claude</b> · монтаж жасап жатыр…</div>
+   <div style="height:7px;border-radius:4px;background:#2a2a31;margin:5px 0;overflow:hidden"><div id="c_pb" style="height:100%;width:0;background:linear-gradient(90deg,#ff7a24,#ffb36b)"></div></div>
+   <div id="c_ok" style="color:#4ade80;opacity:0">✓ reels_v1.mp4 дайын</div></div>`,
+  [['#c_w',0.0,0],['#c_ph','телефоным',-4],['#c_t','тапсырма',0,'up']]];
+ case 'publish': return [`
+  <div class="el card" id="p_c" style="left:62px;top:186px;width:236px;padding:10px">
+   <div style="height:200px;border-radius:10px;position:relative;overflow:hidden;background:linear-gradient(160deg,#ffd2b8,#c9d6ff 55%,#c6f2df)">
+    <div style="position:absolute;left:10px;top:10px;font:700 12px/1.2 Inter;width:150px">Осы видеоны <span class="tag" style="font-size:11px">ИИ</span> жасады</div>
+    <div style="position:absolute;left:105px;top:87px">${IC.play}</div>
+    <div class="mono" style="position:absolute;left:8px;bottom:8px;font-size:8px;background:rgba(0,0,0,.55);color:#fff;padding:2px 5px;border-radius:4px">0:23</div>
+    <div id="p_hearts" style="position:absolute;right:10px;bottom:10px;font-size:15px">❤️</div></div>
+   <div id="p_btn" style="margin-top:10px;height:38px;border-radius:10px;background:#3d5afe;color:#fff;font:700 14px/38px Inter;text-align:center">Жариялау</div></div>
+  <div class="el" id="p_hand" style="left:236px;top:428px">${IC.hand}</div>
+  <div class="el" id="p_conf" style="left:220px;top:440px;width:1px;height:1px"></div>`,
+  [['#p_c',0.0,0],['#p_hand',0.15,0,'tap1']]];
+ case 'nolist': return [`
+  <div class="el card row" id="n1" style="left:22px;top:200px;width:316px"><span style="position:relative;width:36px;height:36px;border-radius:10px;background:#f3f4f8;display:flex;align-items:center;justify-content:center">${IC.laptop}<span class="sl">${IC.slash}</span></span><div style="flex:1"><b>Ноутбук</b><small>міндетті емес</small></div></div>
+  <div class="el card row" id="n2" style="left:22px;top:266px;width:316px"><span style="position:relative;width:36px;height:36px;border-radius:10px;background:#f3f4f8;display:flex;align-items:center;justify-content:center">${IC.soft}<span class="sl">${IC.slash}</span></span><div style="flex:1"><b>Күрделі бағдарламалар</b><small>міндетті емес</small></div></div>
+  <div class="el card row" id="n3" style="left:22px;top:332px;width:316px"><span style="width:36px;height:36px;border-radius:10px;background:#eafaf0;display:flex;align-items:center;justify-content:center">${IC.phone}</span><div style="flex:1"><b>Телефон</b><small class="mono">+ Claude</small></div><span style="font:800 22px Inter;color:#22b45a">✓</span></div>`,
+  [['#n1','ноутбук',0,'row'],['#n2','күрделі',0,'row'],['#n3','міндетті',0,'row']]];
+ case 'cta': return [`
+  <div class="el card" id="k_cm" style="left:58px;top:200px;padding:10px 16px;display:flex;align-items:center;gap:8px;font:700 13px Inter;border-radius:12px">${IC.spark} Claude-пен монтаж · телефоннан</div>
+  <div class="el" id="k_tiles" style="left:0;top:256px;width:360px;display:flex;justify-content:center;gap:7px">
+   ${[...'МОНТАЖ'].map((c,i)=>`<div class="tile" data-i="${i}">${c}</div>`).join('')}</div>
+  <div class="el" id="k_btn" style="left:50px;top:336px;width:260px;height:52px;border-radius:14px;background:#3d5afe;color:#fff;font:800 19px/52px Inter;text-align:center;box-shadow:0 12px 26px rgba(61,90,254,.4)">Подробнее ›</div>
+  <div class="el" id="k_arr" style="left:166px;top:400px;font:800 26px Inter;color:#3d5afe">↓</div>
+  <div class="el" id="k_hand" style="left:228px;top:362px">${IC.hand}</div>`,
+  [['#k_cm',0.0,0],['#k_tiles','монтажды',0,'tiles'],['#k_btn','подробнее',0,'btn'],['#k_arr','төмендегі',0,'arr'],['#k_hand','батырмасын',0,'tap']]];
+ }
+}
+
+function wtime(s,key){
+ if(typeof key==='number') return s.t0+key;
+ for(const w of s.words){ if(w.w.toLowerCase().includes(key)) return w.t; }
+ return s.t0+0.2;
+}
+
+function setup(data){
+ D=data; const root=$('#scenes');
+ D.scenes.forEach((s,i)=>{
+  const div=document.createElement('div'); div.className='scene'; div.style.display='none';
+  const hl='<div class="hl">'+s.words.map((w,j)=>`<span data-j="${j}">${w.e?`<span class="e">${w.w}</span>`:w.w}${w.p||''}${j<s.words.length-1?' ':''}</span>`).join('')+'</div>';
+  const [html,els]=card(s.card);
+  div.innerHTML=hl+'<div class="cards" style="position:absolute;inset:0">'+html+'</div>'; root.appendChild(div);
+  div.style.display='';const hb=div.querySelector('.hl').getBoundingClientRect().bottom;div.style.display='none';
+  const sh=Math.max(-40,hb+22-196);div.querySelector('.cards').style.transform=`translateY(${sh}px)`;
+  s.div=div; s.spans=[...div.querySelectorAll('.hl>span')];
+  s.els=els.map(([sel,key,rot,kind])=>({el:div.querySelector(sel),t:wtime(s,key),rot:rot||0,kind:kind||'pop'}));
+  if(s.card==='ai'){
+   const cb=div.querySelector('#a_cubes'); const P=[[30,24],[78,14],[132,30],[190,10],[240,26],[296,16],[110,58],[262,60]];
+   cb.innerHTML=P.map(([x,y],k)=>`<i data-k="${k}" style="position:absolute;left:${x}px;top:${y}px;width:24px;height:24px;border-radius:6px;background:linear-gradient(#5b7bff,#2f4ef0);box-shadow:0 5px 0 #1d33b8"></i>`).join('');
+   div.querySelector('#a_wave').innerHTML=Array.from({length:44},()=>'<i style="width:2.6px;border-radius:2px;background:#ff7a24;display:block"></i>').join('');
+  }
+  if(s.card==='publish'){
+   div.querySelector('#p_conf').innerHTML=Array.from({length:22},(_,k)=>`<i style="position:absolute;width:6px;height:9px;border-radius:2px;background:${['#ff7a24','#3d5afe','#22b45a','#febc2e','#ef3b36'][k%5]}"></i>`).join('');
+  }
+ });
+ window.READY=true;
+}
+
+function env(t){const i=Math.floor(t*D.fps);return D.env[Math.max(0,Math.min(D.env.length-1,i))]||0}
+
+function drawGuy(t,pose,st){
+ const a=Math.max(env(t),env(t-0.05)*0.8);
+ const o=1+11*a;
+ $('#mouth').setAttribute('d',`M296 548 Q304 ${548+o} 312 548 Q304 ${549+o*0.15} 296 548Z`);
+ const blink=((t+0.5)%3.4)<0.12; $('#eyes').style.display=blink?'none':''; $('#lids').style.display=blink?'':'none';
+ const rot=Math.sin(t*2)*3+(a-0.3)*4, dy=Math.sin(t*4)*1-a*2;
+ $('#head').setAttribute('transform',`translate(0 ${dy}) rotate(${rot} 304 560)`);
+ const k=eob(clamp(st/0.4));
+ let hx=344,hy=548;
+ if(pose==='wave'){hx=346+Math.sin(t*10)*6;hy=520+Math.cos(t*10)*3}
+ else if(pose==='talk'){hx=340;hy=560-a*12}
+ else if(pose==='point'){hx=336+ (1-k)*8;hy=486+(1-k)*40+Math.sin(t*5)*2}
+ else if(pose==='thumb'){hx=348;hy=526+(1-k)*30+Math.sin(t*6)*2}
+ else if(pose==='wow'){hx=350;hy=512+Math.sin(t*8)*4}
+ else if(pose==='down'){hx=348;hy=598+Math.sin(t*8)*4}
+ $('#armRp').setAttribute('d',`M324 572 Q${(324+hx)/2+6} ${(572+hy)/2+6} ${hx} ${hy}`);
+ $('#hand').setAttribute('cx',hx);$('#hand').setAttribute('cy',hy);
+ const lx=pose==='wow'?258:264, ly=pose==='wow'?520+Math.sin(t*8+1)*4:598;
+ $('#armL').setAttribute('d',`M284 572 Q${(284+lx)/2-6} ${(572+ly)/2+6} ${lx} ${ly}`);
+ $('#gall').setAttribute('transform',`translate(330 ${640+Math.sin(t*1.7)*1.4}) scale(.74) translate(-330 -640)`);
+}
+
+function draw(t){
+ // фон
+ const B=[[ -60,120,0.31],[150,-40,0.27],[180,360,0.23],[-80,420,0.29]];
+ B.forEach(([x,y,f],i)=>{const e=$('#b'+(i+1));e.style.transform=`translate(${x+Math.sin(t*f+i)*40}px,${y+Math.cos(t*f*1.3+i)*40}px)`});
+ let cur=0; D.scenes.forEach((s,i)=>{ if(t>=s.t0) cur=i; });
+ D.scenes.forEach((s,i)=>{
+  if(i!==cur){s.div.style.display='none';return}
+  s.div.style.display='';
+  const st=t-s.t0, xi=clamp(st/0.22), xo=clamp((t-(s.t1-0.14))/0.14);
+  s.div.style.opacity=Math.min(eo(xi),1-xo);
+  s.div.style.filter=`blur(${(1-eo(xi))*6+xo*6}px)`;
+  s.div.style.transform=`translateY(${(1-eo(xi))*14}px) scale(${1-0.03*xo})`;
+  s.spans.forEach((sp,j)=>{
+   const w=s.words[j]; const p=clamp((t-w.t)/0.18);
+   if(t<w.t){sp.classList.remove('on');sp.style.transform='none';}
+   else{sp.classList.add('on');sp.style.transform=`translateY(${(1-eo(p))*-3}px) scale(${1+0.06*Math.sin(Math.PI*p)})`;}
+  });
+  s.els.forEach(o=>{
+   const p=clamp((t-o.t)/0.4), ep=eo(p);
+   if(t<o.t){o.el.style.opacity=0;o.el.style.transform='scale(.85) translateY(10px)';return}
+   if(o.kind==='row'){o.el.style.opacity=ep;o.el.style.transform=`translateX(${(1-ep)*-30}px)`;
+     const sl=o.el.querySelector('.sl'); if(sl){const q=clamp((t-o.t-0.35)/0.25); sl.style.clipPath=`inset(${(1-q)*100}% 0 0 0)`;} return}
+   if(o.kind==='wipe'){o.el.style.opacity=1;o.el.style.transform='none';o.el.style.clipPath=`inset(${(1-ep)*100}% 0 0 0)`;return}
+   if(o.kind==='up'){o.el.style.opacity=ep;o.el.style.transform=`translateY(${(1-ep)*30}px)`;return}
+   if(o.kind==='x'){o.el.style.opacity=1;o.el.style.transform=`scale(${eob(p)}) rotate(${(1-ep)*-90}deg)`;return}
+   if(o.kind==='arr'){o.el.style.opacity=ep;o.el.style.transform=`translateY(${Math.abs(Math.sin(t*5))*8}px)`;return}
+   if(o.kind==='tiles'){o.el.style.opacity=1;o.el.style.transform='none';
+     o.el.querySelectorAll('.tile').forEach((ti,k)=>{const q=clamp((t-o.t-k*0.07)/0.35);ti.style.opacity=clamp(q*3);
+       ti.style.transform=`translateY(${(1-eob(q))*-40+Math.sin(t*4+k)*2}px) rotate(${(k%2?3:-3)*(1-q)+Math.sin(t*3+k)*2}deg)`});return}
+   if(o.kind==='tap'||o.kind==='tap1'){const c=(t-o.t)%1.1;const press=c<0.15?c/0.15:c<0.3?1-(c-0.15)/0.15:0;
+     o.el.style.opacity=ep;o.el.style.transform=`translate(${-press*5}px,${-press*9+(1-ep)*40}px) scale(${1-press*0.1})`;return}
+   let sc=0.85+0.15*eob(p), extra='';
+   if(o.kind==='btn') sc*=1+0.04*Math.sin(t*7);
+   if(o.kind==='q') extra=` rotate(${Math.sin(t*3)*2}deg)`;
+   o.el.style.opacity=clamp(p*2.5); o.el.style.transform=`translateY(${(1-ep)*16}px) scale(${sc})${extra}`;
+  });
+  // сахнаға тән
+  if(s.card==='stats'){
+   const q=eo(clamp(st/2.6)); s.div.querySelector('#s_n').textContent=Math.round(48215*q).toLocaleString('ru-RU');
+   s.div.querySelector('#s_line').style.strokeDashoffset=1-eo(clamp((st-0.2)/2.2));
+   s.div.querySelector('#s_dot').setAttribute('opacity',st>2.3?1:0);
+  }
+  if(s.card==='ai'){
+   const tj=wtime(s,'жоқ'); const on=t>=tj+0.15;
+   const mt=s.div.querySelector('#a_mt'); mt.style.textDecoration=on?'line-through':'none'; mt.style.color=on?'#9a9da7':'#111216';
+   const sh=on&&t<tj+0.5?Math.sin((t-tj)*50)*3:0; s.div.querySelector('#a_chip').style.marginLeft=sh+'px';
+   s.div.querySelectorAll('#a_cubes i').forEach((c,k)=>{c.style.transform=`translateY(${Math.sin(t*2.2+k*1.3)*7}px) rotate(${Math.sin(t*1.5+k)*14}deg)`});
+   s.div.querySelectorAll('#a_wave i').forEach((b,k)=>{const h=6+30*Math.abs(Math.sin(k*0.9+t*6))*(0.35+env(t)*0.9);b.style.height=Math.min(38,h)+'px'});
+  }
+  if(s.card==='chat'){
+   const full='Мына видеоны әдемі монтаждап бер ✨'; const t0=s.t0+0.2, t1=wtime(s,'тапсырма');
+   const n=Math.round(full.length*clamp((t-t0)/(t1-t0))); s.div.querySelector('#c_txt').textContent=[...full].slice(0,n).join('');
+   s.div.querySelector('#c_cur').style.opacity=(Math.floor(t*3)%2)?1:0;
+   const tb=wtime(s,'бердім'); const pb=clamp((t-t1-0.2)/(tb+0.4-t1));
+   s.div.querySelector('#c_pb').style.width=(pb*100)+'%'; s.div.querySelector('#c_ok').style.opacity=pb>=1?1:0;
+   s.div.querySelector('#c_send').style.transform=`scale(${t>t1&&t<t1+0.25?0.8:1})`;
+  }
+  if(s.card==='publish'){
+   const tc=wtime(s,'көріп'); const on=t>=tc; const btn=s.div.querySelector('#p_btn');
+   btn.style.background=on?'#22b45a':'#3d5afe'; btn.textContent=on?'Жарияланды ✓':'Жариялау';
+   btn.style.transform=`scale(${on&&t<tc+0.25?0.94:1})`;
+   const hd=s.div.querySelector('#p_hand'); if(t>=s.t0+0.15) hd.style.transform=`translate(${on?-6:0}px,${on?-8:0}px)`;
+   const cf=s.div.querySelectorAll('#p_conf i'); const q=clamp((t-tc)/1.2);
+   cf.forEach((c,k)=>{const ang=k/cf.length*Math.PI*2+k; const r=20+110*eo(q)*(0.6+0.4*((k*37)%10)/10);
+     c.style.opacity=on?1-q*q:0; c.style.transform=`translate(${Math.cos(ang)*r-40}px,${Math.sin(ang)*r-40+q*q*60}px) rotate(${k*40+q*360}deg)`});
+   s.div.querySelector('#p_hearts').style.transform=`scale(${1+0.25*Math.abs(Math.sin(t*5))})`;
+  }
+ });
+ drawGuy(t,D.scenes[cur].pose,t-D.scenes[cur].t0);
+}
+window.setup=setup; window.draw=draw;
+</script></body></html>

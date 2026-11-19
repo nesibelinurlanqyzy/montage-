@@ -1,0 +1,22 @@
+{
+ "name": "claude-telefon",
+ "style": "mult",
+ "page": "pastel.html",
+ "audio": "Бастапқы/dauys.mp3",
+ "audio_orig": "Бастапқы/dauys.mp3",
+ "voice": {"engine": "file", "file": "Бастапқы/dauys.mp3"},
+ "scenes": [
+  {"card": "stats", "label": "hook", "pose": "wave",
+   "text": "Осы видеоны *кәсіби монтажер* жасады деп ойладыңыз ба?"},
+  {"card": "ai", "label": "жоқ", "pose": "wow",
+   "text": "Жоқ! Мұның бәрін *жасанды интеллект* жасады!"},
+  {"card": "chat", "label": "claude", "pose": "point",
+   "text": "Мен тек *телефоным* арқылы *Claude-қа* тапсырма бердім."},
+  {"card": "publish", "label": "нәтиже", "pose": "thumb",
+   "text": "*Нәтижесін* өзіңіз көріп отырсыз!"},
+  {"card": "nolist", "label": "керек емес", "pose": "talk",
+   "text": "Енді әдемі монтаж жасау үшін *ноутбук* немесе *күрделі бағдарламалар* *міндетті емес.*"},
+  {"card": "cta", "label": "cta", "pose": "down",
+   "text": "Claude монтажды телефонмен жасауды үйренгіңіз келсе, төмендегі *«Подробнее»* батырмасын басыңыз!"}
+ ]
+}

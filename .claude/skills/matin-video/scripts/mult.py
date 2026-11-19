@@ -96,7 +96,7 @@ def prep(plan):
                        "words": [{"w": w["w"], "e": w["e"], "p": w.get("p", ""), "t": round(w["t"], 3)} for w in ws]})
     for si, sc in enumerate(scenes):
         sc["t1"] = scenes[si + 1]["t0"] if si + 1 < len(scenes) else dur + 1
-    data = {"fps": FPS, "dur": round(dur, 3), "env": [round(float(x), 3) for x in env], "scenes": scenes}
+    data = {"page": P.get("page", "page.html"), "fps": FPS, "dur": round(dur, 3), "env": [round(float(x), 3) for x in env], "scenes": scenes}
     json.dump(data, open(os.path.join(wd, "data.json"), "w"), ensure_ascii=False)
     for sc in scenes:
         print(f"{sc['t0']:6.2f}  " + " ".join(f"{w['w']}@{w['t']:.1f}" for w in sc["words"][:6]) + " …")
