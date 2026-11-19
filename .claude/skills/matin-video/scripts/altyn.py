@@ -383,6 +383,11 @@ BGS = {
     "warm": ((48, 20, 8), (12, 5, 3), (230, 110, 30)),
     "teal": ((18, 110, 125), (4, 40, 50), (120, 230, 235)),
     "night": ((8, 10, 32), (60, 40, 85), (245, 160, 80)),
+    # жаңа фондар: жоспарда "bg_all": "<аты>" — барлық сахнаға бір фон
+    "world": ((6, 28, 70), (2, 8, 26), (40, 140, 255)),     # көк + айналатын нүктелі глобус, ұшу сызықтары
+    "sunset": ((40, 14, 70), (150, 50, 60), (255, 130, 60)),  # күлгін → қызғылт-сары кешкі аспан
+    "aurora": ((4, 14, 24), (2, 4, 10), (40, 200, 160)),     # қара + жасыл-күлгін солтүстік шұғыласы
+    "city": ((14, 18, 48), (34, 22, 60), (120, 90, 255)),     # түнгі қала силуэті, жанған терезелер
 }
 
 
@@ -438,6 +443,13 @@ class Renderer:
             return img
         yy = gy[:, :, None]
         img = top * (1 - yy) + bot * yy
+        if kind == "aurora":
+            for k, (col, ph) in enumerate((((60, 230, 150), 0.0), ((170, 90, 255), 1.7), ((40, 180, 230), 3.1))):
+                c0 = 0.28 + 0.12 * k + 0.05 * np.sin(gx * 5 + t * 0.5 + ph) + 0.03 * np.sin(gx * 13 - t * 0.8 + ph)
+                band = np.exp(-((gy - c0) ** 2) / 0.004) * (0.55 + 0.45 * np.sin(gx * 9 + t * 0.6 + ph) ** 2)
+                img = img + np.array(col[::-1], np.float32) * (band * 0.55)[:, :, None]
+            vig = np.clip(1.15 - np.sqrt((gx - 0.5) ** 2 + (gy - 0.5) ** 2) * 1.1, 0.35, 1)[:, :, None]
+            return np.clip(img * vig, 0, 255)
         cx, cy = 0.5 + 0.06 * math.sin(t * 0.4), 0.42 + 0.04 * math.cos(t * 0.33)
         d2 = (gx - cx) ** 2 + ((gy - cy) * 1.6) ** 2
         k = 0.55 if kind != "teal" else 0.85
@@ -450,7 +462,61 @@ class Renderer:
         vig = np.clip(1.15 - np.sqrt((gx - 0.5) ** 2 + (gy - 0.5) ** 2) * 1.1, 0.35, 1)[:, :, None]
         return img * vig
 
+    def world_layer(self, fr, t):
+        """Айналатын нүктелі глобус + ұшу доғалары (толық өлшемде)."""
+        cx, cy, R = W / 2, 820, 620
+        rot = t * 0.12
+        for lat in np.linspace(-1.35, 1.35, 16):
+            n = max(6, int(46 * math.cos(lat)))
+            for j in range(n):
+                lon = j / n * 2 * math.pi + rot
+                z = math.cos(lat) * math.cos(lon)
+                if z < 0:
+                    continue
+                x = cx + R * math.cos(lat) * math.sin(lon)
+                y = cy - R * math.sin(lat)
+                b = 0.25 + 0.75 * z
+                cv2.circle(fr, (int(x), int(y)), 3, (int(255 * b), int(190 * b), int(90 * b)), -1, cv2.LINE_AA)
+        for k, (a, b_, h) in enumerate(((0.12, 0.62, 0.35), (0.55, 0.92, 0.25), (0.2, 0.85, 0.5))):
+            u = ((t * 0.18 + k * 0.37) % 1.0)
+            p0, p2 = np.array([W * a, 1250 - k * 180.0]), np.array([W * b_, 1150 - k * 260.0])
+            p1 = (p0 + p2) / 2 - np.array([0, H * h * 0.4])
+            ts = np.linspace(0, u, 40)[:, None]
+            pts = (1 - ts) ** 2 * p0 + 2 * (1 - ts) * ts * p1 + ts ** 2 * p2
+            cv2.polylines(fr, [np.round(pts * 4).astype(np.int32)], False, tuple(int(v * 0.8) for v in GOLD_BGR), 3, cv2.LINE_AA, shift=2)
+            cv2.circle(fr, tuple(int(v) for v in pts[-1]), 5, GOLD_BGR, -1, cv2.LINE_AA)
+
+    def city_layer(self, fr, t):
+        if not hasattr(self, "_city"):
+            rng = np.random.default_rng(3)
+            lay = np.zeros((H, W, 3), np.uint8)
+            x = 0
+            while x < W:
+                bw, bh = int(rng.integers(60, 150)), int(rng.integers(160, 520))
+                y0 = H - bh
+                cv2.rectangle(lay, (x, y0), (x + bw, H), (40, 18, 14), -1)
+                for wy in range(y0 + 20, H - 10, 34):
+                    for wx in range(x + 12, x + bw - 16, 26):
+                        if rng.random() < 0.35:
+                            cv2.rectangle(lay, (wx, wy), (wx + 10, wy + 14), (110, 200, 255), -1)
+                x += bw + int(rng.integers(2, 10))
+            self._city = lay
+        m = self._city.any(axis=2)
+        fr[m] = self._city[m]
+
     def background(self, t):
+        if self.plan.get("bg_all"):
+            kind = self.plan["bg_all"]
+            fr = np.clip(cv2.resize(self.bg_small(kind, t), (W, H), interpolation=cv2.INTER_CUBIC) + self.grain, 0, 255).astype(np.uint8)
+            if kind == "world":
+                self.world_layer(fr, t)
+            elif kind == "city":
+                self.city_layer(fr, t)
+            for x, y, sp, ph in self.dust:
+                yy = (y - t * 0.012 * (0.5 + sp)) % 1.0
+                b = 0.4 + 0.6 * abs(math.sin(t * 1.3 + ph * 11))
+                cv2.circle(fr, (int(x * W), int(yy * H)), 2 if sp < 0.7 else 3, tuple(int(v * 0.45 * b) for v in (255, 255, 255)), -1, cv2.LINE_AA)
+            return cv2.add(fr, self.orn) if self.plan.get("ornament", True) else fr
         cur = 0
         for i, s in enumerate(self.scenes):
             if t >= s["tl"]["s"] - 0.3:
