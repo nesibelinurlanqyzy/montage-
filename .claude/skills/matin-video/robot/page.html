@@ -36,8 +36,7 @@ html,body{width:360px;height:640px;overflow:hidden;background:#0c0a0a}
 .desk .ln i{position:absolute;left:0;top:0;bottom:0;background:var(--acc);box-shadow:0 0 8px var(--acc);border-radius:2px}
 .rec{position:absolute;left:14px;bottom:28px;padding:5px 9px;border-radius:10px;background:#161212;border:1px solid rgba(255,255,255,.07);font:700 8px MONO;letter-spacing:1.5px;color:#d8d0cc;display:flex;align-items:center;gap:6px}
 .rec i{width:6px;height:6px;border-radius:50%;background:#ff3b30;display:block}
-#r3{position:absolute;left:0;top:296px;width:360px;height:244px}
-.glowb{position:absolute;left:30px;right:30px;top:360px;height:190px;background:radial-gradient(50% 50% at 50% 55%,rgba(255,90,31,.22),rgba(255,90,31,0) 70%)}
+#robot{position:absolute;left:0;top:0;width:360px;height:640px;overflow:visible}
 .btn{position:absolute;left:50%;top:70px;transform:translateX(-50%);padding:14px 34px;border-radius:40px;background:linear-gradient(180deg,#ff6a2e,#f24b12);font-weight:900;font-size:27px;letter-spacing:-.5px;color:#fff;white-space:nowrap;box-shadow:0 10px 30px rgba(255,90,31,.45),inset 0 1px 0 rgba(255,255,255,.35)}
 </style></head>
 <body><div id="st">
@@ -47,13 +46,10 @@ html,body{width:360px;height:640px;overflow:hidden;background:#0c0a0a}
  <div class="tag"><i></i><span id="tagt"></span></div>
  <div id="titles"></div>
  <div id="cards"></div>
- <div class="glowb"></div>
- <canvas id="r3"></canvas>
  <div class="sub" id="sub"></div>
+ <svg id="robot" viewBox="0 0 360 640"></svg>
  <div class="desk"><div class="ln"><i id="prog"></i></div><div class="rec"><i id="recdot"></i>REC · <span id="rect"></span></div></div>
 </div>
-<script type="importmap">{"imports":{"three":"./vendor/three.module.min.js"}}</script>
-<script type="module" src="robot3d.js"></script>
 <script>
 const $=s=>document.querySelector(s);
 const cl=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
@@ -192,24 +188,91 @@ function drawCard(sc,lt,t){
   const se=c.querySelector('.ser');const k2=ease((lt-0.5)/0.4);se.style.opacity=k2;se.style.transform=`translateY(${(1-k2)*8}px)`;
  }
 }
-// ---------------------------------------------------------------- робот (3D, robot3d.js)
-const POSES={
- talk:{R:[[0.66,0.02,0.05],[0.98,-0.3,0.4],[0.62,-0.12,0.95]],L:[[-0.66,0.02,0.05],[-0.98,-0.3,0.4],[-0.62,-0.12,0.95]]},
- wave:{R:[[0.66,0.02,0.05],[1.18,0.3,0.25],[1.3,0.95,0.35]],L:[[-0.66,0.02,0.05],[-0.98,-0.3,0.4],[-0.62,-0.12,0.95]]},
- point:{R:[[0.66,0.02,0.05],[0.98,-0.3,0.4],[0.62,-0.12,0.95]],L:[[-0.66,0.02,0.05],[-1.12,0.28,0.45],[-1.42,0.75,0.7]]}
+// ---------------------------------------------------------------- робот
+let R={};
+function buildRobot(){
+ const s=$('#robot');s.innerHTML=`<defs>
+  <radialGradient id="gHel" cx="38%" cy="28%" r="80%"><stop offset="0" stop-color="#6e6361"/><stop offset=".4" stop-color="#2e2827"/><stop offset="1" stop-color="#0d0b0b"/></radialGradient>
+  <radialGradient id="gBody" cx="40%" cy="20%" r="90%"><stop offset="0" stop-color="#5a504e"/><stop offset=".5" stop-color="#241f1e"/><stop offset="1" stop-color="#080707"/></radialGradient>
+  <linearGradient id="gVis" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#151212"/><stop offset="1" stop-color="#030303"/></linearGradient>
+  <radialGradient id="gCup" cx="35%" cy="30%" r="80%"><stop offset="0" stop-color="#3b3433"/><stop offset="1" stop-color="#0d0b0b"/></radialGradient>
+  <linearGradient id="gArm" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3a3332"/><stop offset="1" stop-color="#121010"/></linearGradient>
+  <filter id="glow" x="-1" y="-1" width="3" height="3"><feGaussianBlur stdDeviation="2.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="glow2" x="-1" y="-1" width="3" height="3"><feGaussianBlur stdDeviation="4"/></filter>
+ </defs><g id="rb"></g>`;
+ const g=$('#rb');
+ R.armL=el('g',{},g);R.armR=el('g',{},g);
+ // дене
+ const body=el('g',{},g);
+ el('path',{d:'M-62 2 C-64 -30 -50 -52 -30 -58 L30 -58 C50 -52 64 -30 62 2 Z',fill:'url(#gBody)'},body);
+ el('path',{d:'M-46 -40 C-30 -50 30 -50 46 -40',stroke:'rgba(255,255,255,.07)','stroke-width':2,fill:'none'},body);
+ el('rect',{x:-13,y:-36,width:26,height:7,rx:3.5,fill:'#FF5A1F',filter:'url(#glow)'},body);
+ R.chest=body.lastChild;
+ el('path',{d:'M58 -30 C63 -20 63 -8 62 2',stroke:'rgba(255,90,31,.55)','stroke-width':1.6,fill:'none'},body);
+ el('circle',{cx:-52,cy:-40,r:11,fill:'url(#gCup)'},body);el('circle',{cx:52,cy:-40,r:11,fill:'url(#gCup)'},body);
+ el('rect',{x:-14,y:-70,width:28,height:16,rx:6,fill:'#141111'},body);
+ // бас
+ R.head=el('g',{},g);const hd=R.head;
+ el('path',{d:'M-66 -12 C-70 -60 -40 -80 0 -80 C40 -80 70 -60 66 -12',stroke:'#1a1616','stroke-width':8,fill:'none','stroke-linecap':'round'},hd);
+ el('path',{d:'M-66 -12 C-70 -60 -40 -80 0 -80 C40 -80 70 -60 66 -12',stroke:'rgba(255,90,31,.35)','stroke-width':1,fill:'none'},hd);
+ el('rect',{x:-56,y:-62,width:112,height:96,rx:40,fill:'url(#gHel)'},hd);
+ el('path',{d:'M40 -52 C54 -40 56 -10 50 14',stroke:'rgba(255,110,60,.7)','stroke-width':2,fill:'none','stroke-linecap':'round'},hd);
+ el('path',{d:'M-42 -50 C-54 -38 -56 -10 -50 14',stroke:'rgba(255,110,60,.35)','stroke-width':1.6,fill:'none','stroke-linecap':'round'},hd);
+ el('path',{d:'M-38 -54 C-24 -60 0 -61 14 -59',stroke:'rgba(255,255,255,.22)','stroke-width':3,fill:'none','stroke-linecap':'round'},hd);
+ el('rect',{x:-44,y:-46,width:88,height:68,rx:28,fill:'url(#gVis)'},hd);
+ el('path',{d:'M-34 -38 C-20 -43 10 -43 22 -40',stroke:'rgba(255,255,255,.10)','stroke-width':4,fill:'none','stroke-linecap':'round'},hd);
+ R.eyes=el('g',{fill:'#FFEBD0',filter:'url(#glow)'},hd);
+ R.eL=el('rect',{x:-23,y:-24,width:14,height:20,rx:7},R.eyes);R.eR=el('rect',{x:9,y:-24,width:14,height:20,rx:7},R.eyes);
+ R.mouth=el('path',{fill:'#FFEBD0',filter:'url(#glow)'},hd);
+ for(const sx of[-1,1]){const cup=el('g',{transform:`translate(${sx*60},-8)`},hd);
+  el('ellipse',{cx:0,cy:0,rx:14,ry:22,fill:'url(#gCup)'},cup);el('ellipse',{cx:0,cy:0,rx:14,ry:22,fill:'none',stroke:'#FF5A1F','stroke-width':2.2,filter:'url(#glow)'},cup);
+  el('ellipse',{cx:sx*-2,cy:0,rx:7,ry:13,fill:'#100d0d'},cup);}
+ // микрофон
+ R.mic=el('g',{},g);const m=R.mic;
+ el('path',{d:'M-46 2 L-46 -24',stroke:'#191515','stroke-width':5,'stroke-linecap':'round'},m);
+ el('ellipse',{cx:-46,cy:2,rx:16,ry:3.5,fill:'#121010'},m);
+ el('rect',{x:-55,y:-66,width:18,height:42,rx:9,fill:'url(#gHel)',stroke:'rgba(255,255,255,.18)','stroke-width':1},m);
+ el('rect',{x:-56,y:-60,width:20,height:4,rx:2,fill:'#FF5A1F',filter:'url(#glow)'},m);
+ el('rect',{x:-56,y:-38,width:20,height:4,rx:2,fill:'#FF5A1F',filter:'url(#glow)'},m);
+}
+const POSES={ // [иық, шынтақ, қол] оң қол (x>0); сол қол x<0
+ talk:{R:[[52,-40],[72,-14],[58,-2]],L:[[-52,-40],[-72,-14],[-58,-2]]},
+ wave:{R:[[52,-40],[86,-64],[96,-108]],L:[[-52,-40],[-72,-14],[-58,-2]]},
+ point:{R:[[52,-40],[72,-14],[58,-2]],L:[[-52,-40],[-86,-62],[-112,-96]]}
 };
-function mixPose(a,b,k){const o={};for(const side of['R','L'])o[side]=a[side].map((pt,i)=>pt.map((v,j)=>lerp(v,b[side][i][j],k)));return o}
+function drawArm(g,p,side){
+ const [s,e,hn]=p;g.innerHTML='';
+ el('path',{d:`M${s[0]} ${s[1]} L${e[0]} ${e[1]}`,stroke:'url(#gArm)','stroke-width':17,'stroke-linecap':'round'},g);
+ el('path',{d:`M${e[0]} ${e[1]} L${hn[0]} ${hn[1]}`,stroke:'#221d1c','stroke-width':14,'stroke-linecap':'round'},g);
+ el('circle',{cx:e[0],cy:e[1],r:7,fill:'#2d2726'},g);
+ el('circle',{cx:e[0],cy:e[1],r:7,fill:'none',stroke:'rgba(255,90,31,.6)','stroke-width':1.2},g);
+ el('circle',{cx:hn[0],cy:hn[1],r:11,fill:'url(#gCup)'},g);
+ el('path',{d:`M${hn[0]-5} ${hn[1]-9} l0 -5 M${hn[0]} ${hn[1]-10} l0 -6 M${hn[0]+5} ${hn[1]-9} l0 -5`,stroke:'#2a2423','stroke-width':4,'stroke-linecap':'round'},g);
+}
+function mixPose(a,b,k){const o={};for(const side of['R','L'])o[side]=a[side].map((pt,i)=>[lerp(pt[0],b[side][i][0],k),lerp(pt[1],b[side][i][1],k)]);return o}
 function drawRobot(t){
- if(!window.R3)return;
  const fi=Math.min(D.env.length-1,Math.floor(t*D.fps));const env=D.env[fi]||0;
+ // сахна позасы
  let si=0;for(let i=0;i<S.length;i++)if(t>=S[i].t0)si=i;
  const cur=POSES[S[si].pose]||POSES.talk,prev=si>0?(POSES[S[si-1].pose]||POSES.talk):cur;
- const p=mixPose(prev,cur,ease((t-S[si].t0)/0.5));
- if(S[si].pose==='wave'){const w=Math.sin(t*7)*0.16;p.R[2][0]+=w;p.R[1][0]+=w*0.3}
- if(S[si].pose==='point'){p.L[2][1]+=Math.sin(t*3)*0.04}
- if(S[si].pose==='talk'){p.R[2][1]+=Math.abs(Math.sin(t*2.3))*0.25*env;p.L[2][1]+=Math.abs(Math.sin(t*1.9+1))*0.18*env}
- const look=S[si].pose==='point'?0.12:S[si].pose==='wave'?-0.06:0;
- window.R3.draw(t,env,p,look);
+ let p=mixPose(prev,cur,ease((t-S[si].t0)/0.45));
+ p=JSON.parse(JSON.stringify(p));
+ if(S[si].pose==='wave'){const w=Math.sin(t*7)*10;p.R[2][0]+=w;p.R[1][0]+=w*0.3}
+ if(S[si].pose==='point'){p.L[2][1]+=Math.sin(t*3)*3}
+ if(S[si].pose==='talk'){p.R[2][1]+=-Math.abs(Math.sin(t*2.3))*8*env;p.R[1][0]+=Math.sin(t*1.7)*3}
+ const sc=1.0,cx=180+Math.sin(t*0.9)*2,cy=524;
+ $('#rb').setAttribute('transform',`translate(${cx},${cy}) scale(${sc})`);
+ drawArm(R.armR,p.R);drawArm(R.armL,p.L);
+ const bob=Math.sin(t*2.2)*1.5-env*2.2,tilt=Math.sin(t*1.3)*3+Math.sin(t*3.1)*env*2;
+ R.head.setAttribute('transform',`translate(0,${-86+bob}) rotate(${tilt})`);
+ // көз жыпылықтау
+ const bl=(t%3.4);const k=bl<0.12?Math.abs(Math.cos(bl/0.12*Math.PI)):1;const eh=Math.max(2,20*k);
+ const happy=env>0.05?1:0;
+ for(const [e,x] of[[R.eL,-23],[R.eR,9]]){e.setAttribute('height',eh);e.setAttribute('y',-24+(20-eh)/2);e.setAttribute('x',x+Math.sin(t*0.6)*2)}
+ // ауыз
+ const mo=3+env*11,mw=13+env*3;
+ R.mouth.setAttribute('d',`M${-mw} 6 Q0 ${6+mo*0.35} ${mw} 6 Q${mw*0.9} ${8+mo} 0 ${9+mo} Q${-mw*0.9} ${8+mo} ${-mw} 6 Z`);
+ R.chest.setAttribute('opacity',0.6+0.4*env);
 }
 // ---------------------------------------------------------------- субтитр
 let MC;function mw(txt,font){MC=MC||document.createElement('canvas').getContext('2d');MC.font=font;return MC.measureText(txt).width}
@@ -244,7 +307,7 @@ function buildCubes(){$('#cubes').innerHTML=CUBES.map((c,i)=>`<div class="cube" 
 function drawCubes(t){CUBES.forEach((c,i)=>{const e=$('#cb'+i);e.style.left=(c[0]+Math.sin(t*0.3+c[4])*8)+'px';e.style.top=(c[1]+Math.cos(t*0.25+c[4])*10)+'px';e.style.transform=`rotate(${c[3]+Math.sin(t*0.2+c[4])*6}deg)`;e.style.filter=`blur(${i%2?2.5:1.2}px)`;e.style.opacity=.75})}
 // ---------------------------------------------------------------- API
 window.setup=function(d){D=d;S=d.scenes;$('#tagt').textContent=d.tag||'сабақ · claude';$('#rect').textContent=d.rec||'сабақ';
- buildCubes();
+ buildCubes();buildRobot();
  S.forEach((sc,i)=>{sc.ch=chunks(sc.words);sc.tel=buildTitle(sc);sc.el=buildCard(sc,i)});
 };
 window.draw=function(t){
