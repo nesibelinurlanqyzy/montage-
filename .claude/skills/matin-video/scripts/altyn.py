@@ -388,6 +388,10 @@ BGS = {
     "sunset": ((40, 14, 70), (150, 50, 60), (255, 130, 60)),  # күлгін → қызғылт-сары кешкі аспан
     "aurora": ((4, 14, 24), (2, 4, 10), (40, 200, 160)),     # қара + жасыл-күлгін солтүстік шұғыласы
     "city": ((14, 18, 48), (34, 22, 60), (120, 90, 255)),     # түнгі қала силуэті, жанған терезелер
+    "mesh": ((30, 20, 90), (10, 40, 110), (255, 80, 160)),    # жылжитын түрлі-түсті дақтар (көк-күлгін-қызғылт)
+    "synth": ((20, 6, 45), (90, 20, 90), (255, 90, 180)),     # ретро: күн + перспектива тор
+    "bokeh": ((12, 30, 60), (6, 12, 30), (80, 160, 255)),     # жұмсақ жарық шеңберлер
+    "royal": ((40, 60, 170), (20, 20, 90), (110, 160, 255)),  # ашық көк-күлгін, жарқын
 }
 
 
@@ -450,6 +454,28 @@ class Renderer:
                 img = img + np.array(col[::-1], np.float32) * (band * 0.55)[:, :, None]
             vig = np.clip(1.15 - np.sqrt((gx - 0.5) ** 2 + (gy - 0.5) ** 2) * 1.1, 0.35, 1)[:, :, None]
             return np.clip(img * vig, 0, 255)
+        if kind == "mesh":
+            for (bx, by, col, ph) in ((0.2, 0.25, (255, 70, 150), 0), (0.8, 0.4, (60, 120, 255), 1.3),
+                                      (0.35, 0.75, (150, 60, 255), 2.4), (0.85, 0.85, (0, 190, 220), 3.6)):
+                x0, y0 = bx + 0.12 * math.sin(t * 0.35 + ph), by + 0.08 * math.cos(t * 0.3 + ph)
+                g = np.exp(-((gx - x0) ** 2 + ((gy - y0) * 0.6) ** 2) / 0.06)[:, :, None] * 0.75
+                img = img * (1 - g) + np.array(col[::-1], np.float32) * g
+            return np.clip(img * 0.85, 0, 255)
+        if kind == "synth":
+            sun = np.exp(-(((gx - 0.5) ** 2 + ((gy - 0.66) * 1.78) ** 2) / 0.03) ** 3) * (gy < 0.8)
+            img = img * (1 - sun[:, :, None] * 0.8) + np.array((255, 120, 200)[::-1], np.float32) * (sun[:, :, None] * 0.8)
+            fl = gy > 0.8
+            d = np.clip(gy - 0.8, 1e-3, 1)
+            zz = 0.06 / d + t * 0.4
+            xx = (gx - 0.5) / d
+            ln = ((np.abs(np.sin(zz * math.pi * 2)) < 0.12) | (np.abs(np.sin(xx * 6)) < 0.08)) & fl & (d > 0.012)
+            img[fl] = img[fl] * 0.35
+            img[ln] = np.array((255, 80, 220)[::-1], np.float32)
+            return img
+        if kind == "royal":
+            cx, cy = 0.5 + 0.06 * math.sin(t * 0.4), 0.42
+            g = np.exp(-((gx - cx) ** 2 + ((gy - cy) * 1.6) ** 2) / 0.12)[:, :, None] * 0.6
+            return np.clip(img * (1 - g) + glow * g, 0, 255)
         cx, cy = 0.5 + 0.06 * math.sin(t * 0.4), 0.42 + 0.04 * math.cos(t * 0.33)
         d2 = (gx - cx) ** 2 + ((gy - cy) * 1.6) ** 2
         k = 0.55 if kind != "teal" else 0.85
@@ -512,6 +538,15 @@ class Renderer:
                 self.world_layer(fr, t)
             elif kind == "city":
                 self.city_layer(fr, t)
+            elif kind == "bokeh":
+                ov = np.zeros_like(fr)
+                rng = np.random.default_rng(11)
+                for k in range(14):
+                    x, y, r, sp = rng.random(), rng.random(), rng.integers(40, 140), rng.random()
+                    col = ((255, 170, 70), (200, 90, 255), (120, 220, 255), (80, 210, 255))[k % 4]
+                    yy = (y - t * 0.01 * (0.5 + sp)) % 1.0
+                    cv2.circle(ov, (int(x * W), int(yy * H)), int(r), tuple(int(c * 0.22) for c in col), -1, cv2.LINE_AA)
+                fr = cv2.add(fr, cv2.GaussianBlur(ov, (0, 0), 6))
             for x, y, sp, ph in self.dust:
                 yy = (y - t * 0.012 * (0.5 + sp)) % 1.0
                 b = 0.4 + 0.6 * abs(math.sin(t * 1.3 + ph * 11))
@@ -638,9 +673,11 @@ class Renderer:
                 its = ch["items"]
                 shown = max(1, sum(1 for w in its if w["s"] <= t + 0.03))
                 hl = {k for k, w in enumerate(its) if w["_i"] in s["hl"]}
-                im = self.cached(s, ("sub", ci, shown), lambda: text_block(its, shown, 60, 860, hl))
+                mw = self.plan.get("sub_w", 860)
+                im = self.cached(s, ("sub", ci, shown), lambda: text_block(its, shown, 60, mw, hl))
                 k2 = M.ease((t - ch["s"] + 0.05) / 0.15)
-                self.blend(fr, im, (W - im[1].shape[1]) / 2, cy - im[1].shape[0] / 2 + (1 - k2) * 12, al)
+                sx = self.plan.get("sub_x", W / 2)  # субтитр ортасы (Instagram батырмаларынан аулақ — солға)
+                self.blend(fr, im, sx - im[1].shape[1] / 2, cy - im[1].shape[0] / 2 + (1 - k2) * 12, al)
 
     # ---- кадр
     def frame(self, t):
@@ -711,7 +748,7 @@ class Renderer:
                         px = 540 - 280 + (x * 0.92 + 0.04) * 560
                         py = 800 - 280 + (y * 0.92 + 0.04) * 560 + dy
                         cv2.circle(fr, (int(px), int(py)), 6, (200, 240, 255), -1, cv2.LINE_AA)
-            self.subtitles(fr, s, t, 1270, al)
+            self.subtitles(fr, s, t, self.plan.get("sub_y", 1270), al)
         elif kind in ("features", "places"):
             its = sc["items"]
             if sc.get("label"):
@@ -745,7 +782,7 @@ class Renderer:
                         self.blend(fr, l2, x - l2[1].shape[1] / 2, y2 + size / 2 + 8 + j * 36, al)
                 else:
                     self.blend(fr, lab, x - lw_ / 2, y2 + size / 2 + 8, al)
-            self.subtitles(fr, s, t, 1270, al)
+            self.subtitles(fr, s, t, self.plan.get("sub_y", 1270), al)
         elif kind == "cta":
             card = sc.get("card") or sc["text"]
             if "card_items" not in s:
@@ -772,7 +809,7 @@ class Renderer:
             bounce = abs(math.sin((t - st) * 4.0)) * 20
             ar = draw_icon([(p, "g", 1.0) for p in _arrow(0.5, 0.1, 0.5, 0.9, 0.3)], 120, 1.0, lw=9)
             self.add(fr, ar, W / 2, by + 150 + bounce, al * pk)
-            self.subtitles(fr, s, t, 1270, al)
+            self.subtitles(fr, s, t, self.plan.get("sub_y", 1270), al)
         return self.fx(fr, t)
 
     def fx(self, fr, t):
