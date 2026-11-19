@@ -1,0 +1,54 @@
+{
+ "name": "english",
+ "lang": "en",
+ "look": "altyn",
+ "sub_translated": true,
+ "voice": {"engine": "piper", "model": "en_US-ryan-high", "speaker": 0, "speed": 1.0},
+ "theme": {"bg1": "#06102A", "bg2": "#020611", "accent": "#F2B73A"},
+ "chips": ["HOOK", "WORLD", "CAREER", "START"],
+ "watermark": "@сіздің_аккаунт",
+ "music": "none",
+ "scenes": [
+  {
+   "kind": "hook", "chip": 0, "icon": "phone_lock", "icon_size": 400, "label": "DON'T LIMIT YOURSELF!", "label_px": 44,
+   "text": "Сколько возможностей ты *упускаешь,* потому что не говоришь по-английски?",
+   "tts": "How many opportunities are you missing because you don't speak English?"
+  },
+  {
+   "kind": "places", "chip": 1, "label": "TRAVEL. CONNECT. EXPLORE.", "label_px": 44,
+   "text": "Английский помогает путешествовать по миру, знакомиться с новыми людьми и открывать новые культуры.",
+   "tts": "English helps you travel the world, meet new people, and explore new cultures.",
+   "items": [
+    {"icon": "plane", "label": "TRAVEL", "word": "путешествовать"},
+    {"icon": "people", "label": "CONNECT", "word": "людьми"},
+    {"icon": "globe", "label": "EXPLORE", "word": "культуры"}
+   ]
+  },
+  {
+   "kind": "places", "chip": 2, "bg": "warm", "label": "MORE KNOWLEDGE.\nMORE OPPORTUNITIES.", "label_px": 44,
+   "text": "Он открывает двери к лучшей карьере, образованию и знаниям со всего мира.",
+   "tts": "It opens doors to better career opportunities, education, and knowledge from around the world.",
+   "items": [
+    {"icon": "briefcase", "label": "CAREER", "word": "карьере"},
+    {"icon": "cap", "label": "EDUCATION", "word": "образованию"},
+    {"icon": "book", "label": "KNOWLEDGE", "word": "знаниям"}
+   ]
+  },
+  {
+   "kind": "say", "chip": 2, "bg": "teal", "icon": "key", "label": "ENGLISH = FREEDOM", "label_px": 52,
+   "text": "Английский — это не просто язык. Это инструмент, который даёт *свободу,* *уверенность* и новые возможности.",
+   "tts": "English isn't just a language. It's a tool that gives you freedom, confidence, and new possibilities."
+  },
+  {
+   "kind": "say", "chip": 3, "icon": "start", "label": "START TODAY", "label_px": 52,
+   "text": "Не жди идеального момента. Начни *сегодня.*",
+   "tts": "Don't wait for the perfect moment. Start today."
+  },
+  {
+   "kind": "cta", "chip": 3, "bg": "night", "button": "Подписаться",
+   "card": "START LEARNING ENGLISH *TODAY!*",
+   "text": "Твоё будущее «я» скажет тебе *спасибо!*",
+   "tts": "Your future self will thank you!"
+  }
+ ]
+}

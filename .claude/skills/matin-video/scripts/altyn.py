@@ -154,6 +154,54 @@ def icon_strokes(name):
               (_ln((0.13, 0.64), (0.87, 0.64)), g, 0.5), (_ln((0.13, 0.64), (0.42, 0.64)), "w", 0.9), (_arc(0.42, 0.64, 0.02), "w", 0.9),
               (_ln((0.2, 0.95), (0.36, 0.95), (0.36, 0.88), (0.52, 0.88), (0.52, 0.81), (0.68, 0.81), (0.68, 0.76)), g, 0.8)]
         S += [(p, g, 0.8) for p in _arrow(0.72, 0.95, 0.86, 0.79, 0.04)]
+    elif name == "phone_lock":  # телефон ішінде әлем, бірақ қызыл құлып — «мүмкіндік жабық»
+        S += [(_rrect(0.3, 0.06, 0.7, 0.94, 0.06), g, 1.0), (_ln((0.45, 0.115), (0.55, 0.115)), g, 0.8),
+              (_arc(0.5, 0.38, 0.13), g, 0.9), (_arc(0.5, 0.38, 0.055, 0.13), g, 0.5), (_ln((0.37, 0.38), (0.63, 0.38)), g, 0.5),
+              (_rrect(0.35, 0.60, 0.48, 0.66, 0.01), g, 0.5), (_rrect(0.52, 0.60, 0.65, 0.66, 0.01), g, 0.5),
+              (_rrect(0.35, 0.70, 0.48, 0.76, 0.01), g, 0.5), (_rrect(0.52, 0.70, 0.65, 0.76, 0.01), g, 0.5),
+              (_ln((0.44, 0.885), (0.56, 0.885)), g, 0.6)]
+        S += [(_rrect(0.62, 0.62, 0.92, 0.88, 0.03), "r", 1.1), (_arc(0.77, 0.62, 0.09, 0.1, 180, 360), "r", 1.1),
+              (_arc(0.77, 0.74, 0.025), "r", 0.9), (_ln((0.77, 0.765), (0.77, 0.82)), "r", 0.9)]
+    elif name == "plane":
+        S += [(_closed((0.08, 0.52), (0.22, 0.48), (0.42, 0.48), (0.62, 0.16), (0.70, 0.16), (0.58, 0.48), (0.82, 0.48),
+                       (0.90, 0.36), (0.95, 0.36), (0.92, 0.52), (0.95, 0.68), (0.90, 0.68), (0.82, 0.56), (0.58, 0.56),
+                       (0.70, 0.88), (0.62, 0.88), (0.42, 0.56), (0.22, 0.56)), g, 1.0)]
+        S += [(_ln((0.02, 0.30), (0.20, 0.30)), g, 0.4), (_ln((0.06, 0.74), (0.26, 0.74)), g, 0.4)]
+    elif name == "people":
+        for cx, sc_ in ((0.5, 1.0), (0.22, 0.75), (0.78, 0.75)):
+            r = 0.11 * sc_
+            S += [(_arc(cx, 0.36 + (1 - sc_) * 0.12, r), g, 1.0 * sc_ + 0.1),
+                  (_arc(cx, 0.82, 0.2 * sc_, 0.2 * sc_, 180, 360), g, 1.0 * sc_ + 0.1)]
+    elif name == "globe":
+        S += [(_arc(0.5, 0.5, 0.38), g, 1.0), (_arc(0.5, 0.5, 0.16, 0.38), g, 0.6), (_arc(0.5, 0.5, 0.30, 0.38), g, 0.4),
+              (_ln((0.12, 0.5), (0.88, 0.5)), g, 0.6), (_ln((0.18, 0.32), (0.82, 0.32)), g, 0.4), (_ln((0.18, 0.68), (0.82, 0.68)), g, 0.4),
+              (_arc(0.5, 0.5, 0.46, 0.46, 200, 250), g, 0.6), (_spark(0.86, 0.16, 0.06), g, 0.6)]
+    elif name == "briefcase":
+        S += [(_rrect(0.1, 0.30, 0.9, 0.84, 0.04), g, 1.0), (_ln((0.38, 0.30), (0.38, 0.18), (0.62, 0.18), (0.62, 0.30)), g, 0.9),
+              (_ln((0.1, 0.52), (0.9, 0.52)), g, 0.6), (_rrect(0.45, 0.48, 0.55, 0.58, 0.01), g, 0.8)]
+        S += [(p, g, 0.7) for p in _arrow(0.70, 0.76, 0.86, 0.60, 0.04)]
+    elif name == "cap":
+        S += [(_closed((0.5, 0.22), (0.95, 0.42), (0.5, 0.62), (0.05, 0.42)), g, 1.0),
+              (_ln((0.24, 0.52), (0.24, 0.74)), g, 0.9), (_bezier((0.24, 0.74), (0.5, 0.88), (0.76, 0.74)), g, 0.9),
+              (_ln((0.76, 0.74), (0.76, 0.52)), g, 0.9), (_ln((0.88, 0.45), (0.88, 0.70)), g, 0.6), (_arc(0.88, 0.73, 0.025), g, 0.8)]
+    elif name == "book":
+        S += [(_bezier((0.5, 0.28), (0.3, 0.18), (0.08, 0.26)), g, 1.0), (_ln((0.08, 0.26), (0.08, 0.80)), g, 1.0),
+              (_bezier((0.08, 0.80), (0.3, 0.72), (0.5, 0.82)), g, 1.0), (_ln((0.5, 0.28), (0.5, 0.82)), g, 0.8),
+              (_bezier((0.5, 0.28), (0.7, 0.18), (0.92, 0.26)), g, 1.0), (_ln((0.92, 0.26), (0.92, 0.80)), g, 1.0),
+              (_bezier((0.92, 0.80), (0.7, 0.72), (0.5, 0.82)), g, 1.0), (_spark(0.72, 0.10, 0.06), g, 0.6)]
+        for y in (0.40, 0.50, 0.60):
+            S += [(_ln((0.16, y), (0.42, y + 0.02)), g, 0.4), (_ln((0.58, y + 0.02), (0.84, y)), g, 0.4)]
+    elif name == "key":
+        S += [(_arc(0.28, 0.5, 0.18), g, 1.0), (_arc(0.28, 0.5, 0.07), g, 0.6), (_ln((0.46, 0.5), (0.92, 0.5)), g, 1.0),
+              (_ln((0.80, 0.5), (0.80, 0.64)), g, 1.0), (_ln((0.70, 0.5), (0.70, 0.60)), g, 1.0),
+              (_spark(0.82, 0.24, 0.07), g, 0.6), (_spark(0.62, 0.80, 0.045), g, 0.5)]
+    elif name == "start":  # кітап ашылып, ракета ұшады
+        S += [(_bezier((0.5, 0.70), (0.3, 0.62), (0.1, 0.70)), g, 0.9), (_ln((0.1, 0.70), (0.1, 0.90)), g, 0.9),
+              (_bezier((0.1, 0.90), (0.3, 0.84), (0.5, 0.92)), g, 0.9), (_bezier((0.5, 0.70), (0.7, 0.62), (0.9, 0.70)), g, 0.9),
+              (_ln((0.9, 0.70), (0.9, 0.90)), g, 0.9), (_bezier((0.9, 0.90), (0.7, 0.84), (0.5, 0.92)), g, 0.9),
+              (_closed((0.5, 0.06), (0.60, 0.22), (0.60, 0.46), (0.40, 0.46), (0.40, 0.22)), g, 1.0), (_arc(0.5, 0.27, 0.04), g, 0.7),
+              (_closed((0.40, 0.36), (0.32, 0.48), (0.40, 0.46)), g, 0.7), (_closed((0.60, 0.36), (0.68, 0.48), (0.60, 0.46)), g, 0.7),
+              (_ln((0.46, 0.50), (0.44, 0.58)), g, 0.5), (_ln((0.54, 0.50), (0.56, 0.58)), g, 0.5), (_ln((0.5, 0.50), (0.5, 0.62)), g, 0.6)]
     return S
 
 
@@ -244,6 +292,20 @@ def mono_label(text, px=30, col=(242, 183, 58), spacing=0.18, a=255):
         d.text((x, 2), c, font=f, fill=col + (a,))
         x += f.getlength(c) + px * spacing
     return img
+
+
+def multi_label(text, px=30, col=(242, 183, 58)):
+    """mono_label, бірақ "\n" бойынша бірнеше жол (ортасынан тураланған)."""
+    if "\n" not in text:
+        return mono_label(text, px, col)
+    ims = [mono_label(t, px, col) for t in text.split("\n")]
+    w = max(i.width for i in ims)
+    out = Image.new("RGBA", (w, sum(i.height for i in ims)), (0, 0, 0, 0))
+    y = 0
+    for i in ims:
+        out.paste(i, ((w - i.width) // 2, y), i)
+        y += i.height
+    return out
 
 
 def to_rgba(im):
@@ -548,19 +610,23 @@ class Renderer:
             self.blend(fr, im, (W - im[1].shape[1]) / 2, 330 + dy, al)
             top = 330 + im[1].shape[0]
             if sc.get("label"):
-                lb = self.cached(s, "label", lambda: mono_label(sc["label"], 30, (255, 110, 100) if sc["label"].startswith("✕") else (242, 183, 58)))
+                lb = self.cached(s, "label", lambda: multi_label(sc["label"], sc.get("label_px", 30), (255, 110, 100) if sc["label"].startswith("✕") else (242, 183, 58)))
                 self.blend(fr, lb, (W - lb[1].shape[1]) / 2, top + 30, al * M.ease((t - s["kw_t"]) / 0.3))
-            lay = self.icon(sc["icon"], 520, st + 0.1, t, 1.2, t_red=s["kw_t"])
+            isz = sc.get("icon_size", 520)
+            lay = self.icon(sc["icon"], isz, st + 0.1, t, 1.2, t_red=s["kw_t"])
             pk, since = self.punch(s, t)
             fl = 8 * math.sin(t * 2.2)
-            self.add_scaled(fr, lay, W / 2, top + 330 + dy + fl, al, pk)
-            self.ring(fr, W / 2, top + 330, 330, t - s["kw_t"], RED_BGR, 0.8)
-            self.ring(fr, W / 2, top + 330, 260, t - s["kw_t"] - 0.15, RED_BGR, 0.8)
+            cy_ = top + 70 + isz / 2
+            self.add_scaled(fr, lay, W / 2, cy_ + dy + fl, al, pk)
+            self.ring(fr, W / 2, cy_, isz * 0.63, t - s["kw_t"], RED_BGR, 0.8)
+            self.ring(fr, W / 2, cy_, isz * 0.5, t - s["kw_t"] - 0.15, RED_BGR, 0.8)
         elif kind == "say":
             if sc.get("label"):
-                lb = self.cached(s, "label", lambda: mono_label(sc["label"], 30))
-                self.blend(fr, lb, (W - lb[1].shape[1]) / 2, 430 + dy, al)
-                cv2.line(fr, (int(W / 2 - 60), 485 + int(dy)), (int(W / 2 + 60), 485 + int(dy)),
+                lb = self.cached(s, "label", lambda: multi_label(sc["label"], sc.get("label_px", 30)))
+                ly0 = 430 if lb[1].shape[0] < 60 else 470 - lb[1].shape[0]
+                self.blend(fr, lb, (W - lb[1].shape[1]) / 2, ly0 + dy, al)
+                ly = int(ly0 + lb[1].shape[0] + 10)
+                cv2.line(fr, (int(W / 2 - 60), ly + int(dy)), (int(W / 2 + 60), ly + int(dy)),
                          tuple(int(v * 0.6 * al) for v in GOLD_BGR), 2, cv2.LINE_AA)
             lay = self.icon(sc["icon"], 560, st + 0.05, t, 1.3)
             breathe = 0.85 + 0.15 * math.sin((t - st) * 2.4) if t - st > 1.3 else 1.0
@@ -582,6 +648,9 @@ class Renderer:
             self.subtitles(fr, s, t, 1270, al)
         elif kind in ("features", "places"):
             its = sc["items"]
+            if sc.get("label"):
+                lb = self.cached(s, "label", lambda: multi_label(sc["label"], sc.get("label_px", 30)))
+                self.blend(fr, lb, (W - lb[1].shape[1]) / 2, (440 if kind == "places" else 330) + dy - lb[1].shape[0] / 2, al)
             if kind == "features":
                 size = 220
                 pos = [(230, 620), (540, 620), (850, 620), (385, 930), (695, 930)]

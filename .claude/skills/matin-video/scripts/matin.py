@@ -23,11 +23,15 @@ GAP, LEAD, TAIL = 0.35, 0.25, 1.6
 
 
 # ---------------------------------------------------------------- дауыс
-def piper_paths():
+def piper_paths(model=None):
+    """model: "kk_KZ-issai-high" (әдепкі) немесе басқа piper дауысы, мыс. "en_US-ryan-high"."""
+    model = model or PIPER_MODEL
+    loc, nm, q = model.split("-", 2)
+    base = "https://huggingface.co/rhasspy/piper-voices/resolve/main/%s/%s/%s/%s/" % (loc.split("_")[0], loc, nm, q)
     os.makedirs(PIPER_DIR, exist_ok=True)
-    m = os.path.join(PIPER_DIR, PIPER_MODEL + ".onnx")
+    m = os.path.join(PIPER_DIR, model + ".onnx")
     c = m + ".json"
-    for path, url in ((m, PIPER_URL + PIPER_MODEL + ".onnx"), (c, PIPER_URL + PIPER_MODEL + ".onnx.json")):
+    for path, url in ((m, base + model + ".onnx"), (c, base + model + ".onnx.json")):
         if not os.path.exists(path) or os.path.getsize(path) < 1000:
             print("дауыс моделі жүктелуде: " + os.path.basename(path))
             urllib.request.urlretrieve(url, path)
@@ -37,14 +41,18 @@ def piper_paths():
 _PV = {}
 
 
-def piper_voice():
+def piper_voice(model=None):
+    model = model or PIPER_MODEL
+    if _PV.get("model") != model:
+        _PV.clear()
+        _PV["model"] = model
     if "v" not in _PV:
         try:
             from piper import PiperVoice
         except Exception:
             subprocess.run([sys.executable, "-m", "pip", "install", "-q", "--break-system-packages", "piper-tts"])
             from piper import PiperVoice
-        m, c = piper_paths()
+        m, c = piper_paths(model)
         _PV["v"] = PiperVoice.load(m, config_path=c)
         _PV["map"] = json.load(open(c, encoding="utf-8")).get("speaker_id_map", {})
     return _PV["v"], _PV["map"]
@@ -57,9 +65,9 @@ def piper_speakers():
     return sorted(((v, k) for k, v in mp.items()))
 
 
-def tts_piper(text, out_wav, speaker=0, speed=1.0):
+def tts_piper(text, out_wav, speaker=0, speed=1.0, model=None):
     from piper import SynthesisConfig
-    v, _ = piper_voice()
+    v, _ = piper_voice(model)
     cfg = SynthesisConfig(speaker_id=int(speaker), length_scale=1.0 / float(speed or 1.0))
     with wave.open(out_wav, "wb") as wf:
         v.synthesize_wav(text, wf, syn_config=cfg)
@@ -220,11 +228,14 @@ def cmd_voice(a):
         if eng == "elevenlabs":
             heard = tts_eleven(txt, wp, vc["voice_id"], vc.get("model", "eleven_v3"), vc.get("speed", 1.0))
         else:
-            heard = tts_piper(txt, wp, vc.get("speaker", 0), vc.get("speed", 1.0))
+            heard = tts_piper(txt, wp, vc.get("speaker", 0), vc.get("speed", 1.0), vc.get("model"))
         dur, sr = wav_info(wp)
         tmpf = os.path.join(wd, "t.txt")
         open(tmpf, "w", encoding="utf-8").write(sc["text"])
-        ws = word_times(M.read_text(tmpf), wp, dur, plan.get("lang", "kk"), heard)
+        if plan.get("sub_translated"):  # субтитр — аударма: дауыспен сөзбе-сөз сәйкес келмейді, ұзындығы бойынша таратамыз
+            ws = M.spread_words(M.read_text(tmpf), [[0.08, max(0.28, dur - 0.12)]])
+        else:
+            ws = word_times(M.read_text(tmpf), wp, dur, plan.get("lang", "kk"), heard)
         hold = TAIL if sc.get("kind") == "cta" else 0.0
         scenes.append({"i": i, "s": round(t, 3), "e": round(t + dur + hold, 3), "speech_e": round(t + dur, 3),
                        "words": [dict(w, s=round(w["s"] + t, 3), e=round(w["e"] + t, 3)) for w in ws]})
