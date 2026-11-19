@@ -225,7 +225,7 @@ def cmd_voice(a):
         tmpf = os.path.join(wd, "t.txt")
         open(tmpf, "w", encoding="utf-8").write(sc["text"])
         ws = word_times(M.read_text(tmpf), wp, dur, plan.get("lang", "kk"), heard)
-        hold = TAIL if sc.get("kind") == "cta" else 0.0
+        hold = TAIL if sc.get("kind") == "cta" else float(sc.get("hold", 0.0))
         scenes.append({"i": i, "s": round(t, 3), "e": round(t + dur + hold, 3), "speech_e": round(t + dur, 3),
                        "words": [dict(w, s=round(w["s"] + t, 3), e=round(w["e"] + t, 3)) for w in ws]})
         wavs.append((wp, t))
@@ -367,6 +367,49 @@ def load_all(path):
 
 
 # ---------------------------------------------------------------- сурет салу
+CLIP_W, CLIP_H, CLIP_FPS = 420, 746, 15
+
+
+def load_clip(src, start, dur):
+    """Видео үзіндісін кадр тізімі ретінде (BGR) оқу."""
+    import numpy as np
+    out = subprocess.run(["ffmpeg", "-v", "error", "-ss", str(start), "-t", str(dur + 0.3), "-i", src, "-an",
+                          "-vf", "scale=%d:%d:force_original_aspect_ratio=increase,crop=%d:%d,fps=%d"
+                          % (CLIP_W, CLIP_H, CLIP_W, CLIP_H, CLIP_FPS),
+                          "-f", "rawvideo", "-pix_fmt", "bgr24", "-"], capture_output=True).stdout
+    n = len(out) // (CLIP_W * CLIP_H * 3)
+    return [f for f in np.frombuffer(out[:n * CLIP_W * CLIP_H * 3], np.uint8).reshape(n, CLIP_H, CLIP_W, 3)]
+
+
+def clip_card(img, acc, angle, scale):
+    """Кадрды дөңгелек бұрышты, түсті жиекті, сәл қисайған карточка қылу -> (rgb, a)."""
+    import cv2, numpy as np
+    b, r = 12, 46
+    h, w = img.shape[:2]
+    H2, W2 = h + 2 * b, w + 2 * b
+    rgb = np.zeros((H2, W2, 3), np.float32)
+    rgb[:] = acc[::-1]
+    rgb[b:b + h, b:b + w] = img
+    m = np.zeros((H2, W2), np.uint8)
+    cv2.rectangle(m, (r, 0), (W2 - r, H2), 255, -1)
+    cv2.rectangle(m, (0, r), (W2, H2 - r), 255, -1)
+    for cx, cy in ((r, r), (W2 - r, r), (r, H2 - r), (W2 - r, H2 - r)):
+        cv2.circle(m, (cx, cy), r, 255, -1, cv2.LINE_AA)
+    pad = 70
+    P = cv2.copyMakeBorder
+    rgb = P(rgb, pad, pad, pad, pad, cv2.BORDER_CONSTANT, value=0)
+    a = P(m, pad, pad, pad, pad, cv2.BORDER_CONSTANT, value=0).astype(np.float32) / 255
+    sh = cv2.GaussianBlur(np.roll(a, 18, 0), (0, 0), 14) * 0.55
+    rgb = rgb * a[:, :, None]
+    a = np.maximum(a, sh)
+    rgb = rgb / np.maximum(a[:, :, None], 1e-3) * (a[:, :, None] > 0)
+    hh, ww = a.shape
+    Mx = cv2.getRotationMatrix2D((ww / 2, hh / 2), angle, scale)
+    rgb = cv2.warpAffine(rgb, Mx, (ww, hh), flags=cv2.INTER_LINEAR)
+    a = cv2.warpAffine(a, Mx, (ww, hh), flags=cv2.INTER_LINEAR)
+    return np.clip(rgb, 0, 255), a[:, :, None]
+
+
 class Scene:
     """Бір сахнаның суреттері (кэшпен)."""
 
@@ -638,12 +681,28 @@ class Renderer:
                 self.blend(fr, im, (W - 900) / 2, 330 + (1 - pop) * 60, al * pop)
                 cy = 1130
             else:
+                clips = s.sc.get("clips")
                 big = s.sc.get("big") or next((M.disp(w["w"]).upper() for w in s.items if w["a"]), None)
-                if big:
+                if big and not clips:
                     im = s.get("big", lambda: render_big(self.pt, big, acc))
                     drift = M.clamp((t - st) / max(0.5, en - st), 0, 1) * 40
                     self.blend(fr, im, (W - im[1].shape[1]) / 2 + 20 - drift, 470, al * 0.9)
                 cy = 960
+                if clips:
+                    cy = 420
+                    seg = (en - st + GAP) / len(clips)
+                    if "_frames" not in s.cache:
+                        s.cache["_frames"] = [load_clip(c["src"], c.get("from", 0), seg) for c in clips]
+                    ci = int(M.clamp((t - st) // seg, 0, len(clips) - 1))
+                    fl = s.cache["_frames"][ci]
+                    if fl:
+                        lt = max(0.0, t - st - ci * seg)
+                        img = fl[min(len(fl) - 1, int(lt * CLIP_FPS))]
+                        pop = M.ease(lt / 0.25)
+                        ang = (5 if ci % 2 == 0 else -5) * (0.6 + 0.4 * pop)
+                        card = clip_card(img, acc, ang, 0.8 + 0.2 * pop)
+                        ch_, cw_ = card[1].shape[:2]
+                        self.blend(fr, card, (W - cw_) / 2, 1030 - ch_ / 2 + (1 - fin) * 80, al)
             for ci, ch in enumerate(s.chunks):
                 nxt = s.chunks[ci + 1]["s"] if ci + 1 < len(s.chunks) else 1e9
                 if ch["s"] - 0.05 <= t < min(ch["e"] + 0.05, nxt - 0.05):
