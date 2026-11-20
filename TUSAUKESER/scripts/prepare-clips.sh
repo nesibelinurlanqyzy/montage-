@@ -7,7 +7,7 @@ mkdir -p public/clips_raw
 clip() { # name src start dur [extra-filter]
   ffmpeg -v error -y -ss "$3" -i "videos/$2" -t "$4" -an \
     -vf "transpose=2,scale=1080:1920,${5}fps=30,format=yuv420p" \
-    -c:v libx264 -crf 12 -preset fast "public/clips_raw/$1.mp4"
+    -c:v libx264 -crf 8 -preset slow "public/clips_raw/$1.mp4"
   echo "ok $1"
 }
 clip walk1   video2.mp4 5.0  4.4

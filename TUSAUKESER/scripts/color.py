@@ -68,7 +68,7 @@ for src in sorted(glob.glob("public/clips_raw/*.mp4")):
     a["wb"] = tuple(np.mean(wbs, 0)) if wbs else None
     p = params(a)
     out = src.replace("clips_raw", "clips")
-    run(["ffmpeg", "-v", "error", "-y", "-i", src, "-vf", vf(p) + ",format=yuv420p", "-c:v", "libx264", "-crf", "14", "-preset", "fast", out])
+    run(["ffmpeg", "-v", "error", "-y", "-i", src, "-vf", vf(p) + ",format=yuv420p", "-c:v", "libx264", "-crf", "8", "-preset", "slow", out])
     report[src] = dict(before=a, params=p)
 for k, v in report.items():
     print(f"{k:45s} med {v['before']['med']:.2f} p99.5 {v['before']['p995']:.2f} → {vf(v['params'])}")
