@@ -37,13 +37,15 @@ export const HookTitle: React.FC = () => {
   const exit = interpolate(f, [sec(3.3), sec(3.54)], [0, 1], cl);
   const punch = spring({ frame: f - sec(1.68), fps, config: { damping: 9, stiffness: 210, mass: 0.8 } });
   const kiim = spring({ frame: f - sec(2.08), fps, config: { damping: 10, stiffness: 220 } });
-  const shake = f >= sec(2.08) && f < sec(2.08) + 6 ? Math.sin(f * 3.1) * (6 - (f - sec(2.08))) : 0;
-  const shadow = "0 6px 24px rgba(0,0,0,0.55)";
+  const shake = 0;
+  const shadow = "0 3px 0 rgba(0,0,0,0.35), 0 6px 26px rgba(0,0,0,0.75)";
   return (
+    <AbsoluteFill>
+    <AbsoluteFill style={{ background: "linear-gradient(180deg, rgba(15,6,4,0.62) 0%, rgba(15,6,4,0.45) 28%, transparent 42%)", opacity: 1 - exit }} />
     <AbsoluteFill style={{ alignItems: "center", top: 236, opacity: 1 - exit, filter: `blur(${exit * 10}px)`, transform: `translateY(${-exit * 40}px)` }}>
       <div style={{
-        fontFamily: FONT.serif, fontWeight: 700, fontStyle: "italic", fontSize: 58, color: COLORS.white, letterSpacing: 2,
-        opacity: interpolate(f, [0, 8], [0, 1], cl), filter: `blur(${interpolate(f, [0, 8], [8, 0], cl)}px)`, textShadow: shadow,
+        fontFamily: FONT.sans, fontWeight: 800, fontSize: 62, color: COLORS.white, letterSpacing: 3,
+        opacity: interpolate(f, [0, 6], [0, 1], cl), filter: `blur(${interpolate(f, [0, 8], [8, 0], cl)}px)`, textShadow: shadow,
       }}>Тұсаукесерге</div>
       <div style={{ marginTop: 4, fontFamily: FONT.sans, fontWeight: 900, fontSize: 92, color: COLORS.white, letterSpacing: 2, textShadow: shadow, lineHeight: 1.1 }}>
         <Reveal at={sec(0.84)}>БІР</Reveal> <Reveal at={sec(1.08)}>КҮН</Reveal> <Reveal at={sec(1.38)}>ҮШІН</Reveal>
@@ -60,6 +62,7 @@ export const HookTitle: React.FC = () => {
           transform: `translateY(${(1 - kiim) * 60}px)`, opacity: kiim, display: "inline-block", textShadow: shadow,
         }}>КИІМ<span style={{ color: COLORS.yellow }}>?!</span></span>
       </div>
+    </AbsoluteFill>
     </AbsoluteFill>
   );
 };
@@ -104,7 +107,7 @@ export const SplitTags: React.FC = () => {
   );
 };
 
-// Баға: «7 000 ₸ БАСТАП» — айналатын цифр + алтын жылтыр + «жалға алыңыз»
+// Баға: «7 000 ₸ БАСТАП» — айналатын цифр + алтын жылтыр
 export const PriceAccent: React.FC<{ dur: number }> = ({ dur }) => {
   const f = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -114,11 +117,10 @@ export const PriceAccent: React.FC<{ dur: number }> = ({ dur }) => {
   const rest = spring({ frame: f - 12, fps, config: { damping: 14, stiffness: 200 } });
   const tenge = spring({ frame: f - 18, fps, config: { damping: 8, stiffness: 220 } });
   const shineX = interpolate(f, [20, 44], [-30, 130], cl);
-  const bastap = spring({ frame: f - sec(1.2), fps, config: { damping: 14, stiffness: 180 } });
-  const zhalga = interpolate(f, [sec(1.54), sec(1.54) + 8], [0, 1], cl);
-  const H = 196;
+  const bastap = spring({ frame: f - 20, fps, config: { damping: 14, stiffness: 180 } });
+  const H = 236;
   const gold: React.CSSProperties = {
-    fontFamily: FONT.sans, fontWeight: 900, fontSize: 196, lineHeight: `${H}px`, letterSpacing: -2,
+    fontFamily: FONT.sans, fontWeight: 900, fontSize: 236, lineHeight: `${H}px`, letterSpacing: -2,
     backgroundImage: `linear-gradient(105deg, transparent ${shineX - 10}%, rgba(255,255,255,0.9) ${shineX}%, transparent ${shineX + 10}%), ${GOLD_GRADIENT}`,
     WebkitBackgroundClip: "text", color: "transparent",
   };
@@ -137,15 +139,11 @@ export const PriceAccent: React.FC<{ dur: number }> = ({ dur }) => {
         <div style={{ height: 3, width: 120 * bastap, background: GOLD_GRADIENT }} />
         <div style={{
           padding: "8px 34px", borderRadius: 12, background: COLORS.ruby, color: COLORS.white,
-          fontFamily: FONT.sans, fontWeight: 900, fontSize: 54, letterSpacing: 16 * bastap + 4, opacity: bastap,
+          fontFamily: FONT.sans, fontWeight: 900, fontSize: 62, letterSpacing: 16 * bastap + 4, opacity: bastap,
           boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
         }}>БАСТАП</div>
         <div style={{ height: 3, width: 120 * bastap, background: GOLD_GRADIENT }} />
       </div>
-      <div style={{
-        marginTop: 10, fontFamily: FONT.serif, fontWeight: 700, fontStyle: "italic", fontSize: 50, color: COLORS.white,
-        opacity: zhalga, transform: `translateY(${(1 - zhalga) * 20}px)`, textShadow: "0 4px 16px rgba(0,0,0,0.7)",
-      }}>жалға алыңыз</div>
     </AbsoluteFill>
   );
 };
@@ -158,33 +156,35 @@ export const EndCard: React.FC<{ dur: number; startSec: number }> = ({ startSec 
   const panel = spring({ frame: f, fps, config: { damping: 18, stiffness: 120 } });
   const item = (i: number) => spring({ frame: f - 6 - i * 4, fps, config: { damping: 16, stiffness: 170 } });
   const anim = (i: number): React.CSSProperties => ({ opacity: item(i), transform: `translateY(${(1 - item(i)) * 30}px)` });
+  const wipe = interpolate(f, [12, 26], [0, 1], { ...cl, easing: Easing.inOut(Easing.cubic) });
   const waOn = t >= 23.9;
   const pulse = waOn ? 1 + Math.sin((t - 23.9) * 9) * 0.025 : 1;
   const hl = (on: boolean): React.CSSProperties => ({ color: on ? COLORS.yellow : COLORS.white, transition: "none" });
   return (
     <AbsoluteFill>
       <div style={{
-        position: "absolute", left: 0, right: 0, top: 830, bottom: 0, background: "#FFFDF8",
+        position: "absolute", left: 0, right: 0, top: 1000, bottom: 0, background: "#FFFDF8",
         borderTopLeftRadius: 56, borderTopRightRadius: 56, transform: `translateY(${(1 - panel) * 1100}px)`,
-        boxShadow: "0 -20px 60px rgba(0,0,0,0.25)", display: "flex", flexDirection: "column", alignItems: "center", paddingTop: 58,
+        boxShadow: "0 -20px 60px rgba(0,0,0,0.25)", display: "flex", flexDirection: "column", alignItems: "center", paddingTop: 40,
       }}>
-        <div style={{ ...anim(0), fontFamily: FONT.sans, fontWeight: 800, fontSize: 38, letterSpacing: 16, color: COLORS.goldDeep }}>{BRAND.city}</div>
-        <div style={{ ...anim(0), height: 3, width: 110, background: GOLD_GRADIENT, margin: "16px 0 22px" }} />
-        <div style={{ ...anim(1), fontFamily: FONT.sans, fontWeight: 900, fontSize: 54, lineHeight: 1.15, color: COLORS.ruby, textAlign: "center", letterSpacing: 1 }}>
-          ТҰСАУКЕСЕР ЖӘНЕ 1 ЖАСҚА<br />КИІМДЕР ПРОКАТЫ
+        <div style={{ ...anim(0), fontFamily: FONT.sans, fontWeight: 900, fontSize: 50, letterSpacing: 16, color: COLORS.ruby }}>{BRAND.city}</div>
+        <div style={{ ...anim(0), height: 3, width: 110, background: GOLD_GRADIENT, margin: "12px 0 14px" }} />
+        <div style={{ ...anim(1), fontFamily: FONT.sans, fontWeight: 800, fontSize: 32, lineHeight: 1.2, color: "#3A2A1E", textAlign: "center", letterSpacing: 1 }}>
+          ТҰСАУКЕСЕР ЖӘНЕ 1 ЖАСҚА КИІМДЕР ПРОКАТЫ
         </div>
-        <div style={{ ...anim(2), marginTop: 20, fontFamily: FONT.sans, fontWeight: 900, fontSize: 96, lineHeight: 1.1, backgroundImage: GOLD_GRADIENT, WebkitBackgroundClip: "text", color: "transparent" }}>
-          7 000 ₸ <span style={{ fontSize: 60 }}>БАСТАП</span>
+        <div style={{ marginTop: 10, clipPath: `inset(0 ${100 - wipe * 100}% 0 0)`, fontFamily: FONT.sans, fontWeight: 900, fontSize: 108, lineHeight: 1.1, backgroundImage: GOLD_GRADIENT, WebkitBackgroundClip: "text", color: "transparent" }}>
+          7 000 ₸ <span style={{ fontSize: 64 }}>БАСТАП</span>
         </div>
+        <div style={{ height: 4, width: 520 * wipe, background: GOLD_GRADIENT, borderRadius: 2, marginTop: 2 }} />
         <div style={{
-          ...anim(3), marginTop: 26, width: 900, padding: "24px 30px", borderRadius: 36, background: COLORS.ruby,
+          ...anim(3), marginTop: 22, width: 920, padding: "22px 30px", borderRadius: 36, background: COLORS.ruby,
           display: "flex", alignItems: "center", gap: 24, transform: `${anim(3).transform} scale(${pulse})`,
           boxShadow: waOn ? "0 14px 40px rgba(126,16,34,0.45)" : "0 10px 26px rgba(126,16,34,0.3)",
         }}>
           <div style={{ width: 84, height: 84, borderRadius: 42, background: COLORS.whatsapp, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
             <WhatsAppIcon />
           </div>
-          <div style={{ fontFamily: FONT.sans, fontWeight: 800, fontSize: 38, lineHeight: 1.2, letterSpacing: 1 }}>
+          <div style={{ fontFamily: FONT.sans, fontWeight: 800, fontSize: 40, lineHeight: 1.2, letterSpacing: 1 }}>
             <span style={hl(t >= 21.8 && t < 22.54)}>БОС КҮНДЕРДІ</span> <span style={hl(false)}>БІЛУ ҮШІН</span><br />
             <span style={hl(waOn)}>WHATSAPP-ҚА</span> <span style={hl(t >= 24.52)}>ЖАЗЫҢЫЗ</span>
           </div>
@@ -192,7 +192,7 @@ export const EndCard: React.FC<{ dur: number; startSec: number }> = ({ startSec 
         {BRAND.whatsapp && (
           <div style={{ ...anim(4), marginTop: 14, fontFamily: FONT.sans, fontWeight: 800, fontSize: 48, color: COLORS.ruby }}>{BRAND.whatsapp}</div>
         )}
-        <div style={{ ...anim(4), marginTop: 22, fontFamily: FONT.sans, fontWeight: 700, fontSize: 34, color: "#5B4A3A" }}>
+        <div style={{ ...anim(4), marginTop: 16, fontFamily: FONT.sans, fontWeight: 700, fontSize: 30, color: "#5B4A3A" }}>
           Instagram: <span style={{ color: COLORS.goldDeep }}>{BRAND.instagram}</span>
         </div>
       </div>

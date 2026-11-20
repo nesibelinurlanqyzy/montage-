@@ -67,8 +67,8 @@ const SceneView: React.FC<{ s: Scene; dur: number }> = ({ s, dur }) => {
     case "end":
       return (
         <AbsoluteFill style={{ background: "#FFFDF8" }}>
-          <div style={{ position: "absolute", left: 0, top: 0, width: 1080, height: 900 }}>
-            <PhotoBox src={s.src} dur={dur} y={74} zoom={[1.0, 1.05]} />
+          <div style={{ position: "absolute", left: 0, top: 0, width: 1080, height: 1060 }}>
+            <PhotoBox src={s.src} dur={dur} x={46} y={62} zoom={[1.06, 1.1]} />
           </div>
           <EndCard dur={dur} startSec={s.from} />
         </AbsoluteFill>
