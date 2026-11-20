@@ -1,11 +1,19 @@
-import {loadFont} from '@remotion/fonts';
-import {staticFile} from 'remotion';
+import {continueRender, delayRender} from 'remotion';
+import {MANROPE_B64, NOTO_B64} from './fonts-data';
 
-/* Шрифты лежат локально (public/fonts). Manrope — английский текст,
+/* Шрифты встроены (base64), без сетевых загрузок. Manrope — английский текст,
    Noto Sans — казахский (в Manrope нет Ә, Ғ, Қ, Ң, Ұ). */
-for (const w of ['500', '700', '800']) {
-  loadFont({family: 'Manrope', url: staticFile('fonts/Manrope.ttf'), weight: w, format: 'truetype'});
-  loadFont({family: 'Noto Sans', url: staticFile('fonts/NotoSans.ttf'), weight: w, format: 'truetype'});
+if (typeof document !== 'undefined' && !document.getElementById('grammar-fonts')) {
+  const st = document.createElement('style');
+  st.id = 'grammar-fonts';
+  st.textContent = `
+@font-face{font-family:'Manrope';src:url(data:font/woff2;base64,${MANROPE_B64}) format('woff2');font-weight:200 800;}
+@font-face{font-family:'Noto Sans';src:url(data:font/woff2;base64,${NOTO_B64}) format('woff2');font-weight:100 900;}`;
+  document.head.appendChild(st);
+  const h = delayRender('fonts', {timeoutInMilliseconds: 60000});
+  Promise.all(['500', '700', '800'].flatMap((w) => [document.fonts.load(`${w} 40px Manrope`), document.fonts.load(`${w} 40px "Noto Sans"`, 'ӘҒҚ')]))
+    .catch(() => undefined)
+    .then(() => continueRender(h));
 }
 
 export const FONT = '"Manrope", "Noto Sans", sans-serif';
