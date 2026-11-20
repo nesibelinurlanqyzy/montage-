@@ -6,9 +6,11 @@
   "scripts": {
     "sync": "node scripts/sync-assets.mjs",
     "clips": "bash scripts/prepare-clips.sh",
-    "studio": "npm run sync && remotion studio",
-    "render": "npm run sync && remotion render src/index.ts Tusaukeser output/tusaukeser.mp4 --codec=h264 --crf=20",
-    "still": "npm run sync && remotion still src/index.ts Tusaukeser output/oblozhka.png --frame=60"
+    "studio": "npm run sync && npm run color && remotion studio",
+    "render": "npm run sync && npm run color && remotion render src/index.ts Tusaukeser output/tusaukeser.mp4 --codec=h264 --crf=20",
+    "still": "npm run sync && npm run color && remotion still src/index.ts Tusaukeser output/oblozhka.png --frame=60",
+    "color": "python3 scripts/color.py",
+    "prep": "npm run sync && npm run clips && npm run color"
   },
   "dependencies": {
     "@remotion/cli": "4.0.242",

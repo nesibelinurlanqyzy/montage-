@@ -4,16 +4,16 @@ import { AbsoluteFill, Img, OffthreadVideo, interpolate, staticFile, useCurrentF
 const ease = Easing.bezier(0.33, 0, 0.2, 1);
 
 // Видео-клип: баяу кино-зум
-export const ClipLayer: React.FC<{ src: string; startSec?: number; zoom?: [number, number]; dur: number }> = ({
-  src, startSec = 0, zoom = [1.0, 1.08], dur,
+export const ClipLayer: React.FC<{ src: string; startSec?: number; zoom?: [number, number]; dur: number; origin?: string; pos?: string }> = ({
+  src, startSec = 0, zoom = [1.0, 1.08], dur, origin = "50% 50%", pos = "50% 50%",
 }) => {
   const f = useCurrentFrame();
   const { fps } = useVideoConfig();
   const s = interpolate(f, [0, dur], zoom, { easing: ease, extrapolateRight: "clamp" });
   return (
-    <AbsoluteFill style={{ transform: `scale(${s})` }}>
+    <AbsoluteFill style={{ transform: `scale(${s})`, transformOrigin: origin }}>
       <OffthreadVideo src={staticFile(src)} startFrom={Math.round(startSec * fps)} muted
-        style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: pos }} />
     </AbsoluteFill>
   );
 };
@@ -30,7 +30,7 @@ export const PhotoLayer: React.FC<{ src: string; dur: number; dir?: 1 | -1; focu
   const tx = interpolate(p, [0, 1], [-10 * dir, 10 * dir]);
   return (
     <AbsoluteFill style={{ perspective: 1400, overflow: "hidden" }}>
-      <AbsoluteFill style={{ transform: `scale(1.35) translateX(${-tx * 1.6}px)`, filter: "blur(28px) brightness(0.75)" }}>
+      <AbsoluteFill style={{ transform: `scale(1.35) translateX(${-tx * 1.6}px)`, filter: "blur(28px) brightness(0.9)" }}>
         <Img src={staticFile(src)} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
       </AbsoluteFill>
       <AbsoluteFill style={{
