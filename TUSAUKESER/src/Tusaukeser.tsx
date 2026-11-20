@@ -1,16 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { AbsoluteFill, Audio, Sequence, continueRender, delayRender, staticFile, interpolate, useCurrentFrame, Img } from "remotion";
 import { LABELS, SCENES, Scene, sceneFrames } from "./data";
-import { COLORS, s2f } from "./theme";
+import { COLORS, s2f, SAFE } from "./theme";
 import { fontsReady } from "./components/Fonts";
 import { ClipLayer, PhotoLayer, PhotoBox } from "./components/Media";
 import { EnterFx } from "./components/Enter";
 import { EndCard, Grade, HookTitle, Label, PriceAccent, SplitTags, Watermark } from "./components/Overlays";
 import { Subtitles } from "./components/Subtitles";
 
-export type Props = { withAudio?: boolean };
+export type Props = { withAudio?: boolean; showSafe?: boolean };
 
 const END_AT = 22.4;
+
+// Тексеру үшін: Instagram safe zone шекаралары (финалдық видеоға шықпайды)
+const SafeGuide: React.FC = () => (
+  <AbsoluteFill style={{ pointerEvents: "none" }}>
+    <div style={{ position: "absolute", left: 0, right: 0, top: 0, height: SAFE.top, background: "rgba(255,0,0,0.28)" }} />
+    <div style={{ position: "absolute", left: 0, right: 0, top: SAFE.bottomY, bottom: 0, background: "rgba(255,0,0,0.28)" }} />
+    <div style={{ position: "absolute", left: 0, width: SAFE.left, top: SAFE.top, bottom: 1920 - SAFE.bottomY, background: "rgba(255,0,0,0.28)" }} />
+    <div style={{ position: "absolute", right: 0, width: SAFE.right, top: SAFE.rightFromY, bottom: 1920 - SAFE.bottomY, background: "rgba(255,0,0,0.28)" }} />
+  </AbsoluteFill>
+);
 
 // Баға сахнасы: киім фотосы үлкен (экранның ~85%), жоғарғы бөлікте баға
 const PriceScene: React.FC<{ a: string; b: string; swapF: number; dur: number }> = ({ a, b, swapF, dur }) => {
@@ -27,7 +37,7 @@ const PriceScene: React.FC<{ a: string; b: string; swapF: number; dur: number }>
         <Img src={staticFile(src)} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
       </AbsoluteFill>
       <div style={{
-        position: "absolute", left: 6, width: 1068, top: 318, height: 1602, overflow: "hidden",
+        position: "absolute", left: 20, width: 1040, top: 360, height: 1560, overflow: "hidden",
         borderTopLeftRadius: 40, borderTopRightRadius: 40, opacity: inB, transform: `translateX(${(1 - inB) * 200}px)`,
       }}>
         <Img src={staticFile(src)} style={{ width: "100%", height: "100%", objectFit: "cover", transform: `scale(${sc})`, transformOrigin: "50% 40%" }} />
@@ -67,7 +77,7 @@ const SceneView: React.FC<{ s: Scene; dur: number }> = ({ s, dur }) => {
     case "end":
       return (
         <AbsoluteFill style={{ background: "#FFFDF8" }}>
-          <div style={{ position: "absolute", left: 0, top: 0, width: 1080, height: 1000, overflow: "hidden" }}>
+          <div style={{ position: "absolute", left: 0, top: 0, width: 1080, height: 960, overflow: "hidden" }}>
             <ClipLayer src={s.clip} zoom={[1.0, 1.03]} dur={dur} origin="50% 45%" pos="50% 31%" />
           </div>
           <EndCard dur={dur} startSec={s.from} />
@@ -76,7 +86,7 @@ const SceneView: React.FC<{ s: Scene; dur: number }> = ({ s, dur }) => {
   }
 };
 
-export const Tusaukeser: React.FC<Props> = ({ withAudio = true }) => {
+export const Tusaukeser: React.FC<Props> = ({ withAudio = true, showSafe = false }) => {
   const [handle] = useState(() => delayRender("fonts"));
   useEffect(() => { fontsReady.then(() => continueRender(handle)); }, [handle]);
   return (
@@ -102,6 +112,7 @@ export const Tusaukeser: React.FC<Props> = ({ withAudio = true }) => {
       })}
       <Subtitles until={END_AT} />
       <Watermark until={END_AT} />
+      {showSafe && <SafeGuide />}
       {/* Тек таза озвучка: музыка мен SFX жоқ */}
       {withAudio && <Audio src={staticFile("audio/voice.mp3")} />}
     </AbsoluteFill>

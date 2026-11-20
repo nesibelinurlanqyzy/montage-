@@ -1,11 +1,11 @@
 import React from "react";
 import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { SUB_CHUNKS } from "../data";
-import { COLORS, FONT } from "../theme";
+import { COLORS, FONT, SAFE, SAFE_W } from "../theme";
 
 const KEY = 92;
 const NORMAL = 70;
-const MAX_W = 940;
+const MAX_W = SAFE_W - 20; // оң жақтағы Instagram батырмаларына тимейді
 
 // Premium motion typography: әр сөз дауыспен бірге маска астынан шығады.
 // Әр бөлік — бір жол (үзілмейді); маңызды сөздер («*») — үлкен, алтын/сары; қалғаны — ақ.
@@ -35,7 +35,7 @@ export const Subtitles: React.FC<{ until: number }> = ({ until }) => {
   }, 0);
   const k = Math.min(1, MAX_W / est);
   return (
-    <AbsoluteFill style={{ top: 1420, height: 160, alignItems: "center", opacity: out }}>
+    <AbsoluteFill style={{ top: 1335, height: 150, left: SAFE.left, width: SAFE_W, alignItems: "center", opacity: out }}>
       <div style={{ display: "flex", flexWrap: "nowrap", justifyContent: "center", alignItems: "baseline", gap: 20 * k, whiteSpace: "nowrap" }}>
         {chunk.words.map(([raw, a, b], i) => {
           const key = raw.startsWith("*");

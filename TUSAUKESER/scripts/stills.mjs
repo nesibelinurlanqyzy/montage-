@@ -11,9 +11,9 @@ const [outDir, ...frames] = process.argv.slice(2);
 mkdirSync(outDir, { recursive: true });
 const serveUrl = await bundle({ entryPoint: join(root, "src/index.ts"), publicDir: join(root, "public") });
 const browserExecutable = process.env.CHROME_PATH || null;
-const comp = await selectComposition({ serveUrl, id: "Tusaukeser", inputProps: { withAudio: false }, browserExecutable });
+const comp = await selectComposition({ serveUrl, id: "Tusaukeser", inputProps: { withAudio: false, showSafe: process.env.SAFE === "1" }, browserExecutable });
 for (const fr of frames) {
   const out = resolve(outDir, `f${String(fr).padStart(3, "0")}.png`);
-  await renderStill({ composition: comp, serveUrl, frame: Number(fr), output: out, inputProps: { withAudio: false }, browserExecutable });
+  await renderStill({ composition: comp, serveUrl, frame: Number(fr), output: out, inputProps: { withAudio: false, showSafe: process.env.SAFE === "1" }, browserExecutable });
   console.log("still", fr);
 }

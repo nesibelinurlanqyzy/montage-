@@ -1,6 +1,6 @@
 import React from "react";
 import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig, Easing } from "remotion";
-import { COLORS, FONT, GOLD_GRADIENT, FPS } from "../theme";
+import { COLORS, FONT, GOLD_GRADIENT, FPS, SAFE, SAFE_W } from "../theme";
 import { BRAND } from "../data";
 
 const cl = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
@@ -42,7 +42,7 @@ export const HookTitle: React.FC = () => {
   return (
     <AbsoluteFill>
     <AbsoluteFill style={{ background: "linear-gradient(180deg, rgba(15,6,4,0.55) 0%, rgba(15,6,4,0.38) 28%, transparent 40%)", opacity: 1 - exit }} />
-    <AbsoluteFill style={{ alignItems: "center", top: 236, opacity: 1 - exit, filter: `blur(${exit * 10}px)`, transform: `translateY(${-exit * 40}px)` }}>
+    <AbsoluteFill style={{ alignItems: "center", top: 300, opacity: 1 - exit, filter: `blur(${exit * 10}px)`, transform: `translateY(${-exit * 40}px)` }}>
       <div style={{
         fontFamily: FONT.sans, fontWeight: 800, fontSize: 62, color: COLORS.white, letterSpacing: 3,
         opacity: interpolate(f, [0, 6], [0, 1], cl), filter: `blur(${interpolate(f, [0, 8], [8, 0], cl)}px)`, textShadow: shadow,
@@ -74,7 +74,7 @@ export const Label: React.FC<{ text: string; dur: number }> = ({ text, dur }) =>
   const s = spring({ frame: f, fps, config: { damping: 18, stiffness: 160 } });
   const out = interpolate(f, [dur - 6, dur], [1, 0], cl);
   return (
-    <AbsoluteFill style={{ alignItems: "center", top: 240, opacity: out }}>
+    <AbsoluteFill style={{ alignItems: "center", top: 300, opacity: out }}>
       <div style={{ overflow: "hidden" }}>
         <div style={{
           fontFamily: FONT.sans, fontWeight: 800, fontSize: 54, letterSpacing: 8, color: COLORS.white,
@@ -94,7 +94,7 @@ export const SplitTags: React.FC = () => {
   const b = spring({ frame: f - sec(0.52), fps, config: { damping: 16 } });
   const tag = (t: string, p: number, top: number, left: boolean): React.ReactNode => (
     <div style={{
-      position: "absolute", top, [left ? "left" : "right"]: 60, padding: "12px 30px", borderRadius: 40,
+      position: "absolute", top, [left ? "left" : "right"]: left ? SAFE.left : SAFE.right, padding: "12px 30px", borderRadius: 40,
       background: COLORS.white, color: COLORS.ruby, fontFamily: FONT.sans, fontWeight: 800, fontSize: 40, letterSpacing: 5,
       boxShadow: "0 10px 30px rgba(0,0,0,0.3)", transform: `translateX(${(1 - p) * (left ? -280 : 280)}px)`, opacity: p,
     }}>{t}</div>
@@ -125,7 +125,7 @@ export const PriceAccent: React.FC<{ dur: number }> = ({ dur }) => {
     WebkitBackgroundClip: "text", color: "transparent",
   };
   return (
-    <AbsoluteFill style={{ alignItems: "center", top: 222, opacity: out }}>
+    <AbsoluteFill style={{ alignItems: "center", top: 296, opacity: out }}>
       <div style={{ position: "absolute", top: -16, width: 900, height: 360, borderRadius: 40, background: "rgba(24,8,8,0.58)", backdropFilter: "blur(14px)", border: "2px solid rgba(217,174,85,0.55)", opacity: interpolate(f, [0, 6], [0, 1], cl), zIndex: 0 }} />
       <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", alignItems: "center" }}>
       <div style={{ display: "flex", alignItems: "flex-end", filter: "drop-shadow(0 8px 22px rgba(0,0,0,0.55))" }}>
@@ -166,28 +166,28 @@ export const EndCard: React.FC<{ dur: number; startSec: number }> = ({ startSec 
   return (
     <AbsoluteFill>
       <div style={{
-        position: "absolute", left: 0, right: 0, top: 940, bottom: 0, background: "#FFFDF8",
+        position: "absolute", left: 0, right: 0, top: 900, bottom: 0, background: "#FFFDF8",
         borderTopLeftRadius: 56, borderTopRightRadius: 56, transform: `translateY(${(1 - panel) * 1100}px)`,
-        boxShadow: "0 -20px 60px rgba(0,0,0,0.25)", display: "flex", flexDirection: "column", alignItems: "center", paddingTop: 34,
+        boxShadow: "0 -20px 60px rgba(0,0,0,0.25)", display: "flex", flexDirection: "column", alignItems: "center", paddingTop: 34, paddingLeft: SAFE.left, paddingRight: SAFE.right,
       }}>
         <div style={{ ...anim(0), fontFamily: FONT.sans, fontWeight: 900, fontSize: 50, letterSpacing: 16, color: COLORS.ruby }}>{BRAND.city}</div>
         <div style={{ ...anim(0), height: 3, width: 110, background: GOLD_GRADIENT, margin: "12px 0 14px" }} />
-        <div style={{ ...anim(1), fontFamily: FONT.sans, fontWeight: 800, fontSize: 32, lineHeight: 1.2, color: "#3A2A1E", textAlign: "center", letterSpacing: 1 }}>
+        <div style={{ ...anim(1), fontFamily: FONT.sans, fontWeight: 800, fontSize: 29, lineHeight: 1.2, color: "#3A2A1E", textAlign: "center", letterSpacing: 0.5 }}>
           ТҰСАУКЕСЕР ЖӘНЕ 1 ЖАСҚА КИІМДЕР ПРОКАТЫ
         </div>
-        <div style={{ marginTop: 10, clipPath: `inset(0 ${100 - wipe * 100}% 0 0)`, fontFamily: FONT.sans, fontWeight: 900, fontSize: 124, lineHeight: 1.08, backgroundImage: GOLD_GRADIENT, WebkitBackgroundClip: "text", color: "transparent" }}>
-          7 000 ₸ <span style={{ fontSize: 72 }}>БАСТАП</span>
+        <div style={{ marginTop: 10, clipPath: `inset(0 ${100 - wipe * 100}% 0 0)`, fontFamily: FONT.sans, fontWeight: 900, fontSize: 112, lineHeight: 1.08, backgroundImage: GOLD_GRADIENT, WebkitBackgroundClip: "text", color: "transparent" }}>
+          7 000 ₸ <span style={{ fontSize: 64 }}>БАСТАП</span>
         </div>
         <div style={{ height: 4, width: 520 * wipe, background: GOLD_GRADIENT, borderRadius: 2, marginTop: 2 }} />
         <div style={{
-          ...anim(3), marginTop: 24, width: 980, padding: "24px 26px", borderRadius: 36, background: COLORS.ruby,
+          ...anim(3), marginTop: 22, width: SAFE_W, boxSizing: "border-box", padding: "22px 24px", borderRadius: 36, background: COLORS.ruby,
           display: "flex", alignItems: "center", gap: 24, transform: `${anim(3).transform} scale(${pulse})`,
           boxShadow: waOn ? "0 14px 40px rgba(126,16,34,0.45)" : "0 10px 26px rgba(126,16,34,0.3)",
         }}>
-          <div style={{ width: 104, height: 104, borderRadius: 52, background: COLORS.whatsapp, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+          <div style={{ width: 96, height: 96, borderRadius: 48, background: COLORS.whatsapp, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
             <WhatsAppIcon />
           </div>
-          <div style={{ fontFamily: FONT.sans, fontWeight: 900, fontSize: 52, lineHeight: 1.15, letterSpacing: 0.5 }}>
+          <div style={{ fontFamily: FONT.sans, fontWeight: 900, fontSize: 47, lineHeight: 1.15, letterSpacing: 0 }}>
             <span style={hl(t >= 21.8 && t < 22.54)}>БОС КҮНДЕРДІ</span> <span style={hl(false)}>БІЛУ ҮШІН</span><br />
             <span style={hl(waOn)}>WHATSAPP-ҚА</span> <span style={hl(t >= 24.52)}>ЖАЗЫҢЫЗ</span>
           </div>
@@ -212,7 +212,7 @@ export const Watermark: React.FC<{ until: number }> = ({ until }) => {
   const f = useCurrentFrame();
   return (
     <div style={{
-      position: "absolute", top: 150, left: 0, right: 0, textAlign: "center", fontFamily: FONT.sans, fontWeight: 600, fontSize: 26,
+      position: "absolute", top: SAFE.top + 4, left: 0, right: 0, textAlign: "center", fontFamily: FONT.sans, fontWeight: 600, fontSize: 24,
       color: "rgba(255,255,255,0.75)", letterSpacing: 1, textShadow: "0 2px 8px rgba(0,0,0,0.6)",
       opacity: interpolate(f, [sec(until) - 4, sec(until)], [1, 0], cl),
     }}>{BRAND.instagram}</div>
