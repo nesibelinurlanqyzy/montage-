@@ -26,11 +26,9 @@ export const FONT = {
   serif: "PT Serif",
 };
 
-// Instagram Reels SAFE ZONE (1080×1920) — барлық мәтін, баға, батырма осының ішінде:
-//  жоғары 250px (профиль/жазу), төмен 420px (caption, музыка), сол жақ 60px,
-//  оң жақ 150px (лайк/коммент/бөлісу батырмалары, y > 1050 аймағында)
-export const SAFE = { top: 250, bottomY: 1500, left: 60, right: 150, rightFromY: 1050 };
-export const SAFE_CX = (SAFE.left + (1080 - SAFE.right)) / 2; // 495 — төменгі бөліктің ортасы
-export const SAFE_W = 1080 - SAFE.right - SAFE.left; // 870
+// Reels РАМКАСЫ (safe zone) — пайдаланушының үлгісі бойынша, ../reels-safe-zone/README.md
+//  жоғары y=217, сол x=73, оң x=1000 (y<1071), оң x=913 (y≥1071, Instagram батырмалары), төмен y=1485
+export const SAFE = { top: 217, bottomY: 1485, left: 73, right: 80, rightLow: 167, notchY: 1071 };
+export const SAFE_W = 1080 - SAFE.rightLow - SAFE.left; // 840 — төменгі бөліктегі ені
 
 export const s2f = (s: number) => Math.round(s * FPS);

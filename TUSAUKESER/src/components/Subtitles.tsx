@@ -35,7 +35,7 @@ export const Subtitles: React.FC<{ until: number }> = ({ until }) => {
   }, 0);
   const k = Math.min(1, MAX_W / est);
   return (
-    <AbsoluteFill style={{ top: 1335, height: 150, left: SAFE.left, width: SAFE_W, alignItems: "center", opacity: out }}>
+    <AbsoluteFill style={{ top: 1325, height: 150, left: SAFE.left, width: SAFE_W, alignItems: "center", opacity: out }}>
       <div style={{ display: "flex", flexWrap: "nowrap", justifyContent: "center", alignItems: "baseline", gap: 20 * k, whiteSpace: "nowrap" }}>
         {chunk.words.map(([raw, a, b], i) => {
           const key = raw.startsWith("*");

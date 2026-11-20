@@ -21,4 +21,7 @@ for (const dir of ["photos", "audio", "fonts"]) {
     if (music) cpSync(join(src, music), join(dst, "music.mp3"));
   }
 }
+// Reels рамкасы (safe zone) трафареті — тексеру кадрлары үшін
+const guide = join(root, "..", "reels-safe-zone", "reels-safe-zone-1080x1920.png");
+if (existsSync(guide)) cpSync(guide, join(root, "public", "safe-zone.png"));
 console.log("assets synced → public/");

@@ -15,10 +15,7 @@ const END_AT = 22.4;
 // Тексеру үшін: Instagram safe zone шекаралары (финалдық видеоға шықпайды)
 const SafeGuide: React.FC = () => (
   <AbsoluteFill style={{ pointerEvents: "none" }}>
-    <div style={{ position: "absolute", left: 0, right: 0, top: 0, height: SAFE.top, background: "rgba(255,0,0,0.28)" }} />
-    <div style={{ position: "absolute", left: 0, right: 0, top: SAFE.bottomY, bottom: 0, background: "rgba(255,0,0,0.28)" }} />
-    <div style={{ position: "absolute", left: 0, width: SAFE.left, top: SAFE.top, bottom: 1920 - SAFE.bottomY, background: "rgba(255,0,0,0.28)" }} />
-    <div style={{ position: "absolute", right: 0, width: SAFE.right, top: SAFE.rightFromY, bottom: 1920 - SAFE.bottomY, background: "rgba(255,0,0,0.28)" }} />
+    <Img src={staticFile("safe-zone.png")} style={{ width: 1080, height: 1920 }} />
   </AbsoluteFill>
 );
 
