@@ -24,13 +24,13 @@ export const PhotoLayer: React.FC<{ src: string; dur: number; dir?: 1 | -1; focu
 }) => {
   const f = useCurrentFrame();
   const p = interpolate(f, [0, dur], [0, 1], { easing: ease, extrapolateRight: "clamp" });
-  const scale = 1.1 + p * 0.08;
-  const rotY = interpolate(p, [0, 1], [-3.2 * dir, 3.2 * dir]);
-  const rotX = interpolate(p, [0, 1], [1.2, -1.2]);
-  const tx = interpolate(p, [0, 1], [-18 * dir, 18 * dir]);
+  const scale = 1.03 + p * 0.05;
+  const rotY = interpolate(p, [0, 1], [-1.6 * dir, 1.6 * dir]);
+  const rotX = interpolate(p, [0, 1], [0.6, -0.6]);
+  const tx = interpolate(p, [0, 1], [-10 * dir, 10 * dir]);
   return (
     <AbsoluteFill style={{ perspective: 1400, overflow: "hidden" }}>
-      <AbsoluteFill style={{ transform: `scale(1.35) translateX(${-tx * 1.6}px)`, filter: "blur(28px) brightness(0.6)" }}>
+      <AbsoluteFill style={{ transform: `scale(1.35) translateX(${-tx * 1.6}px)`, filter: "blur(28px) brightness(0.75)" }}>
         <Img src={staticFile(src)} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
       </AbsoluteFill>
       <AbsoluteFill style={{
@@ -63,6 +63,19 @@ export const PhotoCard: React.FC<{ src: string; dur: number; width?: number; top
       }}>
         <Img src={staticFile(src)} style={{ width: "100%", display: "block" }} />
       </div>
+    </AbsoluteFill>
+  );
+};
+
+// Фотоны берілген қорапқа (box) толтыру, нәзік зуммен
+export const PhotoBox: React.FC<{ src: string; dur: number; x?: number; y?: number; zoom?: [number, number] }> = ({
+  src, dur, x = 50, y = 40, zoom = [1.02, 1.08],
+}) => {
+  const f = useCurrentFrame();
+  const s = interpolate(f, [0, dur], zoom, { easing: ease, extrapolateRight: "clamp" });
+  return (
+    <AbsoluteFill style={{ overflow: "hidden" }}>
+      <Img src={staticFile(src)} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: `${x}% ${y}%`, transform: `scale(${s})`, transformOrigin: `${x}% ${y}%` }} />
     </AbsoluteFill>
   );
 };

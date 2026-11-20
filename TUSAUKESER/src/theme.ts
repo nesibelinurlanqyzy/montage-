@@ -12,7 +12,9 @@ export const COLORS = {
   goldLight: "#F6DE9A",
   goldDeep: "#9C7425",
   cream: "#FBF4E6",
-  ruby: "#A3182F",
+  ruby: "#7E1022", // қою қызыл
+  white: "#FFFFFF",
+  yellow: "#FFD45A",
   whatsapp: "#25D366",
 };
 

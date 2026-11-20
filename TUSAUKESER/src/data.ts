@@ -1,11 +1,10 @@
 import { s2f } from "./theme";
 
-// Бренд деректері — пайдаланушы растағанша уақытша
+// Бренд деректері
 export const BRAND = {
-  name: "ПРОКАТ АТЫ",
-  instagram: "@instagram_aty",
-  whatsapp: "+7 7XX XXX XX XX",
-  city: "Петропавл",
+  instagram: "@tusau_keser_petropavlovsk",
+  whatsapp: "", // нақты нөмір берілгенде ғана көрсетіледі
+  city: "ПЕТРОПАВЛ",
 };
 
 export const PHOTO = {
@@ -23,73 +22,70 @@ export const PHOTO = {
   girlPurple: "photos/fd535862-8f3f-46cc-9d10-3b705723ee43.jpeg", // қыз, күлгін көйлек, 1 жас
 };
 
-export type Enter = "flash" | "zoom" | "whip" | "fade" | "ornament";
+export type Enter = "dip" | "punch" | "whip" | "fade" | "wipe" | "none";
 
 export type Scene =
   | { kind: "clip"; from: number; to: number; src: string; startSec?: number; enter: Enter; zoom?: [number, number] }
   | { kind: "photo"; from: number; to: number; src: string; enter: Enter; dir?: 1 | -1; focusY?: number }
-  | { kind: "split"; from: number; to: number; top: string; bottom: string; enter: Enter }
-  | { kind: "price"; from: number; to: number; src: string; enter: Enter }
-  | { kind: "end"; from: number; to: number; enter: Enter };
+  | { kind: "split"; from: number; to: number; top: string; bottom: string; bottomX: number; enter: Enter }
+  | { kind: "price"; from: number; to: number; a: string; b: string; swapAt: number; enter: Enter }
+  | { kind: "end"; from: number; to: number; src: string; enter: Enter };
 
-// Уақыт (секунд) — озвучка сөйлемдеріне сәйкес
+// Уақыт (секунд) — озвучка сөйлемдеріне дәл сәйкес
 export const SCENES: Scene[] = [
   // 1-сөйлем 0.00–3.54 · ХУК
-  { kind: "clip", from: 0, to: 1.2, src: "clips/walk1.mp4", enter: "flash", zoom: [1.22, 1.06] },
-  { kind: "photo", from: 1.2, to: 2.3, src: PHOTO.boyPathWide, enter: "whip", dir: 1, focusY: 55 },
-  { kind: "clip", from: 2.3, to: 3.54, src: "clips/hat.mp4", startSec: 0.4, enter: "zoom", zoom: [1.12, 1.0] },
+  { kind: "clip", from: 0, to: 1.68, src: "clips/walk1.mp4", enter: "dip", zoom: [1.0, 1.07] },
+  { kind: "photo", from: 1.68, to: 3.54, src: PHOTO.boyPathWide, enter: "punch", dir: 1, focusY: 50 },
   // 2-сөйлем 3.92–10.25
-  { kind: "photo", from: 3.54, to: 4.8, src: PHOTO.boyChapan, enter: "fade", dir: -1, focusY: 40 },
-  { kind: "split", from: 4.8, to: 6.24, top: PHOTO.boyWhite, bottom: PHOTO.girlRed, enter: "whip" },
-  { kind: "clip", from: 6.24, to: 7.82, src: "clips/green.mp4", enter: "zoom", zoom: [1.0, 1.12] },
-  { kind: "price", from: 7.82, to: 10.25, src: PHOTO.girlOneYear, enter: "flash" },
+  { kind: "photo", from: 3.54, to: 4.8, src: PHOTO.boyChapan, enter: "fade", dir: -1, focusY: 45 },
+  { kind: "split", from: 4.8, to: 6.24, top: PHOTO.boyWhite, bottom: PHOTO.girlOneYear, bottomX: 26, enter: "wipe" },
+  { kind: "clip", from: 6.24, to: 7.82, src: "clips/green.mp4", enter: "fade", zoom: [1.0, 1.06] },
+  { kind: "price", from: 7.82, to: 10.25, a: PHOTO.girlRed, b: PHOTO.boyChapan, swapAt: 9.02, enter: "dip" },
   // 3-сөйлем 10.67–16.55
-  { kind: "clip", from: 10.25, to: 11.94, src: "clips/detail.mp4", enter: "zoom", zoom: [1.05, 1.18] },
-  { kind: "clip", from: 11.94, to: 13.46, src: "clips/walk2.mp4", enter: "ornament", zoom: [1.0, 1.1] },
+  { kind: "clip", from: 10.25, to: 11.94, src: "clips/detail.mp4", enter: "fade", zoom: [1.0, 1.08] },
+  { kind: "clip", from: 11.94, to: 13.46, src: "clips/walk2.mp4", enter: "whip", zoom: [1.0, 1.06] },
   { kind: "photo", from: 13.46, to: 15.0, src: PHOTO.momGirl, enter: "whip", dir: 1, focusY: 40 },
-  { kind: "photo", from: 15.0, to: 16.55, src: PHOTO.momBoyLift, enter: "zoom", dir: -1, focusY: 35 },
+  { kind: "photo", from: 15.0, to: 16.55, src: PHOTO.momBoyLift, enter: "fade", dir: -1, focusY: 35 },
   // 4-сөйлем 16.98–20.83
-  { kind: "photo", from: 16.55, to: 18.0, src: PHOTO.girlPurple, enter: "flash", dir: 1, focusY: 45 },
+  { kind: "photo", from: 16.55, to: 18.0, src: PHOTO.girlPurple, enter: "dip", dir: 1, focusY: 45 },
   { kind: "photo", from: 18.0, to: 19.5, src: PHOTO.boySuit, enter: "whip", dir: -1, focusY: 45 },
-  { kind: "photo", from: 19.5, to: 20.83, src: PHOTO.babyGold, enter: "zoom", dir: 1, focusY: 45 },
+  { kind: "photo", from: 19.5, to: 20.83, src: PHOTO.babyGold, enter: "fade", dir: 1, focusY: 45 },
   // 5-сөйлем 21.19–25.06 · CTA
-  { kind: "clip", from: 20.83, to: 22.4, src: "clips/hat.mp4", startSec: 1.9, enter: "fade", zoom: [1.08, 1.0] },
-  { kind: "end", from: 22.4, to: 25.234, enter: "ornament" },
+  { kind: "clip", from: 20.83, to: 22.4, src: "clips/hat.mp4", startSec: 1.9, enter: "fade", zoom: [1.04, 1.0] },
+  { kind: "end", from: 22.4, to: 25.234, src: PHOTO.boyPathClose, enter: "none" },
 ];
 
-// Экрандағы үлкен белгілер (жоғарғы бөлік)
-export const LABELS: { from: number; to: number; text: string; sub?: string }[] = [
-  { from: 3.92, to: 4.8, text: "ПЕТРОПАВЛ", sub: "мерекелік киім прокаты" },
-  { from: 10.58, to: 11.94, text: "ТОЛЫҚ КОМПЛЕКТ" },
-  { from: 11.94, to: 13.46, text: "ТҰСАУКЕСЕР", sub: "жиынтығы" },
-  { from: 13.46, to: 15.0, text: "БҮКІЛ ОТБАСЫҒА", sub: "үйлесімді образдар" },
-  { from: 16.75, to: 19.5, text: "1 ЖАСҚА", sub: "мерекелік киімдер" },
-  { from: 19.5, to: 20.83, text: "АЛДЫН АЛА", sub: "брондаңыз" },
+// Таза, кішкентай белгілер (жоғарғы бөлік, бет пен киімге тимейді)
+export const LABELS: { from: number; to: number; text: string }[] = [
+  { from: 3.92, to: 4.8, text: "ПЕТРОПАВЛ" },
+  { from: 11.94, to: 13.46, text: "ТҰСАУКЕСЕР ЖИЫНТЫҒЫ" },
+  { from: 13.46, to: 15.0, text: "БҮКІЛ ОТБАСЫҒА" },
+  { from: 16.75, to: 19.5, text: "1 ЖАСҚА · МЕРЕКЕГЕ" },
 ];
 
-// Субтитр: сөз + уақыт (озвучкадан алынған)
+// Субтитр: сөз + уақыт (озвучкадан). «*» — маңызды сөз (үлкен, алтын)
 type W = [string, number, number];
 const w = (t: string, a: number, b: number): W => [t, a, b];
-export const SUB_CHUNKS: { words: W[]; hide?: boolean }[] = [
-  { words: [w("Тұсаукесерге", 0.0, 0.84)] },
-  { words: [w("бір", 0.84, 1.08), w("күн", 1.08, 1.38), w("үшін", 1.38, 1.68)] },
-  { words: [w("қымбат", 1.68, 2.08), w("киім", 2.08, 2.32)] },
+export type Chunk = { words: W[]; hide?: boolean };
+export const SUB_CHUNKS: Chunk[] = [
+  // 0–2.32 — хук типографикасы көрсетеді
+  { words: [w("Тұсаукесерге", 0.0, 0.84), w("бір", 0.84, 1.08), w("күн", 1.08, 1.38), w("үшін", 1.38, 1.68), w("қымбат", 1.68, 2.08), w("киім", 2.08, 2.32)], hide: true },
   { words: [w("сатып", 2.32, 2.62), w("алғыңыз", 2.62, 3.0), w("келмей", 3.0, 3.22), w("ме?", 3.22, 3.54)] },
-  { words: [w("Петропавлда", 3.92, 4.8)] },
-  { words: [w("ұл", 4.8, 5.05), w("мен", 5.05, 5.32), w("қыздарға", 5.32, 5.78), w("арналған", 5.78, 6.24)] },
-  { words: [w("сәнді", 6.24, 6.74), w("ұлттық", 6.74, 7.18), w("киімдерді", 7.18, 7.82)] },
+  { words: [w("*Петропавлда", 3.92, 4.8)] },
+  { words: [w("*ұл", 4.8, 5.05), w("мен", 5.05, 5.32), w("*қыздарға", 5.32, 5.78), w("арналған", 5.78, 6.24)] },
+  { words: [w("*сәнді", 6.24, 6.74), w("ұлттық", 6.74, 7.18), w("киімдерді", 7.18, 7.82)] },
   { words: [w("7 000 ₸-ден", 7.82, 9.02), w("бастап", 9.02, 9.36)], hide: true },
-  { words: [w("жалға", 9.36, 9.75), w("алыңыз", 9.75, 10.25)] },
-  { words: [w("Толық", 10.58, 11.04), w("комплекттер,", 11.04, 11.94)] },
-  { words: [w("тұсаукесер", 11.94, 12.6), w("жиынтығы", 12.6, 13.1), w("және", 13.1, 13.46)] },
-  { words: [w("бүкіл", 13.46, 13.94), w("отбасыға", 13.94, 14.56), w("үйлесімді", 14.56, 15.22)] },
-  { words: [w("ұлттық", 15.22, 15.74), w("образдар", 15.74, 16.3), w("бар.", 16.3, 16.75)] },
-  { words: [w("Баланың", 16.9, 17.54), w("ерекше", 17.54, 18.0), w("күнінде", 18.0, 18.42)] },
-  { words: [w("әдемі", 18.42, 18.98), w("образды", 18.98, 19.5)] },
-  { words: [w("алдын", 19.5, 19.78), w("ала", 19.78, 20.04), w("брондаңыз", 20.04, 20.95)] },
-  { words: [w("Бағалар", 21.19, 21.62), w("мен", 21.62, 21.8), w("бос", 21.8, 22.06), w("күндерді", 22.06, 22.54)] },
-  { words: [w("білу", 22.54, 22.74), w("үшін", 22.74, 23.06), w("дәл", 23.06, 23.48), w("қазір", 23.48, 23.9)] },
-  { words: [w("WhatsApp-қа", 23.9, 24.52), w("жазыңыз", 24.52, 25.234)] },
+  { words: [w("*жалға", 9.36, 9.75), w("алыңыз", 9.75, 10.25)], hide: true }, // баға блогында көрсетіледі
+  { words: [w("*Толық", 10.58, 11.04), w("*комплекттер,", 11.04, 11.94)] },
+  { words: [w("*тұсаукесер", 11.94, 12.6), w("жиынтығы", 12.6, 13.1), w("және", 13.1, 13.46)] },
+  { words: [w("бүкіл", 13.46, 13.94), w("*отбасыға", 13.94, 14.56), w("үйлесімді", 14.56, 15.22)] },
+  { words: [w("ұлттық", 15.22, 15.74), w("*образдар", 15.74, 16.3), w("бар.", 16.3, 16.75)] },
+  { words: [w("Баланың", 16.9, 17.54), w("*ерекше", 17.54, 18.0), w("күнінде", 18.0, 18.42)] },
+  { words: [w("*әдемі", 18.42, 18.98), w("образды", 18.98, 19.5)] },
+  { words: [w("алдын", 19.5, 19.78), w("ала", 19.78, 20.04), w("*брондаңыз", 20.04, 20.95)] },
+  { words: [w("Бағалар", 21.19, 21.62), w("мен", 21.62, 21.8), w("*бос", 21.8, 22.06), w("*күндерді", 22.06, 22.54)] },
+  // 22.40-тан бастап — соңғы кадрдағы батырма өзі синхрон жанады
+  { words: [w("білу", 22.54, 22.74), w("үшін", 22.74, 23.06), w("дәл", 23.06, 23.48), w("қазір", 23.48, 23.9), w("WhatsApp-қа", 23.9, 24.52), w("жазыңыз", 24.52, 25.234)], hide: true },
 ];
 
 export const sceneFrames = (s: { from: number; to: number }) => ({

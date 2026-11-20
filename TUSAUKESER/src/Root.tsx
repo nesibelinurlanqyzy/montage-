@@ -7,7 +7,7 @@ export const RemotionRoot: React.FC = () => (
     id="Tusaukeser"
     component={Tusaukeser}
     durationInFrames={TOTAL_FRAMES}
-    defaultProps={{ withAudio: true, music: false }}
+    defaultProps={{ withAudio: true }}
     fps={FPS}
     width={WIDTH}
     height={HEIGHT}
