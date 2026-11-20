@@ -29,7 +29,7 @@ export const Background: React.FC = () => {
         style={{
           position: 'absolute', left: x, top: y, width: size, height: size, borderRadius: '50%',
           background: col, opacity: tw * [0.35, 0.55, 0.8][layer],
-          boxShadow: `0 0 ${size * 3}px ${col}`, filter: layer === 2 ? 'blur(1.5px)' : layer === 0 ? 'blur(0.6px)' : undefined,
+          boxShadow: `0 0 ${size * 2}px ${col}`,
         }}
       />
     );
@@ -39,9 +39,9 @@ export const Background: React.FC = () => {
     <AbsoluteFill style={{background: C.bg, overflow: 'hidden'}}>
       <AbsoluteFill style={{background: `radial-gradient(120% 70% at 50% 0%, #142057 0%, ${C.bg} 60%)`}} />
       <div style={{position: 'absolute', width: 1100, height: 1100, left: -380 + Math.sin(f / 70) * 60, top: 120 + Math.cos(f / 90) * 50,
-        background: `radial-gradient(circle, ${_h(tint, 0.35)} 0%, transparent 65%)`, filter: 'blur(30px)'}} />
+        background: `radial-gradient(circle, ${_h(tint, 0.35)} 0%, transparent 65%)`}} />
       <div style={{position: 'absolute', width: 1000, height: 1000, right: -420 + Math.cos(f / 80) * 60, top: 900 + Math.sin(f / 60) * 70,
-        background: `radial-gradient(circle, ${_h(tint2, 0.3)} 0%, transparent 65%)`, filter: 'blur(30px)'}} />
+        background: `radial-gradient(circle, ${_h(tint2, 0.3)} 0%, transparent 65%)`}} />
       {/* 3D-пол */}
       <div style={{position: 'absolute', left: -600, right: -600, top: 1180, height: 1400, perspective: 700, perspectiveOrigin: '50% 0%'}}>
         <div style={{

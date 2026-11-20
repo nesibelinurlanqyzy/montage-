@@ -4,7 +4,7 @@ import {continueRender, delayRender, staticFile} from 'remotion';
    Noto Sans — казахский (в Manrope нет Ә, Ғ, Қ, Ң, Ұ). */
 const load = (family: string, file: string) => {
   if (typeof window === 'undefined' || typeof FontFace === 'undefined') return;
-  const h = delayRender(`font ${family}`);
+  const h = delayRender(`font ${family}`, {timeoutInMilliseconds: 120000});
   const ff = new FontFace(family, `url('${staticFile(file)}') format('truetype')`, {weight: '100 900'});
   ff.load().then((x) => { document.fonts.add(x); continueRender(h); }).catch((e) => { console.error(e); continueRender(h); });
 };
