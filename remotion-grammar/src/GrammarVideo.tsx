@@ -6,7 +6,7 @@ import {PastSimpleScene} from './scenes/PastSimpleScene';
 import {PresentPerfectScene} from './scenes/PresentPerfectScene';
 import {MainRuleScene} from './scenes/MainRuleScene';
 import {QuizScene} from './scenes/QuizScene';
-import {OVERLAP, SCENES, TOTAL, VOICE_FILE, VOICE_VOLUME} from './timing';
+import {FPS, OVERLAP, SCENES, TOTAL, VOICE_CLIPS, VOICE_FILE, VOICE_VOLUME} from './timing';
 import {FONT} from './theme';
 
 const scene = (key: keyof typeof SCENES, El: React.FC, first = false) => {
@@ -30,7 +30,15 @@ export const GrammarVideo: React.FC = () => {
       {scene('present', PresentPerfectScene)}
       {scene('rule', MainRuleScene)}
       {scene('quiz', QuizScene)}
-      {hasVoice && <Audio src={staticFile(VOICE_FILE)} volume={VOICE_VOLUME} />}
+      {hasVoice && VOICE_CLIPS.map((c, i) => {
+        const pre = Math.min(0.12, c.from), post = 0.3;
+        const from = Math.round((c.from - pre) * FPS), to = Math.round((c.to + post) * FPS);
+        return (
+          <Sequence key={i} from={Math.round((c.at - pre) * FPS)} durationInFrames={to - from} name={`voice ${i + 1}`}>
+            <Audio src={staticFile(VOICE_FILE)} startFrom={from} endAt={to} volume={VOICE_VOLUME} />
+          </Sequence>
+        );
+      })}
     </AbsoluteFill>
   );
 };

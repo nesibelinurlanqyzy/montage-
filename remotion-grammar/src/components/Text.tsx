@@ -51,7 +51,7 @@ export const KineticText: React.FC<{
           const t = f - bounceAt;
           if (t >= 0 && t < 24) {
             const k = Math.abs(Math.sin((Math.PI * t) / 12)) * (t < 12 ? 1 : 0.55);
-            y -= 34 * k; scale += 0.18 * k;
+            y -= 10 * k; scale += 0.16 * k;
           }
         }
         const col = wd.hi ? interpolateColor(pop, color, hiColor) : color;

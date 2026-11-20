@@ -68,7 +68,7 @@ export const PresentPerfectScene: React.FC = () => {
       <KineticText text={RULE} start={c.rule} exit={c.ruleOut} top={1000} size={62} hiColor={C.purple} stagger={2} />
       <Translation text="Present Perfect өмірлік тәжірибені немесе қазіргі уақытпен байланысы бар әрекеттерді білдіреді." start={revealEnd(RULE, c.rule, 2) + 9} exit={c.ruleOut} top={1240} size={42} />
 
-      <KineticText text={EX} start={c.example} top={1010} size={86} hiScale={1.22} bounceAt={c.bounce} />
+      <KineticText text={EX} start={c.example} top={1000} size={86} hiScale={1.18} bounceAt={c.bounce} lineHeight={1.3} />
       <Translation text="Мен Лондонда екі рет болғанмын." start={revealEnd(EX, c.example) + 9} top={1245} size={48} width={1000} />
 
       <LetterTitle text="LIFE EXPERIENCE" start={c.life} top={1330} size={80} color={C.purple} stagger={1} spacing={1} />
