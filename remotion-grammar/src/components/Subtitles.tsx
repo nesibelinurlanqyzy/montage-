@@ -1,43 +1,64 @@
 import React from 'react';
-import {interpolateColors, useCurrentFrame} from 'remotion';
+import {useCurrentFrame} from 'remotion';
 import {C, FONT} from '../theme';
 import {hexA, lin} from '../anim';
 import {FPS} from '../timing';
-import {SUBS} from '../subtitles';
+import {KZ, SUBS} from '../subtitles';
+import {Translation} from './Text';
 
-export const SUB_TOP = 1405;
+/* Нижняя зона (безопасная для Reels): английский субтитр 1090–1280, перевод 1300–1440. */
+export const SUB_BOTTOM = 1295;
+export const KZ_TOP = 1318;
 
-/** Нижние субтитры озвучки (караоке): отдельная тёмная плашка, слово подсвечивается, когда звучит. */
+const pick = <T extends {start: number; end: number}>(list: T[], t: number) => {
+  let r = -1;
+  list.forEach((p, i) => { if (t >= p.start && t <= p.end) r = i; });
+  return r;
+};
+
+/** Единственный субтитр: крупный, слова появляются по озвучке, ключевые слова в цвете и с «подпрыгиванием». */
 export const Subtitles: React.FC = () => {
   const f = useCurrentFrame();
   const t = f / FPS;
-  let idx = -1;
-  SUBS.forEach((p, i) => { if (t >= p.start && t <= p.end) idx = i; });
-  if (idx < 0) return null;
-  const p = SUBS[idx];
-  const inP = lin(t, p.start, p.start + 0.2);
-  const outP = lin(t, p.end - 0.2, p.end);
-  const vis = inP * (1 - outP);
-  const accent = interpolateColors(f, [0, 430, 440, 760, 770, 1065, 1075], [C.blue, C.blue, C.purple, C.purple, '#7DD3FC', '#7DD3FC', '#4ADE80']);
+  const idx = pick(SUBS, t);
+  const kz = pick(KZ, t);
+  const p = idx >= 0 ? SUBS[idx] : null;
+  const outP = p ? lin(t, p.end - 0.12, p.end) : 1;
   return (
-    <div style={{position: 'absolute', left: 0, width: 1080, top: SUB_TOP, display: 'flex', justifyContent: 'center',
-      opacity: vis, transform: `translateY(${(1 - inP) * 20}px)`}}>
-      <div style={{maxWidth: 940, padding: '14px 30px', borderRadius: 22, background: 'rgba(3,6,20,0.78)',
-        border: `2px solid ${hexA('#ffffff', 0.18)}`, boxShadow: `0 10px 30px rgba(0,0,0,0.5), 0 0 24px ${hexA(accent, 0.25)}`,
-        display: 'flex', flexWrap: 'wrap', justifyContent: 'center', columnGap: 14, rowGap: 2, alignItems: 'center'}}>
-        <span style={{fontFamily: FONT, fontWeight: 800, fontSize: 22, letterSpacing: 2, color: C.bg, background: accent,
-          borderRadius: 8, padding: '3px 8px', marginRight: 6}}>EN</span>
-        {p.words.map((w, i) => {
-          const spoken = t >= w.s - 0.04;
-          const now = t >= w.s - 0.04 && t <= w.e + 0.06;
-          return (
-            <span key={i} style={{fontFamily: FONT, fontWeight: 700, fontSize: 42, lineHeight: 1.25,
-              color: now ? accent : spoken ? '#ffffff' : hexA('#ffffff', 0.45),
-              textShadow: now ? `0 0 18px ${hexA(accent, 0.8)}` : undefined,
-              transform: `scale(${now ? 1.08 : 1})`, margin: now ? '0 6px' : '0', display: 'inline-block'}}>{w.w}</span>
-          );
-        })}
-      </div>
-    </div>
+    <>
+      {p && (
+        <div style={{position: 'absolute', left: 120, width: 840, top: SUB_BOTTOM - 260, height: 260, display: 'flex', alignItems: 'flex-end', justifyContent: 'center'}}>
+          <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'baseline', columnGap: 20, rowGap: 4, opacity: 1 - outP}}>
+            {p.words.map((w, i) => {
+              const k = (t - w.s + 0.12) * FPS; // кадры с появления слова
+              const app = Math.max(0, Math.min(1, k / 5));
+              const hi = !!w.c;
+              const pop = hi && k > 0 ? Math.exp(-k / 9) * Math.sin(Math.min(Math.PI, k / 3)) : 0;
+              let y = (1 - app) * 26 - pop * 16;
+              let sc = (0.85 + 0.15 * app) * (hi ? 1.06 + 0.18 * pop : 1);
+              if (w.b) { // twice — двойной bounce
+                const tt = k - 4;
+                if (tt > 0 && tt < 26) { const b = Math.abs(Math.sin((Math.PI * tt) / 13)) * (tt < 13 ? 1 : 0.6); y -= 22 * b; sc += 0.14 * b; }
+              }
+              const col = hi ? w.c! : '#ffffff';
+              return (
+                <span key={i} style={{
+                  display: 'inline-block', fontFamily: FONT, fontWeight: 800, fontSize: 80, lineHeight: 1.1,
+                  color: col, opacity: app, margin: hi ? '0 8px' : 0,
+                  transform: `translateY(${y}px) scale(${sc})`, transformOrigin: '50% 80%',
+                  WebkitTextStroke: '2px rgba(4,8,24,0.9)', paintOrder: 'stroke fill',
+                  textShadow: hi ? `0 0 26px ${hexA(col, 0.85)}, 0 6px 0 rgba(0,0,0,0.35)` : `0 6px 18px rgba(0,0,0,0.7)`,
+                }}>{w.w}</span>
+              );
+            })}
+          </div>
+        </div>
+      )}
+      {kz >= 0 && (
+        <Translation key={kz} text={KZ[kz].kz} start={Math.round(KZ[kz].start * FPS)} exit={Math.round(KZ[kz].end * FPS) - 12} top={KZ_TOP} size={44} width={840} left={120} />
+      )}
+    </>
   );
 };
+
+export {C};

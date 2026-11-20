@@ -60,14 +60,10 @@ export const PastSimpleScene: React.FC = () => {
         </div>
       </Timeline>
 
-      <KineticText text={RULE} start={c.rule} exit={c.ruleOut} top={922} size={58} hiColor={C.blue} stagger={2} />
-      <Translation text="Past Simple өткен шақта аяқталған әрекеттер үшін қолданылады." start={revealEnd(RULE, c.rule, 2) + 9} exit={c.ruleOut} top={1165} size={40} />
 
-      <KineticText text={EX} start={c.example} top={915} size={84} hiScale={1.2} />
-      <Translation text="Мен өткен жылы Лондонға бардым." start={revealEnd(EX, c.example) + 9} top={1140} size={46} width={1000} />
 
-      <LetterTitle text="FINISHED ACTION" start={c.finished} top={1225} size={64} color="#4ADE80" stagger={1} spacing={1} />
-      <Translation text="Аяқталған әрекет" start={c.finished + 18} top={1318} size={40} />
+      <LetterTitle text="FINISHED ACTION" start={c.finished} top={935} size={64} color="#4ADE80" stagger={1} spacing={1} />
+      <Translation text="Аяқталған әрекет" start={c.finished + 18} top={1022} size={36} />
 
       <Sfx name="swoosh" at={c.title - 6} />
       <Sfx name="tick" at={c.line + 4} vol={0.7} />

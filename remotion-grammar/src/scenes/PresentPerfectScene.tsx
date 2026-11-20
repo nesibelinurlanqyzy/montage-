@@ -65,14 +65,10 @@ export const PresentPerfectScene: React.FC = () => {
       {icon(P1, i1, <Plane size={150} uid="pp1" />, '1')}
       {icon(P2, i2, <Suitcase size={150} uid="pp2" />, '2')}
 
-      <KineticText text={RULE} start={c.rule} exit={c.ruleOut} top={915} size={60} hiColor={C.purple} stagger={2} />
-      <Translation text="Present Perfect өмірлік тәжірибені немесе қазіргі уақытпен байланысы бар әрекеттерді білдіреді." start={revealEnd(RULE, c.rule, 2) + 9} exit={c.ruleOut} top={1160} size={38} />
 
-      <KineticText text={EX} start={c.example} top={905} size={86} hiScale={1.18} bounceAt={c.bounce} lineHeight={1.3} />
-      <Translation text="Мен Лондонда екі рет болғанмын." start={revealEnd(EX, c.example) + 9} top={1145} size={46} width={1000} />
 
-      <LetterTitle text="LIFE EXPERIENCE" start={c.life} top={1225} size={72} color={C.purple} stagger={1} spacing={1} />
-      <Translation text="Өмірлік тәжірибе" start={c.life + 18} top={1318} size={40} />
+      <LetterTitle text="LIFE EXPERIENCE" start={c.life} top={935} size={70} color={C.purple} stagger={1} spacing={1} />
+      <Translation text="Өмірлік тәжірибе" start={c.life + 18} top={1022} size={36} />
 
       <Sfx name="swoosh" at={c.title - 4} />
       <Sfx name="digital" at={c.morph + 4} vol={0.7} />

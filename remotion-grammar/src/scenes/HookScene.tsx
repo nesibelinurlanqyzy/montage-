@@ -31,7 +31,7 @@ export const HookScene: React.FC = () => {
   const rx = (p: number) => 1100 * (1 - p) + 290 - near * 14;
   const prev = (fr: number, d: number) => sp(fr, fps, d, {damping: 16, stiffness: 90});
   const vs = sp(f, fps, c.vs, {damping: 10, stiffness: 120});
-  const cardY = 640 - cam * 120;
+  const cardY = 700 - cam * 60;
 
   const trail = (side: 'l' | 'r') => [3, 2, 1].map((k) => {
     const p = side === 'l' ? prev(f - k, c.cards) : prev(f - k, c.cards + 6);
@@ -89,8 +89,6 @@ export const HookScene: React.FC = () => {
         </AbsoluteFill>
       </AbsoluteFill>
 
-      <KineticText text={Q} start={c.question} top={880} size={76} width={960} />
-      <Translation text="Осы екі шақтың айырмашылығын білесің бе?" start={revealEnd(Q, c.question) + 9} top={1200} size={48} />
 
       <Sfx name="whoosh" at={c.cards} />
       <Sfx name="whoosh" at={c.cards + 6} vol={0.8} />

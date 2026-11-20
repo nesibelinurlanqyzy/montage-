@@ -8,7 +8,7 @@ import {CheckBadge, CrossBadge} from '../components/Icons';
 import {KineticText, Text3D, Translation} from '../components/Text';
 import {Shell, useLocal} from './shell';
 
-const CARD_W = 940, CARD_H = 150, A_TOP = 720, B_TOP = 900;
+const CARD_W = 880, CARD_H = 140, A_TOP = 520, B_TOP = 690;
 
 const Answer: React.FC<{letter: string; text: string; state: 'idle' | 'wrong' | 'right'; reveal: number; badgeP: number}> = ({letter, text, state, reveal, badgeP}) => {
   const base = state === 'wrong' ? C.red : state === 'right' ? C.green : '#8B9CF7';
@@ -74,15 +74,13 @@ export const QuizScene: React.FC = () => {
           opacity: lin(f, c.title + 10, c.title + 20)}}>ЖЫЛДАМ ТЕСТ!</div>
       </div>
 
-      <KineticText text="Which is correct?" start={c.question} exit={c.final - 6} top={500} size={76} />
-      <Translation text="Қайсысы дұрыс?" start={c.question + 16} exit={c.final - 6} top={600} size={48} />
 
       {/* карточки */}
-      <div style={{position: 'absolute', left: 70, top: A_TOP, transform: `translateX(${(1 - pa) * 1100 + shake - fin * 1200}px) rotate(${-fin * 8}deg)`,
+      <div style={{position: 'absolute', left: 100, top: A_TOP, transform: `translateX(${(1 - pa) * 1100 + shake - fin * 1200}px) rotate(${-fin * 8}deg)`,
         opacity: 1 - fin}}>
         <Answer letter="A" text="I have seen him yesterday." state={f >= c.wrong ? 'wrong' : 'idle'} reveal={wrong} badgeP={lin(f, c.wrong, c.wrong + 12)} />
       </div>
-      <div style={{position: 'absolute', left: 70, top: B_TOP, transform: `translateX(${(1 - pb) * -1100}px) translateY(${-fin * 60}px) scale(${bScale})`,
+      <div style={{position: 'absolute', left: 100, top: B_TOP, transform: `translateX(${(1 - pb) * -1100}px) translateY(${-fin * 90}px) scale(${bScale})`,
         filter: glow ? `drop-shadow(0 0 ${20 * glow}px ${hexA(C.green, 0.8)})` : undefined}}>
         <Answer letter="B" text="I saw him yesterday." state={f >= c.right ? 'right' : 'idle'} reveal={right} badgeP={lin(f, c.right, c.right + 12)} />
       </div>
@@ -90,7 +88,7 @@ export const QuizScene: React.FC = () => {
 
       {/* обратный отсчёт */}
       {cdOn && (
-        <div style={{position: 'absolute', left: 540 - 110, top: 1120, width: 220, height: 220, opacity: 1 - lin(f, c.wrong - 4, c.wrong + 4)}}>
+        <div style={{position: 'absolute', left: 540 - 100, top: 870, width: 200, height: 200, opacity: 1 - lin(f, c.wrong - 4, c.wrong + 4)}}>
           <svg width={220} height={220} style={{position: 'absolute', inset: 0}}>
             <circle cx="110" cy="110" r="94" fill="rgba(8,14,36,0.7)" stroke={hexA('#ffffff', 0.15)} strokeWidth="12" />
             <circle cx="110" cy="110" r="94" fill="none" stroke={C.yellow} strokeWidth="12" strokeLinecap="round" strokeDasharray={591}
@@ -104,13 +102,12 @@ export const QuizScene: React.FC = () => {
       )}
 
       {/* финал */}
-      <Translation text="Мен оны кеше көрдім." start={c.final + 8} top={1060} size={50} />
+      <Translation text="Мен оны кеше көрдім." start={c.final + 8} top={790} size={46} />
       {f >= c.chip - 1 && (
-        <div style={{position: 'absolute', left: 0, width: 1080, top: 1170, display: 'flex', justifyContent: 'center', transform: `scale(${sp(f, fps, c.chip, {damping: 11})})`}}>
+        <div style={{position: 'absolute', left: 0, width: 1080, top: 900, display: 'flex', justifyContent: 'center', transform: `scale(${sp(f, fps, c.chip, {damping: 11})})`}}>
           <Chip text="Yesterday → Past Simple" color={C.blue} size={52} />
         </div>
       )}
-      <Translation text="Кеше — нақты өткен уақыт." start={c.note} top={1300} size={42} />
 
       <Sfx name="rise" at={c.title - 10} vol={0.8} />
       <Sfx name="digital" at={c.title + 4} vol={0.6} />

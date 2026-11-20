@@ -8,7 +8,7 @@ import {Calendar, CheckBadge, Clock, Star} from '../components/Icons';
 import {LetterTitle, Text3D, Translation} from '../components/Text';
 import {Shell, useLocal} from './shell';
 
-const TOP = 420, H = 800, W = 440;
+const TOP = 410, H = 650, W = 440;
 
 const pulse = (f: number, at: number) => {
   const t = f - at;
@@ -58,15 +58,15 @@ export const MainRuleScene: React.FC = () => {
         transform: `translateX(${(1 - L) * 260}px)`}}>
         <div style={{transform: `rotateY(${(1 - L) * 70 + Math.sin(f / 30) * 3}deg)`, transformOrigin: '100% 50%'}}>
           <GlassCard color={C.blue} w={W} h={H} glow={0.7 + 0.6 * pw}>
-            <div style={{position: 'absolute', top: 44, width: '100%'}}><Label lines={['PAST', 'SIMPLE']} size={62} color={C.blue} p={0} /></div>
-            <div style={{position: 'absolute', top: 230, left: 40, transform: `scale(${item(L, c.left + 10)}) rotate(-8deg)`}}>
-              <Calendar size={190} f={f} uid="r1" header="WHEN" circleP={lin(f, c.when, c.when + 18)} />
+            <div style={{position: 'absolute', top: 34, width: '100%'}}><Label lines={['PAST', 'SIMPLE']} size={62} color={C.blue} p={0} /></div>
+            <div style={{position: 'absolute', top: 190, left: 40, transform: `scale(${item(L, c.left + 10)}) rotate(-8deg)`}}>
+              <Calendar size={170} f={f} uid="r1" header="WHEN" circleP={lin(f, c.when, c.when + 18)} />
             </div>
-            <div style={{position: 'absolute', top: 300, left: 220, transform: `scale(${item(L, c.left + 16)})`}}>
-              <Clock size={170} f={f * 3} uid="r2" />
+            <div style={{position: 'absolute', top: 240, left: 230, transform: `scale(${item(L, c.left + 16)})`}}>
+              <Clock size={150} f={f * 3} uid="r2" />
             </div>
-            <div style={{position: 'absolute', top: 510, width: '100%'}}><Label lines={['WHEN?']} size={88} color={C.blue} p={pw} /></div>
-            <Translation text="ҚАШАН?" start={c.left + 20} top={655} size={46} width={W} left={0} />
+            <div style={{position: 'absolute', top: 420, width: '100%'}}><Label lines={['WHEN?']} size={88} color={C.blue} p={pw} /></div>
+            <Translation text="ҚАШАН?" start={c.left + 20} top={555} size={42} width={W} left={0} />
           </GlassCard>
         </div>
       </div>
@@ -76,15 +76,15 @@ export const MainRuleScene: React.FC = () => {
         transform: `translateX(${(1 - R) * -260}px)`}}>
         <div style={{transform: `rotateY(${-(1 - R) * 70 - Math.sin(f / 30) * 3}deg)`, transformOrigin: '0% 50%'}}>
           <GlassCard color={C.purple} w={W} h={H} glow={0.7 + 0.6 * pe}>
-            <div style={{position: 'absolute', top: 44, width: '100%'}}><Label lines={['PRESENT', 'PERFECT']} size={62} color={C.purple} p={0} /></div>
-            <div style={{position: 'absolute', top: 236, left: 36, transform: `scale(${item(R, c.right + 10)}) rotate(${Math.sin(f / 10) * 8}deg)`}}>
-              <Star size={180} uid="r3" />
+            <div style={{position: 'absolute', top: 34, width: '100%'}}><Label lines={['PRESENT', 'PERFECT']} size={62} color={C.purple} p={0} /></div>
+            <div style={{position: 'absolute', top: 196, left: 40, transform: `scale(${item(R, c.right + 10)}) rotate(${Math.sin(f / 10) * 8}deg)`}}>
+              <Star size={160} uid="r3" />
             </div>
-            <div style={{position: 'absolute', top: 300, left: 240, transform: `scale(${item(R, c.right + 16)})`}}>
-              <CheckBadge size={160} p={lin(f, c.right + 18, c.right + 34)} color="#22C55E" />
+            <div style={{position: 'absolute', top: 245, left: 250, transform: `scale(${item(R, c.right + 16)})`}}>
+              <CheckBadge size={140} p={lin(f, c.right + 18, c.right + 34)} color="#22C55E" />
             </div>
-            <div style={{position: 'absolute', top: 490, width: '100%'}}><Label lines={['EXPERIENCE', '/ RESULT']} size={56} color={C.purple} p={pe} /></div>
-            <Translation text="ТӘЖІРИБЕ / НӘТИЖЕ" start={c.right + 20} top={655} size={34} width={W - 40} left={20} />
+            <div style={{position: 'absolute', top: 400, width: '100%'}}><Label lines={['EXPERIENCE', '/ RESULT']} size={56} color={C.purple} p={pe} /></div>
+            <Translation text="ТӘЖІРИБЕ / НӘТИЖЕ" start={c.right + 20} top={545} size={32} width={W - 40} left={20} />
           </GlassCard>
         </div>
       </div>
@@ -99,15 +99,13 @@ export const MainRuleScene: React.FC = () => {
         </div>
       )}
 
-      <Chevrons x={70 + W / 2} color={C.blue} on={lin(f, c.when, c.when + 8) * (pw > 0.36 ? 1 : 0.4) * (1 - lin(f, c.markers - 6, c.markers))} f={f} />
-      <Chevrons x={570 + W / 2} color={C.purple} on={lin(f, c.exp, c.exp + 8) * (pe > 0.36 ? 1 : 0.4) * (1 - lin(f, c.markers - 6, c.markers))} f={f} />
       {/* маркер-слова под карточками */}
       {[['yesterday', 'last year', 'in 2025'], ['ever / never', 'twice', 'already']].map((list, side) => list.map((w, i) => {
         const p = sp(f, fps, c.markers + side * 10 + i * 5, {damping: 12});
         return (
-          <div key={w} style={{position: 'absolute', left: (side ? 570 : 70), width: W, top: TOP + H + 22 + i * 62, display: 'flex', justifyContent: 'center',
+          <div key={w} style={{position: 'absolute', left: (side ? 570 : 70), width: W, top: 1110 + i * 66, display: 'flex', justifyContent: 'center',
             transform: `scale(${p}) translateY(${(1 - p) * 30}px)`, opacity: Math.min(1, p * 1.5)}}>
-            <Chip text={w} color={side ? C.purple : C.blue} size={30} />
+            <Chip text={w} color={side ? C.purple : C.blue} size={36} />
           </div>
         );
       }))}
