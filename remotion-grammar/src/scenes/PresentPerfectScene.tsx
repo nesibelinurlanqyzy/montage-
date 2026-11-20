@@ -38,7 +38,6 @@ export const PresentPerfectScene: React.FC = () => {
   return (
     <Shell f={f} dur={SCENES.present.dur}>
       <LetterTitle text="PRESENT PERFECT" start={c.title - 4} top={255} size={88} color={C.purple} stagger={2} spacing={1} />
-      <Translation text="Өткен тәжірибе немесе қазіргімен байланысты нәтиже" start={c.title + 14} top={388} size={36} width={900} />
 
       {/* связи: дуга между поездками и стрелки к «сейчас» */}
       <svg width={1080} height={1920} style={{position: 'absolute', left: 0, top: 0}}>
@@ -68,7 +67,6 @@ export const PresentPerfectScene: React.FC = () => {
 
 
       <LetterTitle text="LIFE EXPERIENCE" start={c.life} top={935} size={70} color={C.purple} stagger={1} spacing={1} />
-      <Translation text="Өмірлік тәжірибе" start={c.life + 18} top={1022} size={36} />
 
       <Sfx name="swoosh" at={c.title - 4} />
       <Sfx name="digital" at={c.morph + 4} vol={0.7} />

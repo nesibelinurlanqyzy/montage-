@@ -70,8 +70,6 @@ export const QuizScene: React.FC = () => {
       <div style={{position: 'absolute', left: 0, width: 1080, top: 700, display: 'flex', flexDirection: 'column', alignItems: 'center',
         transform: `translateY(${-up * 440}px) scale(${(0.4 + 0.6 * t) * (1 - up * 0.42)})`, transformOrigin: '50% 0%', opacity: Math.min(1, t * 2)}}>
         <Text3D text="QUICK QUIZ!" size={140} from="#ffffff" to={C.yellow} side="#7c2d12" rotY={Math.sin(f / 18) * 14} rotX={10} glow={hexA(C.yellow, 0.55)} depth={16} />
-        <div style={{marginTop: 30, fontFamily: FONT_KZ, fontWeight: 800, fontSize: 64, color: C.yellow, textShadow: `0 0 24px ${hexA(C.yellow, 0.5)}`,
-          opacity: lin(f, c.title + 10, c.title + 20)}}>ЖЫЛДАМ ТЕСТ!</div>
       </div>
 
 
@@ -102,7 +100,6 @@ export const QuizScene: React.FC = () => {
       )}
 
       {/* финал */}
-      <Translation text="Мен оны кеше көрдім." start={c.final + 8} top={790} size={46} />
       {f >= c.chip - 1 && (
         <div style={{position: 'absolute', left: 0, width: 1080, top: 900, display: 'flex', justifyContent: 'center', transform: `scale(${sp(f, fps, c.chip, {damping: 11})})`}}>
           <Chip text="Yesterday → Past Simple" color={C.blue} size={52} />

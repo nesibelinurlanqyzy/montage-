@@ -29,7 +29,6 @@ export const PastSimpleScene: React.FC = () => {
   return (
     <Shell f={f} dur={SCENES.past.dur}>
       <LetterTitle text="PAST SIMPLE" start={c.title - 6} top={255} size={112} color={C.blue} />
-      <Translation text="Өткен шақ" start={c.title + 12} top={404} size={44} />
 
       {/* Биг-Бен поднимается из точки на линии времени */}
       <div style={{position: 'absolute', left: MARK_X - BEN_H * 0.25, top: TL_Y - 10 - BEN_H, width: BEN_H * 0.5 + 40, height: BEN_H + 20, overflow: 'hidden'}}>
@@ -63,7 +62,6 @@ export const PastSimpleScene: React.FC = () => {
 
 
       <LetterTitle text="FINISHED ACTION" start={c.finished} top={935} size={64} color="#4ADE80" stagger={1} spacing={1} />
-      <Translation text="Аяқталған әрекет" start={c.finished + 18} top={1022} size={36} />
 
       <Sfx name="swoosh" at={c.title - 6} />
       <Sfx name="tick" at={c.line + 4} vol={0.7} />

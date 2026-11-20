@@ -80,8 +80,8 @@ const interpolateColor = (t: number, a: string, b: string) => {
 export const revealEnd = (text: string, start: number, stagger = 3) => start + parse(text).length * stagger;
 
 /** Казахский перевод — отдельная жёлтая плашка «ҚАЗ» под английским, появляется мягко снизу. */
-export const Translation: React.FC<{text: string; start: number; exit?: number; top: number; size?: number; width?: number; color?: string; weight?: number; left?: number; plain?: boolean}> = ({
-  text, start, exit, top, size = 46, width = 920, color = C.yellow, weight = 700, left, plain,
+export const Translation: React.FC<{text: string; start: number; exit?: number; top: number; size?: number; width?: number; color?: string; weight?: number; left?: number; plain?: boolean; bottom?: number; boxH?: number}> = ({
+  text, start, exit, top, size = 46, width = 920, color = C.yellow, weight = 700, left, plain, bottom, boxH,
 }) => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
@@ -92,12 +92,13 @@ export const Translation: React.FC<{text: string; start: number; exit?: number; 
   const clip = lin(f, start, start + 16, 0, 100, easeOut);
   return (
     <div style={{
-      position: 'absolute', top, left: left ?? (1080 - width) / 2, width, display: 'flex', justifyContent: 'center',
+      position: 'absolute', ...(bottom !== undefined ? {bottom: 1920 - bottom} : {top}), left: left ?? (1080 - width) / 2, width, display: 'flex', justifyContent: 'center',
       opacity: p * (1 - ex), transform: `translateY(${(1 - p) * 30 - ex * 30}px)`, filter: `blur(${(1 - p) * 6 + ex * 8}px)`,
       clipPath: `inset(-20px ${(100 - clip) / 2}% -20px ${(100 - clip) / 2}%)`,
     }}>
       <div style={{
-        position: 'relative', textAlign: 'center', fontFamily: FONT_KZ, fontWeight: weight, fontSize: size, lineHeight: 1.22, color,
+        position: 'relative', textAlign: 'center', fontFamily: FONT_KZ, boxSizing: 'border-box',
+        ...(boxH ? {width: '100%', height: boxH, display: 'flex', alignItems: 'center', justifyContent: 'center'} : {}), fontWeight: weight, fontSize: size, lineHeight: 1.22, color,
         padding: plain ? 0 : `${size * 0.22}px ${size * 0.55}px`, borderRadius: plain ? 0 : size * 0.45,
         background: plain ? undefined : `linear-gradient(180deg, ${hexA(color, 0.2)}, ${hexA(color, 0.08)})`,
         border: plain ? undefined : `2px solid ${hexA(color, 0.75)}`,

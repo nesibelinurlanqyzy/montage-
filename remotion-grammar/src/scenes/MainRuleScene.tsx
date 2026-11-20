@@ -51,7 +51,6 @@ export const MainRuleScene: React.FC = () => {
         boxShadow: `0 0 40px #fff, 0 0 90px ${C.purple}`, opacity: 1 - lin(f, 6, 26)}} />
 
       <LetterTitle text="THE MAIN RULE" start={c.header - 4} top={262} size={64} color="#ffffff" stagger={1} spacing={4} />
-      <Translation text="Негізгі ереже" start={c.header + 10} top={345} size={34} />
 
       {/* левая карточка */}
       <div style={{position: 'absolute', left: 70, top: TOP, perspective: 1200, opacity: Math.min(1, L * 1.5),
@@ -66,7 +65,6 @@ export const MainRuleScene: React.FC = () => {
               <Clock size={150} f={f * 3} uid="r2" />
             </div>
             <div style={{position: 'absolute', top: 420, width: '100%'}}><Label lines={['WHEN?']} size={88} color={C.blue} p={pw} /></div>
-            <Translation text="ҚАШАН?" start={c.left + 20} top={555} size={42} width={W} left={0} />
           </GlassCard>
         </div>
       </div>
@@ -84,7 +82,6 @@ export const MainRuleScene: React.FC = () => {
               <CheckBadge size={140} p={lin(f, c.right + 18, c.right + 34)} color="#22C55E" />
             </div>
             <div style={{position: 'absolute', top: 400, width: '100%'}}><Label lines={['EXPERIENCE', '/ RESULT']} size={56} color={C.purple} p={pe} /></div>
-            <Translation text="ТӘЖІРИБЕ / НӘТИЖЕ" start={c.right + 20} top={545} size={32} width={W - 40} left={20} />
           </GlassCard>
         </div>
       </div>

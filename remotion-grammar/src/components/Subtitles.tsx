@@ -7,8 +7,10 @@ import {KZ, SUBS} from '../subtitles';
 import {Translation} from './Text';
 
 /* Нижняя зона (безопасная для Reels): английский субтитр 1090–1280, перевод 1300–1440. */
-export const SUB_BOTTOM = 1295;
-export const KZ_TOP = 1318;
+/** Нижняя граница безопасной зоны Reels. */
+export const SAFE_BOTTOM = 1490;
+export const KZ_H = 130; // место под перевод (до 2 строк)
+export const SUB_BOTTOM = SAFE_BOTTOM - KZ_H - 18;
 
 const pick = <T extends {start: number; end: number}>(list: T[], t: number) => {
   let r = -1;
@@ -27,7 +29,7 @@ export const Subtitles: React.FC = () => {
   return (
     <>
       {p && (
-        <div style={{position: 'absolute', left: 120, width: 840, top: SUB_BOTTOM - 260, height: 260, display: 'flex', alignItems: 'flex-end', justifyContent: 'center'}}>
+        <div style={{position: 'absolute', left: 90, width: 900, top: SUB_BOTTOM - 260, height: 260, display: 'flex', alignItems: 'flex-end', justifyContent: 'center'}}>
           <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'baseline', columnGap: 20, rowGap: 4, opacity: 1 - outP}}>
             {p.words.map((w, i) => {
               const k = (t - w.s + 0.12) * FPS; // кадры с появления слова
@@ -55,7 +57,7 @@ export const Subtitles: React.FC = () => {
         </div>
       )}
       {kz >= 0 && (
-        <Translation key={kz} text={KZ[kz].kz} start={Math.round(KZ[kz].start * FPS)} exit={Math.round(KZ[kz].end * FPS) - 12} top={KZ_TOP} size={44} width={840} left={120} />
+        <Translation key={kz} text={KZ[kz].kz} start={Math.round(KZ[kz].start * FPS)} exit={Math.round(KZ[kz].end * FPS) - 12} top={0} bottom={SAFE_BOTTOM} size={40} width={940} left={70} boxH={KZ_H - 8} />
       )}
     </>
   );
