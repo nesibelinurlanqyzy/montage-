@@ -4,7 +4,7 @@ export const HEIGHT = 1920;
 export const FPS = 30;
 // Озвучканың нақты ұзақтығы: 25.234 сек → 757 кадр
 export const VOICE_SEC = 25.234;
-export const TOTAL_FRAMES = Math.ceil(VOICE_SEC * FPS); // 757
+export const TOTAL_FRAMES = Math.round(VOICE_SEC * FPS); // 757 кадр = 25,233 сек
 
 export const COLORS = {
   night: "#0A1424",
