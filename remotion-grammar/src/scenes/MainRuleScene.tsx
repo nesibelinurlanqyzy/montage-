@@ -3,12 +3,12 @@ import {useVideoConfig} from 'remotion';
 import {C, FONT} from '../theme';
 import {easeInOut, easeOut, hexA, lin, sp} from '../anim';
 import {CUE, SCENES} from '../timing';
-import {GlassCard, Sfx} from '../components/Common';
+import {Chip, GlassCard, Sfx} from '../components/Common';
 import {Calendar, CheckBadge, Clock, Star} from '../components/Icons';
 import {LetterTitle, Text3D, Translation} from '../components/Text';
 import {Shell, useLocal} from './shell';
 
-const TOP = 420, H = 860, W = 440;
+const TOP = 420, H = 800, W = 440;
 
 const pulse = (f: number, at: number) => {
   const t = f - at;
@@ -51,7 +51,7 @@ export const MainRuleScene: React.FC = () => {
         boxShadow: `0 0 40px #fff, 0 0 90px ${C.purple}`, opacity: 1 - lin(f, 6, 26)}} />
 
       <LetterTitle text="THE MAIN RULE" start={c.header - 4} top={262} size={64} color="#ffffff" stagger={1} spacing={4} />
-      <Translation text="Негізгі ереже" start={c.header + 10} top={345} size={40} />
+      <Translation text="Негізгі ереже" start={c.header + 10} top={345} size={34} />
 
       {/* левая карточка */}
       <div style={{position: 'absolute', left: 70, top: TOP, perspective: 1200, opacity: Math.min(1, L * 1.5),
@@ -65,8 +65,8 @@ export const MainRuleScene: React.FC = () => {
             <div style={{position: 'absolute', top: 300, left: 220, transform: `scale(${item(L, c.left + 16)})`}}>
               <Clock size={170} f={f * 3} uid="r2" />
             </div>
-            <div style={{position: 'absolute', top: 540, width: '100%'}}><Label lines={['WHEN?']} size={88} color={C.blue} p={pw} /></div>
-            <Translation text="ҚАШАН?" start={c.left + 20} top={690} size={52} width={W} left={0} />
+            <div style={{position: 'absolute', top: 510, width: '100%'}}><Label lines={['WHEN?']} size={88} color={C.blue} p={pw} /></div>
+            <Translation text="ҚАШАН?" start={c.left + 20} top={655} size={46} width={W} left={0} />
           </GlassCard>
         </div>
       </div>
@@ -83,8 +83,8 @@ export const MainRuleScene: React.FC = () => {
             <div style={{position: 'absolute', top: 300, left: 240, transform: `scale(${item(R, c.right + 16)})`}}>
               <CheckBadge size={160} p={lin(f, c.right + 18, c.right + 34)} color="#22C55E" />
             </div>
-            <div style={{position: 'absolute', top: 525, width: '100%'}}><Label lines={['EXPERIENCE', '/ RESULT']} size={56} color={C.purple} p={pe} /></div>
-            <Translation text="ТӘЖІРИБЕ / НӘТИЖЕ" start={c.right + 20} top={680} size={40} width={W - 60} left={30} />
+            <div style={{position: 'absolute', top: 490, width: '100%'}}><Label lines={['EXPERIENCE', '/ RESULT']} size={56} color={C.purple} p={pe} /></div>
+            <Translation text="ТӘЖІРИБЕ / НӘТИЖЕ" start={c.right + 20} top={655} size={34} width={W - 40} left={20} />
           </GlassCard>
         </div>
       </div>
@@ -99,8 +99,18 @@ export const MainRuleScene: React.FC = () => {
         </div>
       )}
 
-      <Chevrons x={70 + W / 2} color={C.blue} on={lin(f, c.when, c.when + 8) * (pw > 0.36 ? 1 : 0.4)} f={f} />
-      <Chevrons x={570 + W / 2} color={C.purple} on={lin(f, c.exp, c.exp + 8) * (pe > 0.36 ? 1 : 0.4)} f={f} />
+      <Chevrons x={70 + W / 2} color={C.blue} on={lin(f, c.when, c.when + 8) * (pw > 0.36 ? 1 : 0.4) * (1 - lin(f, c.markers - 6, c.markers))} f={f} />
+      <Chevrons x={570 + W / 2} color={C.purple} on={lin(f, c.exp, c.exp + 8) * (pe > 0.36 ? 1 : 0.4) * (1 - lin(f, c.markers - 6, c.markers))} f={f} />
+      {/* маркер-слова под карточками */}
+      {[['yesterday', 'last year', 'in 2025'], ['ever / never', 'twice', 'already']].map((list, side) => list.map((w, i) => {
+        const p = sp(f, fps, c.markers + side * 10 + i * 5, {damping: 12});
+        return (
+          <div key={w} style={{position: 'absolute', left: (side ? 570 : 70), width: W, top: TOP + H + 22 + i * 62, display: 'flex', justifyContent: 'center',
+            transform: `scale(${p}) translateY(${(1 - p) * 30}px)`, opacity: Math.min(1, p * 1.5)}}>
+            <Chip text={w} color={side ? C.purple : C.blue} size={30} />
+          </div>
+        );
+      }))}
 
       <Sfx name="swoosh" at={-12} />
       <Sfx name="whoosh" at={c.left} />
@@ -109,6 +119,8 @@ export const MainRuleScene: React.FC = () => {
       <Sfx name="pop" at={c.when} />
       <Sfx name="pop" at={c.exp} />
       <Sfx name="pop" at={c.both} vol={0.6} />
+      <Sfx name="pop" at={c.markers} vol={0.5} />
+      <Sfx name="pop" at={c.markers + 10} vol={0.5} />
     </Shell>
   );
 };

@@ -28,7 +28,7 @@ export const PresentPerfectScene: React.FC = () => {
   const toNow = lin(f, c.toNow, c.toNow + 26, 0, 1, easeOut);
   const flash = f > c.link ? 1 + 0.5 * Math.exp(-(f - c.link) / 10) : 1;
   const icon = (x: number, p: number, el: React.ReactNode, n: string) => (
-    <div style={{position: 'absolute', left: x - 75, top: 590, transform: `translateY(${(1 - p) * 260}px) scale(${0.3 + 0.7 * p}) rotateY(${Math.sin(f / 18 + x) * 18}deg)`,
+    <div style={{position: 'absolute', left: x - 75, top: 500, transform: `translateY(${(1 - p) * 260}px) scale(${0.3 + 0.7 * p}) rotateY(${Math.sin(f / 18 + x) * 18}deg)`,
       opacity: Math.min(1, p * 2), filter: `drop-shadow(0 0 ${22 * flash}px ${hexA(C.purple, 0.8)})`}}>
       {el}
       <div style={{position: 'absolute', right: -6, top: -6, width: 52, height: 52, borderRadius: '50%', background: C.yellow, color: '#1e1b4b',
@@ -38,7 +38,7 @@ export const PresentPerfectScene: React.FC = () => {
   return (
     <Shell f={f} dur={SCENES.present.dur}>
       <LetterTitle text="PRESENT PERFECT" start={c.title - 4} top={255} size={88} color={C.purple} stagger={2} spacing={1} />
-      <Translation text="Өткен тәжірибе немесе қазіргімен байланысты нәтиже" start={c.title + 14} top={378} size={42} width={860} />
+      <Translation text="Өткен тәжірибе немесе қазіргімен байланысты нәтиже" start={c.title + 14} top={388} size={36} width={900} />
 
       {/* связи: дуга между поездками и стрелки к «сейчас» */}
       <svg width={1080} height={1920} style={{position: 'absolute', left: 0, top: 0}}>
@@ -65,14 +65,14 @@ export const PresentPerfectScene: React.FC = () => {
       {icon(P1, i1, <Plane size={150} uid="pp1" />, '1')}
       {icon(P2, i2, <Suitcase size={150} uid="pp2" />, '2')}
 
-      <KineticText text={RULE} start={c.rule} exit={c.ruleOut} top={1000} size={62} hiColor={C.purple} stagger={2} />
-      <Translation text="Present Perfect өмірлік тәжірибені немесе қазіргі уақытпен байланысы бар әрекеттерді білдіреді." start={revealEnd(RULE, c.rule, 2) + 9} exit={c.ruleOut} top={1240} size={42} />
+      <KineticText text={RULE} start={c.rule} exit={c.ruleOut} top={915} size={60} hiColor={C.purple} stagger={2} />
+      <Translation text="Present Perfect өмірлік тәжірибені немесе қазіргі уақытпен байланысы бар әрекеттерді білдіреді." start={revealEnd(RULE, c.rule, 2) + 9} exit={c.ruleOut} top={1160} size={38} />
 
-      <KineticText text={EX} start={c.example} top={1000} size={86} hiScale={1.18} bounceAt={c.bounce} lineHeight={1.3} />
-      <Translation text="Мен Лондонда екі рет болғанмын." start={revealEnd(EX, c.example) + 9} top={1245} size={48} width={1000} />
+      <KineticText text={EX} start={c.example} top={905} size={86} hiScale={1.18} bounceAt={c.bounce} lineHeight={1.3} />
+      <Translation text="Мен Лондонда екі рет болғанмын." start={revealEnd(EX, c.example) + 9} top={1145} size={46} width={1000} />
 
-      <LetterTitle text="LIFE EXPERIENCE" start={c.life} top={1330} size={80} color={C.purple} stagger={1} spacing={1} />
-      <Translation text="Өмірлік тәжірибе" start={c.life + 18} top={1428} size={46} />
+      <LetterTitle text="LIFE EXPERIENCE" start={c.life} top={1225} size={72} color={C.purple} stagger={1} spacing={1} />
+      <Translation text="Өмірлік тәжірибе" start={c.life + 18} top={1318} size={40} />
 
       <Sfx name="swoosh" at={c.title - 4} />
       <Sfx name="digital" at={c.morph + 4} vol={0.7} />

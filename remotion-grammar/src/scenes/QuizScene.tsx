@@ -104,13 +104,13 @@ export const QuizScene: React.FC = () => {
       )}
 
       {/* финал */}
-      <Translation text="Мен оны кеше көрдім." start={c.final + 8} top={1070} size={54} />
+      <Translation text="Мен оны кеше көрдім." start={c.final + 8} top={1060} size={50} />
       {f >= c.chip - 1 && (
-        <div style={{position: 'absolute', left: 0, width: 1080, top: 1180, display: 'flex', justifyContent: 'center', transform: `scale(${sp(f, fps, c.chip, {damping: 11})})`}}>
+        <div style={{position: 'absolute', left: 0, width: 1080, top: 1170, display: 'flex', justifyContent: 'center', transform: `scale(${sp(f, fps, c.chip, {damping: 11})})`}}>
           <Chip text="Yesterday → Past Simple" color={C.blue} size={52} />
         </div>
       )}
-      <Translation text="Кеше — нақты өткен уақыт." start={c.note} top={1320} size={48} />
+      <Translation text="Кеше — нақты өткен уақыт." start={c.note} top={1300} size={42} />
 
       <Sfx name="rise" at={c.title - 10} vol={0.8} />
       <Sfx name="digital" at={c.title + 4} vol={0.6} />

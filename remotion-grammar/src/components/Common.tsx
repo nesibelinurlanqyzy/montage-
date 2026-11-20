@@ -23,9 +23,9 @@ export const GlassCard: React.FC<{color: string; w: number; h: number; radius?: 
 }) => (
   <div style={{
     position: 'relative', width: w, height: h, borderRadius: radius,
-    background: `linear-gradient(150deg, ${hexA(color, 0.42)} 0%, ${hexA(color, 0.12)} 45%, rgba(8,14,36,0.75) 100%)`,
+    background: `linear-gradient(150deg, ${hexA(color, 0.62)} 0%, ${hexA(color, 0.26)} 45%, rgba(12,20,60,0.7) 100%)`,
     border: `3px solid ${hexA(color, 0.9)}`,
-    boxShadow: `0 0 ${50 * glow}px ${hexA(color, 0.55 * glow)}, inset 0 0 40px ${hexA(color, 0.25)}, 0 30px 60px rgba(0,0,0,0.5)`,
+    boxShadow: `0 0 ${60 * glow}px ${hexA(color, 0.75 * glow)}, inset 0 0 40px ${hexA(color, 0.25)}, 0 30px 60px rgba(0,0,0,0.5)`,
     overflow: 'hidden', ...style,
   }}>
     <div style={{position: 'absolute', left: -w * 0.3, top: -h * 0.6, width: w * 1.2, height: h * 0.9, borderRadius: '50%',

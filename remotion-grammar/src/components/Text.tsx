@@ -79,9 +79,9 @@ const interpolateColor = (t: number, a: string, b: string) => {
 /** Время, когда KineticText полностью раскрылся (для старта перевода +0.3 с). */
 export const revealEnd = (text: string, start: number, stagger = 3) => start + parse(text).length * stagger;
 
-/** Казахский перевод — жёлтый, под английским, появляется мягко снизу. */
-export const Translation: React.FC<{text: string; start: number; exit?: number; top: number; size?: number; width?: number; color?: string; weight?: number; left?: number}> = ({
-  text, start, exit, top, size = 46, width = 920, color = C.yellow, weight = 700, left,
+/** Казахский перевод — отдельная жёлтая плашка «ҚАЗ» под английским, появляется мягко снизу. */
+export const Translation: React.FC<{text: string; start: number; exit?: number; top: number; size?: number; width?: number; color?: string; weight?: number; left?: number; plain?: boolean}> = ({
+  text, start, exit, top, size = 46, width = 920, color = C.yellow, weight = 700, left, plain,
 }) => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
@@ -92,12 +92,26 @@ export const Translation: React.FC<{text: string; start: number; exit?: number; 
   const clip = lin(f, start, start + 16, 0, 100, easeOut);
   return (
     <div style={{
-      position: 'absolute', top, left: left ?? (1080 - width) / 2, width, textAlign: 'center', fontFamily: FONT_KZ, fontWeight: weight,
-      fontSize: size, lineHeight: 1.22, color, letterSpacing: 0.2,
-      opacity: p * (1 - ex), transform: `translateY(${(1 - p) * 30 - ex * 30}px)`,
-      filter: `blur(${(1 - p) * 6 + ex * 8}px)`, textShadow: `0 0 24px ${hexA(color, 0.35)}, 0 4px 14px rgba(0,0,0,0.5)`,
-      clipPath: `inset(0 ${(100 - clip) / 2}% 0 ${(100 - clip) / 2}%)`,
-    }}>{text}</div>
+      position: 'absolute', top, left: left ?? (1080 - width) / 2, width, display: 'flex', justifyContent: 'center',
+      opacity: p * (1 - ex), transform: `translateY(${(1 - p) * 30 - ex * 30}px)`, filter: `blur(${(1 - p) * 6 + ex * 8}px)`,
+      clipPath: `inset(-20px ${(100 - clip) / 2}% -20px ${(100 - clip) / 2}%)`,
+    }}>
+      <div style={{
+        position: 'relative', textAlign: 'center', fontFamily: FONT_KZ, fontWeight: weight, fontSize: size, lineHeight: 1.22, color,
+        padding: plain ? 0 : `${size * 0.22}px ${size * 0.55}px`, borderRadius: plain ? 0 : size * 0.45,
+        background: plain ? undefined : `linear-gradient(180deg, ${hexA(color, 0.2)}, ${hexA(color, 0.08)})`,
+        border: plain ? undefined : `2px solid ${hexA(color, 0.75)}`,
+        boxShadow: plain ? undefined : `0 0 26px ${hexA(color, 0.35)}, inset 0 0 18px ${hexA(color, 0.12)}`,
+        textShadow: `0 0 18px ${hexA(color, 0.45)}, 0 3px 10px rgba(0,0,0,0.5)`,
+      }}>
+        {!plain && (
+          <span style={{position: 'absolute', left: '50%', top: -size * 0.42, transform: 'translateX(-50%)', fontFamily: FONT_KZ, fontWeight: 800,
+            fontSize: Math.max(16, size * 0.42), letterSpacing: 2, color: '#1a1300', background: color, borderRadius: 8, padding: '1px 9px',
+            textShadow: 'none', lineHeight: 1.3}}>ҚАЗ</span>
+        )}
+        {text}
+      </div>
+    </div>
   );
 };
 

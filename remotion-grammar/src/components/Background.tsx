@@ -28,7 +28,7 @@ export const Background: React.FC = () => {
         key={i}
         style={{
           position: 'absolute', left: x, top: y, width: size, height: size, borderRadius: '50%',
-          background: col, opacity: tw * [0.35, 0.55, 0.8][layer],
+          background: col, opacity: tw * [0.55, 0.8, 1][layer],
           boxShadow: `0 0 ${size * 2}px ${col}`,
         }}
       />
@@ -37,11 +37,11 @@ export const Background: React.FC = () => {
 
   return (
     <AbsoluteFill style={{background: C.bg, overflow: 'hidden'}}>
-      <AbsoluteFill style={{background: `radial-gradient(120% 70% at 50% 0%, #142057 0%, ${C.bg} 60%)`}} />
+      <AbsoluteFill style={{background: `radial-gradient(120% 75% at 50% 0%, #2541B8 0%, #131F5C 35%, ${C.bg} 75%)`}} />
       <div style={{position: 'absolute', width: 1100, height: 1100, left: -380 + Math.sin(f / 70) * 60, top: 120 + Math.cos(f / 90) * 50,
-        background: `radial-gradient(circle, ${_h(tint, 0.35)} 0%, transparent 65%)`}} />
+        background: `radial-gradient(circle, ${_h(tint, 0.65)} 0%, transparent 65%)`}} />
       <div style={{position: 'absolute', width: 1000, height: 1000, right: -420 + Math.cos(f / 80) * 60, top: 900 + Math.sin(f / 60) * 70,
-        background: `radial-gradient(circle, ${_h(tint2, 0.3)} 0%, transparent 65%)`}} />
+        background: `radial-gradient(circle, ${_h(tint2, 0.6)} 0%, transparent 65%)`}} />
       {/* 3D-пол */}
       <div style={{position: 'absolute', left: -600, right: -600, top: 1180, height: 1400, perspective: 700, perspectiveOrigin: '50% 0%'}}>
         <div style={{
@@ -50,11 +50,11 @@ export const Background: React.FC = () => {
           backgroundSize: '120px 120px', backgroundPosition: `0px ${(f * 2.2) % 120}px`,
           maskImage: 'linear-gradient(to bottom, transparent 0%, black 25%, black 60%, transparent 100%)',
           WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 25%, black 60%, transparent 100%)',
-          opacity: 0.55,
+          opacity: 0.85,
         }} />
       </div>
       {particles}
-      <AbsoluteFill style={{background: 'radial-gradient(ellipse at center, transparent 55%, rgba(2,4,14,0.75) 100%)'}} />
+      <AbsoluteFill style={{background: 'radial-gradient(ellipse at center, transparent 65%, rgba(2,4,14,0.45) 100%)'}} />
     </AbsoluteFill>
   );
 };

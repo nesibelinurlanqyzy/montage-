@@ -89,8 +89,8 @@ export const HookScene: React.FC = () => {
         </AbsoluteFill>
       </AbsoluteFill>
 
-      <KineticText text={Q} start={c.question} top={1000} size={76} width={960} />
-      <Translation text="Осы екі шақтың айырмашылығын білесің бе?" start={revealEnd(Q, c.question) + 9} top={1320} size={50} />
+      <KineticText text={Q} start={c.question} top={880} size={76} width={960} />
+      <Translation text="Осы екі шақтың айырмашылығын білесің бе?" start={revealEnd(Q, c.question) + 9} top={1200} size={48} />
 
       <Sfx name="whoosh" at={c.cards} />
       <Sfx name="whoosh" at={c.cards + 6} vol={0.8} />

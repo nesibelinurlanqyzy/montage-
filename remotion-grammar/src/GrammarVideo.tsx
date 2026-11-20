@@ -8,6 +8,7 @@ import {MainRuleScene} from './scenes/MainRuleScene';
 import {QuizScene} from './scenes/QuizScene';
 import {FPS, OVERLAP, SCENES, TOTAL, VOICE_CLIPS, VOICE_FILE, VOICE_VOLUME} from './timing';
 import {FONT} from './theme';
+import {Subtitles} from './components/Subtitles';
 
 const scene = (key: keyof typeof SCENES, El: React.FC, first = false) => {
   const s = SCENES[key];
@@ -30,6 +31,7 @@ export const GrammarVideo: React.FC = () => {
       {scene('present', PresentPerfectScene)}
       {scene('rule', MainRuleScene)}
       {scene('quiz', QuizScene)}
+      <Subtitles />
       {hasVoice && VOICE_CLIPS.map((c, i) => {
         const pre = Math.min(0.12, c.from), post = 0.3;
         const from = Math.round((c.from - pre) * FPS), to = Math.round((c.to + post) * FPS);
