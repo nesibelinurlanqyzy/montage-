@@ -1,15 +1,12 @@
-import {continueRender, delayRender, staticFile} from 'remotion';
+import {loadFont} from '@remotion/fonts';
+import {staticFile} from 'remotion';
 
 /* Шрифты лежат локально (public/fonts). Manrope — английский текст,
    Noto Sans — казахский (в Manrope нет Ә, Ғ, Қ, Ң, Ұ). */
-const load = (family: string, file: string) => {
-  if (typeof window === 'undefined' || typeof FontFace === 'undefined') return;
-  const h = delayRender(`font ${family}`, {timeoutInMilliseconds: 120000});
-  const ff = new FontFace(family, `url('${staticFile(file)}') format('truetype')`, {weight: '100 900'});
-  ff.load().then((x) => { document.fonts.add(x); continueRender(h); }).catch((e) => { console.error(e); continueRender(h); });
-};
-load('Manrope', 'fonts/Manrope.ttf');
-load('Noto Sans', 'fonts/NotoSans.ttf');
+for (const w of ['500', '700', '800']) {
+  loadFont({family: 'Manrope', url: staticFile('fonts/Manrope.ttf'), weight: w, format: 'truetype'});
+  loadFont({family: 'Noto Sans', url: staticFile('fonts/NotoSans.ttf'), weight: w, format: 'truetype'});
+}
 
 export const FONT = '"Manrope", "Noto Sans", sans-serif';
 export const FONT_KZ = '"Noto Sans", sans-serif';
