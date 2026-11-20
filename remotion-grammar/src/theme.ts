@@ -11,9 +11,12 @@ if (typeof document !== 'undefined' && !document.getElementById('grammar-fonts')
 @font-face{font-family:'Noto Sans';src:url(data:font/woff2;base64,${NOTO_B64}) format('woff2');font-weight:100 900;}`;
   document.head.appendChild(st);
   const h = delayRender('fonts', {timeoutInMilliseconds: 60000});
+  let done = false;
+  const finish = () => { if (!done) { done = true; continueRender(h); } };
+  setTimeout(finish, 4000); // страховка: не зависать
   Promise.all(['500', '700', '800'].flatMap((w) => [document.fonts.load(`${w} 40px Manrope`), document.fonts.load(`${w} 40px "Noto Sans"`, 'ӘҒҚ')]))
     .catch(() => undefined)
-    .then(() => continueRender(h));
+    .then(finish);
 }
 
 export const FONT = '"Manrope", "Noto Sans", sans-serif';
