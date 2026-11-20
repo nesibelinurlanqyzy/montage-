@@ -20,7 +20,7 @@ export const CUE = {
   hook: {cards: 0, vs: s(1.1), icons: s(0.6), camera: s(2.2), question: s(2.4)},
   past: {title: 0, line: s(0.3), marker: s(0.9), rule: s(0.6), ruleOut: s(5.2), bigben: s(1.8), calendar: s(2.3), example: s(5.6), check: s(7.3), finished: s(7.5), wiggle: s(8.3)},
   present: {title: 0, morph: 0, now: s(1.0), dot1: s(2.0), dot2: s(2.5), rule: s(0.6), ruleOut: s(5.1), example: s(5.4), bounce: s(6.45), link: s(6.6), life: s(7.6), toNow: s(8.0)},
-  rule: {header: 0, left: s(0.2), right: s(2.9), vs: s(3.6), when: s(2.3), exp: s(4.5), both: s(6.4), markers: s(6.6)},
+  rule: {header: 0, left: s(0.2), right: s(2.9), vs: s(3.6), when: s(2.3), exp: s(4.5), both: s(6.4), markers: s(6.95)},
   quiz: {title: 0, up: s(1.0), question: s(1.1), cardA: s(2.9), cardB: s(3.5), c3: s(4.0), c2: s(4.7), c1: s(5.4), wrong: s(6.1), right: s(6.34), final: s(7.3), chip: s(7.6), note: s(8.1)},
 };
 

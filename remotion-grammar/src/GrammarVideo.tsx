@@ -9,6 +9,10 @@ import {QuizScene} from './scenes/QuizScene';
 import {FPS, OVERLAP, SCENES, TOTAL, VOICE_CLIPS, VOICE_FILE, VOICE_VOLUME} from './timing';
 import {FONT} from './theme';
 import {Subtitles} from './components/Subtitles';
+import {LogoBadge} from './components/Logo';
+
+/** Сцены сдвинуты вниз, чтобы над заголовками поместился логотип (безопасная зона сверху). */
+const SHIFT = 90;
 
 const scene = (key: keyof typeof SCENES, El: React.FC, first = false) => {
   const s = SCENES[key];
@@ -26,11 +30,14 @@ export const GrammarVideo: React.FC = () => {
   return (
     <AbsoluteFill style={{fontFamily: FONT}}>
       <Background />
+      <AbsoluteFill style={{transform: `translateY(${SHIFT}px)`}}>
       {scene('hook', HookScene, true)}
       {scene('past', PastSimpleScene)}
       {scene('present', PresentPerfectScene)}
       {scene('rule', MainRuleScene)}
       {scene('quiz', QuizScene)}
+      </AbsoluteFill>
+      <LogoBadge top={246} h={74} />
       <Subtitles />
       {hasVoice && VOICE_CLIPS.map((c, i) => {
         const pre = Math.min(0.12, c.from), post = 0.3;

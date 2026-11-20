@@ -4,6 +4,7 @@ import {Background} from './components/Background';
 import {GlassCard} from './components/Common';
 import {Calendar, Clock} from './components/Icons';
 import {Text3D} from './components/Text';
+import {LogoBadge} from './components/Logo';
 import {C, FONT, FONT_KZ} from './theme';
 import {hexA} from './anim';
 
@@ -11,6 +12,7 @@ import {hexA} from './anim';
 export const Cover: React.FC = () => (
   <AbsoluteFill style={{fontFamily: FONT}}>
     <Background />
+    <LogoBadge top={350} h={64} still />
     <div style={{position: 'absolute', left: 70, top: 300, transform: 'rotate(-10deg)', opacity: 0.95}}><Clock size={200} f={40} uid="c1" /></div>
     <div style={{position: 'absolute', left: 790, top: 290, transform: 'rotate(10deg)'}}><Calendar size={210} f={0} uid="c2" header="2025" circleP={1} /></div>
     <div style={{position: 'absolute', left: 0, width: 1080, top: 560, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 26}}>

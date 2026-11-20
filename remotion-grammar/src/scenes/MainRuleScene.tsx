@@ -100,7 +100,7 @@ export const MainRuleScene: React.FC = () => {
       {[['yesterday', 'last year', 'in 2025'], ['ever / never', 'twice', 'already']].map((list, side) => list.map((w, i) => {
         const p = sp(f, fps, c.markers + side * 10 + i * 5, {damping: 12});
         return (
-          <div key={w} style={{position: 'absolute', left: (side ? 570 : 70), width: W, top: 1110 + i * 66, display: 'flex', justifyContent: 'center',
+          <div key={w} style={{position: 'absolute', left: (side ? 570 : 70), width: W, top: 1072 + i * 56, display: 'flex', justifyContent: 'center',
             transform: `scale(${p}) translateY(${(1 - p) * 30}px)`, opacity: Math.min(1, p * 1.5)}}>
             <Chip text={w} color={side ? C.purple : C.blue} size={36} />
           </div>
