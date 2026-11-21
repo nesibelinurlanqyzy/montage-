@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="kk"><head><meta charset="utf-8">
+<link rel="stylesheet" href="fonts.css">
+<style>
+/* «NEON STUDIO» — референстер негізінде: rim-light телефон + неон толқын + plexus */
+:root{
+  --cyan:#19E6FF; --blue:#2F6BFF; --purple:#9B30FF; --pink:#FF2BD6; --white:#fff; --ink:#02030A; --navy:#050A24; --mute:#9AA3D0;
+  --grad:linear-gradient(100deg,#19E6FF 0%,#2F6BFF 30%,#9B30FF 62%,#FF2BD6 100%);
+  --rim:linear-gradient(100deg,#19E6FF 0%,#4F8BFF 35%,#A63BFF 68%,#FF2BD6 100%);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;background:var(--ink);overflow:hidden}
+body{font-family:"Noto Sans",sans-serif;color:#fff}
+#stage{position:absolute;inset:0;overflow:hidden;background:radial-gradient(ellipse 120% 70% at 50% 42%,#0A1240 0%,#050A24 38%,#02030A 75%)}
+.abs{position:absolute}
+#floor{position:absolute;left:0;right:0;top:1560px;bottom:0;background:linear-gradient(#0a0c1c,#02030A 70%)}
+#floorglow{position:absolute;left:140px;right:140px;top:1520px;height:220px;border-radius:50%;
+  background:radial-gradient(ellipse at 30% 50%,rgba(25,230,255,.45),transparent 60%),radial-gradient(ellipse at 72% 50%,rgba(255,43,214,.5),transparent 60%);filter:blur(30px)}
+#bokeh i{position:absolute;border-radius:50%;filter:blur(2px)}
+#plex{position:absolute;left:0;top:0}
+#vignette{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,transparent 50%,rgba(0,0,0,.7) 100%);pointer-events:none}
+#grain{position:absolute;inset:0;opacity:.06;mix-blend-mode:overlay;pointer-events:none;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence baseFrequency='.9' numOctaves='2'/></filter><rect width='200' height='200' filter='url(%23n)'/></svg>")}
+/* HUD */
+#hud{position:absolute;left:80px;right:80px;top:200px;height:70px;opacity:0}
+.seg{position:absolute;top:0;height:8px;border-radius:4px;background:rgba(255,255,255,.14);overflow:hidden}
+.seg i{position:absolute;inset:0;background:var(--grad);transform-origin:0 50%;box-shadow:0 0 12px #9B30FF}
+.brand{position:absolute;top:28px;left:0;font:800 26px "Noto Sans";letter-spacing:6px;color:var(--mute)}
+/* текст */
+.grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.glow{filter:drop-shadow(0 0 16px rgba(155,48,255,.9)) drop-shadow(0 0 46px rgba(255,43,214,.45))}
+.w{display:inline-block}
+.ltitle{position:absolute;left:80px;right:80px;top:300px}
+.lnum{font:900 210px/1 "Noto Sans";letter-spacing:-8px;color:transparent;-webkit-text-stroke:4px #fff;filter:drop-shadow(0 0 14px rgba(25,230,255,.8))}
+.lname{font:900 88px/1.02 "Noto Sans";letter-spacing:-2px;margin-top:6px}
+.lname .k{color:var(--pink);text-shadow:0 0 30px rgba(255,43,214,.8)}
+.tag{display:inline-block;padding:12px 26px;border-radius:999px;font:800 28px "Noto Sans"}
+.mono{font-family:"JBM",monospace}
+/* телефон с rim light (реф. 1) */
+.rig{position:absolute;transform-style:preserve-3d}
+.phone{position:absolute;border-radius:92px;padding:9px;background:var(--rim);
+  box-shadow:-26px 0 70px rgba(25,230,255,.5),26px 0 70px rgba(255,43,214,.55),0 60px 120px rgba(0,0,0,.85);
+  -webkit-box-reflect:below 26px linear-gradient(transparent 74%,rgba(255,255,255,.22))}
+.scr{position:relative;width:100%;height:100%;border-radius:84px;background:#060814;overflow:hidden}
+.island{position:absolute;left:50%;top:24px;width:150px;height:44px;margin-left:-75px;border-radius:22px;background:#000;z-index:5}
+.sbar{position:absolute;left:44px;right:44px;top:30px;display:flex;justify-content:space-between;font:800 26px "Noto Sans";z-index:4}
+/* стекло «вылетающее из экрана» (реф. 1, бирюзовая карточка) */
+.pop{position:absolute;border-radius:30px;background:linear-gradient(150deg,rgba(25,230,255,.42),rgba(25,230,255,.12));
+  border:2px solid rgba(160,250,255,.75);box-shadow:0 0 50px rgba(25,230,255,.55),0 30px 60px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.6);
+  backdrop-filter:blur(14px);color:#fff}
+.pop.pk{background:linear-gradient(150deg,rgba(255,43,214,.42),rgba(255,43,214,.12));border-color:rgba(255,170,240,.75);box-shadow:0 0 50px rgba(255,43,214,.55),0 30px 60px rgba(0,0,0,.6)}
+.pop.vi{background:linear-gradient(150deg,rgba(155,48,255,.45),rgba(155,48,255,.12));border-color:rgba(210,160,255,.75);box-shadow:0 0 50px rgba(155,48,255,.6),0 30px 60px rgba(0,0,0,.6)}
+.thumb{border-radius:22px;border:3px solid rgba(25,230,255,.9);box-shadow:0 0 18px rgba(25,230,255,.6);background:linear-gradient(150deg,#1b2a5a,#3a1450)}
+.cursor{position:absolute;width:64px;height:64px;filter:drop-shadow(0 0 14px rgba(255,43,214,.9)) drop-shadow(0 6px 10px rgba(0,0,0,.6));z-index:20}
+.ripple{position:absolute;border-radius:50%;border:5px solid var(--cyan);z-index:19}
+.dia{position:absolute;width:30px;height:30px;transform:rotate(45deg);background:#fff;box-shadow:0 0 16px #19E6FF,0 0 30px #19E6FF;border-radius:4px}
+.knob{position:absolute;height:34px;border-radius:17px}
+.placeholder{position:absolute;inset:14px;display:grid;place-items:center;text-align:center;color:rgba(255,255,255,.8);
+  font:800 30px/1.3 "Noto Sans";border:4px dashed rgba(255,255,255,.35);border-radius:70px}
+.bar{position:absolute;width:24px;border-radius:12px;transform-origin:50% 50%}
+</style></head>
+<body><div id="stage">
+  <div id="bokeh" class="abs" style="inset:0"></div>
+  <div id="floorglow"></div><div id="floor"></div>
+  <canvas id="plex" width="1080" height="1920"></canvas>
+  <div id="scene" class="abs" style="inset:0"></div>
+  <div id="hud"><div class="brand"><b style="color:#fff">CLAUDE</b> МОНТАЖ · КУРС</div><div class="brand" id="hudn" style="left:auto;right:0"></div></div>
+  <div id="fx" class="abs" style="inset:0;pointer-events:none"></div>
+  <div id="vignette"></div><div id="grain"></div>
+</div>
+<script>
+const $=s=>document.querySelector(s);
+const cl=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const pr=(t,a,b)=>cl((t-a)/(b-a));
+const eo=x=>1-Math.pow(1-x,3), ex=x=>x>=1?1:1-Math.pow(2,-10*x);
+const eb=x=>{const c=1.9;return 1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2)};
+const eio=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const bump=(t,a,b)=>Math.sin(pr(t,a,b)*Math.PI);
+const lerp=(a,b,p)=>a+(b-a)*p;
+function rnd(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const CUR=`<svg viewBox="0 0 24 24" width="64" height="64"><path d="M3 2l17 9-7.5 1.8L9 20z" fill="#fff" stroke="#02030A" stroke-width="1.2" stroke-linejoin="round"/></svg>`;
+let cur=null;
+function build(id,html,init){ if(cur!==id){$('#scene').innerHTML=html;cur=id;if(init)init();} }
+function S(sel,css){const e=typeof sel==='string'?$(sel):sel; if(e) Object.assign(e.style,css); return e;}
+// цвет бара: cyan → white → magenta (реф. 2)
+function barCol(u){const st=[[25,230,255],[120,220,255],[255,255,255],[200,120,255],[255,43,214]];const x=u*(st.length-1),i=Math.min(st.length-2,Math.floor(x)),f=x-i;
+  const c=st[i].map((v,k)=>Math.round(lerp(v,st[i+1][k],f)));return `rgb(${c})`;}
+// ---------- фон: боке + plexus ----------
+(function(){const r=rnd(7);let h='';for(let i=0;i<34;i++){const s=6+r()*18,c=['#19E6FF','#2F6BFF','#FF2BD6','#9B30FF'][i%4];
+  h+=`<i data-x="${r()*1080}" data-y="${r()*1500+100}" data-s="${r()}" style="width:${s}px;height:${s}px;background:${c};box-shadow:0 0 ${s*2}px ${c};opacity:${.25+r()*.5}"></i>`;}
+  $('#bokeh').innerHTML=h;})();
+function bg(t){[...$('#bokeh').children].forEach(e=>{const s=+e.dataset.s;S(e,{left:(+e.dataset.x+Math.sin(t*.5+s*9)*30)+'px',top:(+e.dataset.y-t*20*(0.5+s))%1700+'px'})});}
+const PL=(()=>{const r=rnd(42),a=[];for(let i=0;i<110;i++){const g=(r()+r()+r()-1.5)/1.5;a.push({x:r(),y:g,v:r(),ph:r()*6.28})}return a})();
+// plexus вокруг горизонтальной линии (реф. 2): cy центр, spread высота, boom — разлёт
+function plexus(t,cy,spread,alpha,boom=0,x0=0,x1=1080){
+  const c=$('#plex').getContext('2d');c.clearRect(0,0,1080,1920);if(alpha<=0.01)return;
+  const pts=PL.map(p=>{const px=lerp(x0,x1,p.x),dx=px-540;return{x:px+dx*boom*.9+Math.sin(t*1.3+p.ph)*14,
+     y:cy+p.y*spread*(1+boom*2.2)+Math.cos(t*1.1+p.ph)*12,u:p.x}});
+  c.globalCompositeOperation='lighter';
+  for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const a=pts[i],b=pts[j],d=Math.hypot(a.x-b.x,a.y-b.y);
+    if(d<95){c.strokeStyle=barCol(a.u).replace('rgb','rgba').replace(')',`,${alpha*(1-d/95)*.8})`);c.lineWidth=2;c.beginPath();c.moveTo(a.x,a.y);c.lineTo(b.x,b.y);c.stroke();}}
+  pts.forEach(p=>{c.fillStyle=barCol(p.u);c.globalAlpha=alpha;c.shadowColor=barCol(p.u);c.shadowBlur=14;c.beginPath();c.arc(p.x,p.y,3.6,0,7);c.fill();});
+  c.globalAlpha=1;c.shadowBlur=0;
+}
+// неон-бары (реф. 2): el — контейнер, n — кол-во, amp — высота 0..1
+function barsInit(el,n,w,gap,H){let h='';for(let i=0;i<n;i++){const u=i/(n-1),col=barCol(u);
+  h+=`<i class="bar" style="left:${i*(w+gap)}px;width:${w}px;top:${H/2}px;background:linear-gradient(90deg,${col},#fff 50%,${col});box-shadow:0 0 18px ${col},0 0 46px ${col}"></i>`;}
+  el.innerHTML=h;el.dataset.H=H;}
+function barsSet(el,t,amp,seed=0,shape=1){const n=el.children.length,H=+el.dataset.H;[...el.children].forEach((b,i)=>{const u=i/(n-1)-.5;
+  const env=shape?Math.exp(-u*u*9):1, v=.45+.55*Math.abs(Math.sin(t*7.3+i*.9+seed)*Math.cos(t*3.1+i*.37));
+  const h=Math.max(8,H*amp*env*v);S(b,{height:h+'px',top:(H/2-h/2)+'px'});});}
+function phone(id,w,h,screen){return `<div class="phone" id="${id}" style="width:${w}px;height:${h}px"><div class="scr"><div class="island"></div>
+  <div class="sbar"><span>9:41</span><span style="letter-spacing:4px">▮▮▮</span></div>${screen}</div></div>`;}
+function hud(n,t0,t){const h=$('#hud');h.style.opacity=n?1:0;if(!n)return;
+  if(!h.dataset.b){h.dataset.b=1;for(let i=0;i<8;i++){const s=document.createElement('div');s.className='seg';s.style.left=(i*115)+'px';s.style.width='103px';s.innerHTML='<i></i>';h.appendChild(s);}}
+  [...h.querySelectorAll('.seg i')].forEach((e,i)=>{e.style.transform=`scaleX(${i<n-1?1:i==n-1?eo(pr(t,t0,t0+.6)):0})`});
+  $('#hudn').innerHTML=`<b style="color:#fff">0${n}</b> / 08`;}
+function title(n,name,t,t0){const p=ex(pr(t,t0,t0+.5)),q=eo(pr(t,t0+.15,t0+.65));
+  return `<div class="ltitle"><div class="lnum" style="transform:translateX(${(1-p)*-300}px) skewX(${(1-p)*-20}deg);opacity:${p}">0${n}<span style="color:var(--pink);-webkit-text-stroke:0;font-size:140px;vertical-align:36px;margin-left:22px">/</span></div>
+  <div class="lname" style="transform:translateY(${(1-q)*80}px);opacity:${q};filter:blur(${(1-q)*14}px)">${name}</div></div>`;}
+function cursorAt(t,a,b,x0,y0,x1,y1,click){const p=eio(pr(t,a,b)),x=lerp(x0,x1,p),y=lerp(y0,y1,p);S('#cur',{left:x+'px',top:y+'px',opacity:pr(t,a-.2,a)});
+  const r=pr(t,click,click+.45);S('#rip',{left:x-10+'px',top:y-10+'px',width:'20px',height:'20px',transform:`scale(${1+r*10})`,opacity:t<click?0:1-r});}
+
+// ================= HOOK 0–4.70 (дауыспен синхрон) =================
+// «Небәрі» 0.00–0.58 | «үш мың» .58 | «тоғыз жүз» 1.0/1.26 | «тоқсан» 1.52 | «теңгеге» 1.80 | CLAUDE 2.42 | МОНТАЖ 2.66 | КУРСЫНДА 3.06 | НЕ 3.56 | ҮЙРЕНЕСІҢ 3.92
+const HC={d:[.6,1.0,1.26,1.52],tg:1.8,q:[2.42,2.66,3.06,3.56,3.92,4.22]};
+function hook(t){
+  build('hook',`
+   <div id="hline" class="abs" style="left:0;right:0;top:817px;height:6px;background:linear-gradient(90deg,transparent,#19E6FF 20%,#fff 50%,#FF2BD6 80%,transparent);box-shadow:0 0 30px 6px rgba(160,140,255,.8)"></div>
+   <div id="bars" class="abs" style="left:${540-(31*34-10)/2}px;top:${820-360}px;width:${31*34}px;height:720px"></div>
+   <div id="neb" class="abs" style="left:0;right:0;top:560px;text-align:center;font:900 96px/1 'Noto Sans';letter-spacing:14px;text-shadow:0 0 24px rgba(255,43,214,.9),0 0 60px rgba(155,48,255,.8)"></div>
+   <div id="pg" class="abs" style="left:0;right:0;top:640px;height:360px">
+     <div id="chip" class="abs pop vi" style="left:220px;right:220px;top:-120px;height:540px;border-radius:80px;opacity:0"></div>
+     <div id="ring" class="abs" style="left:540px;top:180px;width:600px;height:600px;margin:-300px;border-radius:50%;border:8px solid #fff;box-shadow:0 0 40px #19E6FF,inset 0 0 40px #FF2BD6;opacity:0"></div>
+     <div id="ring0" class="abs" style="left:540px;top:180px;width:600px;height:600px;margin:-300px;border-radius:50%;border:5px solid #19E6FF;box-shadow:0 0 30px #19E6FF;opacity:0"></div>
+     <div id="price" class="abs" style="left:0;right:0;top:20px;text-align:center;white-space:nowrap">
+       <div id="ca1" class="abs" style="left:0;right:0;top:0;color:#19E6FF;mix-blend-mode:screen"></div>
+       <div id="ca2" class="abs" style="left:0;right:0;top:0;color:#FF2BD6;mix-blend-mode:screen"></div>
+       <div id="pmain" class="glow" style="position:relative"></div>
+       <div id="spec" class="abs" style="left:0;right:0;top:0;color:#fff"></div>
+     </div></div>
+   <div id="q" class="abs" style="left:50px;right:50px;top:470px;text-align:center">
+     <div style="font:900 134px/1 'Noto Sans';letter-spacing:-4px" class="glow"><span class="w grad-text" id="q1">CLAUDE</span></div>
+     <div style="font:900 134px/1.02 'Noto Sans';letter-spacing:-4px" class="glow"><span class="w grad-text" id="q2">МОНТАЖ</span></div>
+     <div style="font:800 76px/1.3 'Noto Sans';margin-top:14px"><span class="w" id="q3">КУРСЫНДА</span> <span class="w" id="q4">НЕ</span></div>
+     <div style="font:900 108px/1.05 'Noto Sans';letter-spacing:-2px"><span class="w" id="q5">ҮЙРЕНЕСІҢ</span><span class="w" id="q6" style="color:var(--pink)">?</span></div></div>
+   <div id="hrig" class="rig" style="left:305px;top:1080px;width:470px;height:960px">
+     ${phone('hp',470,960,`<div id="grid" class="abs" style="left:34px;right:34px;top:110px;display:grid;grid-template-columns:1fr 1fr;gap:22px"></div>`)}</div>
+  `,()=>{
+    barsInit($('#bars'),31,24,10,720);
+    const digs=['3',' ','9','9','0',' ','₸'];
+    const mk=()=>digs.map((c,i)=>`<span class="w d${i}" style="transform-origin:50% 55%">${c}</span>`).join('');
+    ['#pmain','#ca1','#ca2','#spec'].forEach(s=>{$(s).innerHTML=mk();S(s,{font:"900 300px/1 'Noto Sans'",letterSpacing:'-8px'})});
+    $('#pmain').querySelectorAll('.w').forEach((e,i)=>{if(i<6)e.classList.add('grad-text')});
+    S($('#pmain').querySelector('.d6'),{color:'#FF2BD6',textShadow:'0 0 40px #FF2BD6'});
+    $('#neb').innerHTML=[...'НЕБӘРІ'].map(c=>`<span class="w">${c}</span>`).join('');
+    let g='';for(let i=0;i<8;i++)g+=`<div class="thumb" style="height:150px;display:grid;place-items:center;font:900 54px 'Noto Sans'"><span class="${i%2?'':'grad-text'}">0${i+1}</span></div>`;$('#grid').innerHTML=g;
+  });
+  bg(t);
+  S('#hline',{transform:`scaleX(${eo(pr(t,0,.22))})`,opacity:(1-pr(t,2.2,2.5))*(1-.6*bump(t,.58,.8))});
+  // бары живут от голоса «Небәрі», потом схлопываются в цифру
+  const amp=eb(pr(t,0,.25))*(1-eio(pr(t,.46,.62)))*(.55+.6*ENV(t));
+  barsSet($('#bars'),t,amp,0,1);S('#bars',{opacity:amp>0.01?1:0});
+  plexus(t,820,190,pr(t,0,.3)*(1-pr(t,2.3,2.7)),ex(pr(t,1.8,2.6))*.9+.12*ex(pr(t,.6,1.0)));
+  [...$('#neb').children].forEach((e,i)=>{const p=pr(t,.02+i*.06,.22+i*.06);S(e,{opacity:p,transform:`scale(${lerp(2.4,1,eo(p))})`,filter:`blur(${(1-p)*14}px)`})});
+  S('#neb',{transform:`translateY(${-60*eio(pr(t,.55,.7))}px)`,opacity:1-pr(t,2.25,2.4)});
+  // цифры — по слову диктора
+  const D=[0,2,3,4];
+  ['#pmain','#ca1','#ca2','#spec'].forEach(s=>{D.forEach((di,j)=>{const a=HC.d[j],p=pr(t,a,a+.26),el=$(s).querySelector('.d'+di);
+      S(el,{transform:`scaleY(${eb(p)}) scaleX(${lerp(.35,1,eo(p))})`,opacity:cl(p*4)});});
+    const r=pr(t,HC.tg,HC.tg+.4),el=$(s).querySelector('.d6');S(el,{transform:`rotateY(${(1-eo(r))*720}deg) scale(${eb(pr(t,HC.tg,HC.tg+.3))})`,opacity:cl(r*4)});});
+  let ca=0;[[.6,30],[1.0,14],[1.26,14],[1.52,14],[1.8,34]].forEach(([h,k])=>{if(t>=h)ca=Math.max(ca,Math.pow(1-pr(t,h,h+.28),2)*k)});
+  S('#ca1',{transform:`translate(${-ca}px,${ca*.3}px)`,opacity:ca>.5?.85:0});S('#ca2',{transform:`translate(${ca}px,${-ca*.3}px)`,opacity:ca>.5?.85:0});
+  const sw=pr(t,2.0,2.35)*160-30;S('#spec',{WebkitMaskImage:`linear-gradient(105deg,transparent ${sw-12}%,#000 ${sw}%,transparent ${sw+12}%)`,opacity:t>2.0&&t<2.35?.95:0});
+  S('#ring0',{transform:`scale(${.15+1.6*eo(pr(t,.6,1.0))})`,opacity:t<.6?0:.8*(1-pr(t,.6,1.0))});
+  S('#ring',{transform:`scale(${.15+2.6*eo(pr(t,1.8,2.3))})`,opacity:t<1.8?0:1-pr(t,1.8,2.3)});
+  S('#fx',{background:`radial-gradient(circle at 50% 43%,rgba(200,220,255,${bump(t,.57,.78)*.8+bump(t,1.78,2.0)*.7}),transparent 65%)`});
+  let sh=0;[[.6,.25],[1.8,.3]].forEach(([h,d])=>{if(t>h&&t<h+d)sh=Math.max(sh,(1-pr(t,h,h+d))*14)});
+  const pulse=1+.06*bump(t,1.85,2.2), up=eio(pr(t,2.3,2.7));
+  S('#pg',{transform:`translate(${Math.sin(t*90)*sh}px,${Math.cos(t*77)*sh-up*440}px) scale(${pulse*(1-up*.6)})`});S('#chip',{opacity:up});
+  const ph=eo(pr(t,2.4,3.1));
+  S('#hrig',{transform:`perspective(1800px) translateY(${(1-ph)*900}px) rotateY(${lerp(-35,-14,ph)+3*Math.sin(t*1.5)}deg) rotateX(${lerp(20,6,ph)}deg)`});
+  [...$('#grid').children].forEach((e,i)=>{const p=eb(pr(t,2.85+i*.06,3.2+i*.06));S(e,{transform:`scale(${p})`,opacity:cl(p*2)})});
+  ['#q1','#q2','#q3','#q4','#q5','#q6'].forEach((s,i)=>{const a=HC.q[i]-.04,p=pr(t,a,a+.3),e=eb(p);
+    S(s,{opacity:cl(p*2.5),transform:`translateY(${(1-e)*90}px) scale(${.7+.3*e})`,filter:`blur(${(1-cl(p*1.6))*12}px)`});});
+  const k=pr(t,3.95,4.15);S('#q5',{color:`rgb(255,${Math.round(lerp(255,43,k))},${Math.round(lerp(255,214,k))})`,textShadow:`0 0 ${30*k}px rgba(255,43,214,.9)`,
+     transform:`scale(${(.7+.3*eb(pr(t,3.88,4.18)))*(1+.08*bump(t,4.0,4.3))})`});
+  S('#q6',{transform:`translateY(${-30*bump(t,4.3,4.5)}px) rotate(${14*bump(t,4.3,4.5)}deg) scale(${eb(pr(t,4.2,4.45))})`});
+  hud(0);
+}
+// ======== переходы ========
+function intoScreen(t,a,ox,oy){const p=pr(t,a,a+.3);S('#scene',{transformOrigin:`${ox}px ${oy}px`,transform:`scale(${1+eio(p)*3.5})`,filter:`blur(${p*24}px)`,opacity:1-pr(t,a+.18,a+.3)});
+  S('#fx',{background:`rgba(170,200,255,${bump(t,a+.15,a+.4)*.6})`});}
+function lineWipe(t,a){const p=pr(t,a,a+.3);S('#scene',{transform:`scaleY(${1-eio(p)*.97})`,filter:`brightness(${1+p*2})`,opacity:1-pr(t,a+.2,a+.3)});
+  S('#fx',{background:`linear-gradient(transparent ${49-p*3}%,rgba(255,255,255,${p}) 50%,transparent ${51+p*3}%)`});}
+function sceneIn(t,a){const p=ex(pr(t,a,a+.35));S('#scene',{transformOrigin:'50% 50%',transform:`scale(${1.3-.3*p})`,filter:`blur(${(1-p)*18}px)`,opacity:p});}
+
+// ================ 01 GitHub 3–7 ================
+function s01(t){const T=t-3;
+  build('s01',`<div id="tt"></div>
+   <div id="rg" class="rig" style="left:330px;top:720px;width:420px;height:830px">
+    ${phone('p1',420,830,`<div class="abs" style="left:40px;right:40px;top:120px;text-align:center">
+       <div style="width:96px;height:96px;margin:0 auto;border-radius:50%;background:#fff;color:#000;display:grid;place-items:center;font:900 22px/1 'Noto Sans'">лого<br>GitHub</div>
+       <div style="font:900 34px 'Noto Sans';margin:22px 0 26px">Create your account</div>
+       <div class="mono" style="text-align:left;font-size:22px;color:var(--mute)">Email</div><div style="height:66px;border-radius:16px;border:2px solid #2b3160;margin:8px 0 16px;text-align:left;padding:14px 16px;font:700 26px 'Noto Sans'">nesibeli•••@gmail.com ✓</div>
+       <div class="mono" style="text-align:left;font-size:22px;color:var(--mute)">Password</div><div style="height:66px;border-radius:16px;border:2px solid #2b3160;margin:8px 0 16px;text-align:left;padding:14px 16px;font:700 26px 'Noto Sans'">•••••••••• ✓</div>
+       <div class="mono" style="text-align:left;font-size:22px;color:var(--mute)">Username</div><div style="height:66px;border-radius:16px;border:2px dashed #19E6FF;margin:8px 0 26px"></div>
+       <div id="cbtn" style="height:76px;border-radius:18px;background:var(--grad);display:grid;place-items:center;font:900 30px 'Noto Sans'">Continue →</div></div>`)}
+    <div id="pop1" class="pop" style="left:-190px;top:470px;width:600px;height:150px;padding:22px 30px">
+      <div class="mono" style="font-size:24px;opacity:.85">Username</div><div style="font:800 40px 'Noto Sans';margin-top:6px"><span id="typ"></span><span id="caret" style="display:inline-block;width:4px;height:40px;background:#fff;vertical-align:-6px"></span></div></div>
+    <div id="pop2" class="pop pk" style="left:150px;top:90px;width:430px;height:70px;padding:14px 22px;font:800 26px 'Noto Sans'">✓ nesibeli-montage is available</div>
+   </div><div id="cur" class="cursor">${CUR}</div><div id="rip" class="ripple"></div>`);
+  bg(t);plexus(t,0,0,0);hud(1,3,t);$('#tt').innerHTML=title(1,'GITHUB-ҚА<br><span class="k">ТІРКЕЛУ</span>',t,3.05);
+  const c=eo(pr(T,.1,.8));S('#rg',{transform:`perspective(1800px) translateY(${(1-c)*600}px) rotateY(${lerp(40,-16,c)+2*Math.sin(T*1.2)}deg) rotateX(5deg)`});
+  const p1=eb(pr(T,.7,1.1));S('#pop1',{transform:`translateZ(${p1*160}px) translateX(${(1-p1)*250}px) scale(${.6+.4*p1})`,opacity:cl(p1*2)});
+  const u='nesibeli-montage';$('#typ').textContent=u.slice(0,Math.floor(pr(T,1.1,2.1)*u.length));S('#caret',{opacity:Math.floor(T*4)%2});
+  const p2=eb(pr(T,2.15,2.5));S('#pop2',{transform:`translateZ(${p2*220}px) scale(${p2})`,opacity:cl(p2*2)});
+  cursorAt(T,2.4,3.0,950,1800,560,1500,3.0);S('#cbtn',{boxShadow:`0 0 ${70*bump(T,3,3.6)}px #FF2BD6`});
+}
+// ================ 02 Репозиторий 7–11 ================
+function s02(t){const T=t-7;
+  build('s02',`<div id="tt"></div>
+   <div id="rg" class="rig" style="left:90px;top:720px;width:420px;height:830px">
+    ${phone('p2',420,830,`<div class="abs" style="left:36px;right:36px;top:110px">
+      <div style="font:900 34px 'Noto Sans'">Repositories</div>
+      <div id="newb" style="margin:22px 0;width:170px;height:70px;border-radius:16px;background:#2DA44E;display:grid;place-items:center;font:900 30px 'Noto Sans';box-shadow:0 0 30px rgba(45,164,78,.7)">＋ New</div>
+      <div class="mono" style="font-size:22px;color:var(--mute)">Repository name *</div>
+      <div style="height:66px;border-radius:16px;border:2px solid #19E6FF;margin:8px 0 18px;padding:14px 16px" class="mono"><span id="rn" style="font-size:28px"></span></div>
+      <div style="font:700 24px/1.9 'Noto Sans';color:#cfd3f0">◉ Public &nbsp; ○ Private<br>☑ Add a README file</div>
+      <div style="margin-top:20px;height:70px;border-radius:16px;background:#2DA44E;display:grid;place-items:center;font:900 26px 'Noto Sans'">Create repository</div></div>`)}
+   </div>
+   <div id="fold" class="abs" style="left:450px;top:760px;width:500px;height:800px;perspective:1600px"></div>
+   <div id="cur" class="cursor">${CUR}</div><div id="rip" class="ripple"></div>`,()=>{
+    const f=[['📁','Бастапқы/','',''],['📁','Дайын/','pk',''],['📁','Раскадровка/','vi',''],['📄','CLAUDE.md','',''],['📄','README.md','pk','']];
+    $('#fold').innerHTML=f.map((r,i)=>`<div class="pop ${r[2]}" style="left:${(i%2)*30}px;top:${i*150}px;width:440px;height:120px;display:flex;align-items:center;gap:22px;padding:0 30px;font:900 38px 'Noto Sans'"><span style="font-size:46px">${r[0]}</span>${r[1]}</div>`).join('');});
+  bg(t);plexus(t,0,0,0);hud(2,7,t);$('#tt').innerHTML=title(2,'РЕПОЗИТОРИЙ<br><span class="k">АШУ</span>',t,7.05);
+  const c=eo(pr(T,.1,.7));S('#rg',{transform:`perspective(1800px) translateX(${(1-c)*-500}px) rotateY(${lerp(-40,18,c)+2*Math.sin(T)}deg) rotateX(4deg)`});
+  cursorAt(T,.5,1.0,700,1700,190,950,1.0);S('#newb',{transform:`scale(${1-.1*bump(T,1.0,1.2)})`});
+  const n='nesibeli-montage';$('#rn').textContent=n.slice(0,Math.floor(pr(T,1.2,2.0)*n.length));
+  [...$('#fold').children].forEach((e,i)=>{const p=eb(pr(T,2.0+i*.14,2.45+i*.14));
+    S(e,{transform:`translateX(${(1-p)*-420}px) translateZ(${(1-p)*-500}px) rotateY(${(1-p)*-60-10}deg) rotateZ(${Math.sin(T*2+i)*2}deg)`,opacity:cl(p*2)});});
+}
+// ================ 03 Claude-қа қосу 11–15 ================
+function s03(t){const T=t-11;
+  build('s03',`<div id="tt"></div>
+   <div id="rg" class="rig" style="left:70px;top:780px;width:360px;height:720px">
+    ${phone('p3',360,720,`<div class="abs" style="left:30px;right:30px;top:110px;text-align:center"><div style="width:110px;height:110px;margin:0 auto;border-radius:50%;background:#fff;color:#000;display:grid;place-items:center;font:900 24px/1 'Noto Sans'">лого<br>GitHub</div>
+      <div class="mono" style="font-size:26px;margin-top:26px">nesibeli-montage</div>
+      <div style="margin-top:30px;display:grid;gap:14px">${['Бастапқы/','Дайын/','CLAUDE.md'].map(x=>`<div style="height:58px;border-radius:14px;background:#11163a;text-align:left;padding:12px 16px;font:700 24px 'Noto Sans'">${x}</div>`).join('')}</div></div>`)}</div>
+   <div id="orb" class="abs" style="left:700px;top:960px;width:300px;height:300px;margin:-150px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#fff 0%,#FFB38A 12%,#D97757 30%,rgba(155,48,255,.6) 62%,transparent 72%);box-shadow:0 0 120px rgba(255,43,214,.6);display:grid;place-items:center"></div>
+   <div id="orbl" class="abs" style="left:550px;top:1140px;width:300px;text-align:center;font:900 52px 'Noto Sans'">Claude<div style="font:700 22px 'Noto Sans';color:var(--mute)">лого — ресми файлмен</div></div>
+   <div id="okb" class="abs pop" style="left:340px;top:1380px;width:400px;height:90px;display:grid;place-items:center;font:900 38px 'Noto Sans'">✓ Connected</div>
+   <div id="sub" class="abs mono" style="left:0;right:0;top:1490px;text-align:center;font-size:28px;color:var(--mute)">Claude GitHub App → nesibeli-montage</div>`);
+  bg(t);hud(3,11,t);$('#tt').innerHTML=title(3,'CLAUDE-ҚА<br><span class="k">ҚОСУ</span>',t,11.05);
+  const c=eo(pr(T,.1,.7));S('#rg',{transform:`perspective(1800px) translateX(${(1-c)*-400}px) rotateY(${22+3*Math.sin(T*1.4)}deg)`});
+  const o=eb(pr(T,.3,.8));S('#orb',{transform:`scale(${o*(1+.05*Math.sin(T*6))}) rotate(${T*40}deg)`});S('#orbl',{opacity:pr(T,.6,.9)});
+  // plexus-кабель между телефоном и Claude (реф. 2)
+  const L=eio(pr(T,.8,1.7));plexus(t,1080,60,pr(T,.8,1.0),0,330,lerp(330,700,L));
+  const g=$('#plex').getContext('2d');g.globalCompositeOperation='lighter';const gr=g.createLinearGradient(330,0,700,0);gr.addColorStop(0,'#19E6FF');gr.addColorStop(.5,'#fff');gr.addColorStop(1,'#FF2BD6');
+  g.strokeStyle=gr;g.lineWidth=8;g.shadowColor='#9B30FF';g.shadowBlur=30;g.beginPath();g.moveTo(330,1080);g.lineTo(lerp(330,620,L),1080-120*Math.sin(L*Math.PI)*0);g.stroke();g.shadowBlur=0;
+  S('#okb',{transform:`translateZ(0) scale(${eb(pr(T,1.9,2.3))})`,opacity:pr(T,1.9,2.05)});S('#sub',{opacity:pr(T,2.3,2.6)});
+  S('#fx',{background:`radial-gradient(circle at 60% 56%,rgba(255,255,255,${bump(T,1.65,1.95)*.6}),transparent 50%)`});
+}
+// ================ 04 Шаблондар 15–19 ================
+function s04(t){const T=t-15;
+  build('s04',`<div id="tt"></div>
+   <div id="rg" class="rig" style="left:330px;top:700px;width:420px;height:830px">
+    ${phone('p4',420,830,`<div class="abs" style="left:30px;right:30px;top:110px"><div style="font:900 30px 'Noto Sans';margin-bottom:18px">Templates</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">${Array.from({length:8},(_,i)=>`<div class="thumb" style="height:130px"></div>`).join('')}</div></div>`)}
+    <div id="tc" class="abs" style="left:-280px;top:250px;width:980px;height:420px;transform-style:preserve-3d"></div>
+   </div>
+   <div id="use" class="abs" style="left:250px;right:250px;top:1440px;height:100px;border-radius:24px;background:#2DA44E;display:grid;place-items:center;font:900 38px 'Noto Sans';box-shadow:0 0 50px rgba(45,164,78,.7)">Use this template ▾</div>
+   <div id="cur" class="cursor">${CUR}</div><div id="rip" class="ripple"></div>`,()=>{
+    $('#tc').innerHTML=[['montazh-kz','Өзің түсірген видео',''],['matin-video','Мәтіннен видео','vi'],['montazh-pro','Про монтаж','pk']].map((r,i)=>
+     `<div class="pop ${r[2]}" style="left:${i*330}px;top:0;width:310px;height:400px;padding:26px"><div style="height:190px;border-radius:20px;background:linear-gradient(150deg,rgba(255,255,255,.35),rgba(0,0,0,.2));display:grid;place-items:center;font:900 90px 'Noto Sans'">${['▶','T','✦'][i]}</div>
+       <div class="mono" style="font:800 30px 'JBM';margin-top:20px">${r[0]}</div><div style="font:700 24px 'Noto Sans';margin-top:8px;opacity:.85">${r[1]}</div></div>`).join('');});
+  bg(t);plexus(t,0,0,0);hud(4,15,t);$('#tt').innerHTML=title(4,'ДАЙЫН<br><span class="k">ШАБЛОНДАР</span>',t,15.05);
+  const c=eo(pr(T,.1,.6));S('#rg',{transform:`perspective(1900px) translateY(${(1-c)*500}px) rotateY(${-6+3*Math.sin(T)}deg) rotateX(8deg)`});
+  const sel=pr(T,1.5,1.9);
+  [...$('#tc').children].forEach((e,i)=>{const p=eb(pr(T,.6+i*.15,1.05+i*.15)),o=i-1;
+    S(e,{transform:`translateZ(${p*(200+(i==1?sel*160:0))}px) rotateY(${o*-22}deg) translateY(${(1-p)*200+(i==1?-sel*40:0)}px)`,opacity:cl(p*2)*(i==1?1:1-sel*.45),
+      boxShadow:i==1&&sel>0?`0 0 ${90*sel}px rgba(155,48,255,.95)`:''});});
+  S('#use',{transform:`scale(${eb(pr(T,2.0,2.4))*(1-.07*bump(T,3.0,3.2))})`,opacity:pr(T,2.0,2.15)});
+  cursorAt(T,2.3,3.0,980,1850,560,1500,3.0);
+}
+// ================ 05 Жұмыс ортасы 19–23 (телефон-платформа + голограммы) ================
+function s05(t){const T=t-19;
+  build('s05',`<div id="tt"></div>
+   <div id="plat" class="rig" style="left:270px;top:1180px;width:540px;height:540px">${phone('p5',540,540,`<div class="abs" style="inset:0;background:radial-gradient(circle,#2F6BFF55,transparent 70%)"></div>`)}</div>
+   <div id="beam" class="abs" style="left:300px;right:300px;top:820px;height:560px;background:linear-gradient(to top,rgba(25,230,255,.35),transparent);clip-path:polygon(0 100%,100% 100%,92% 0,8% 0);filter:blur(4px)"></div>
+   <div id="holo" class="abs" style="left:150px;right:150px;top:730px;height:560px;perspective:1600px"></div>`,()=>{
+    $('#holo').innerHTML=`<div class="pop" id="h0" style="left:0;right:0;top:0;height:330px;padding:26px 30px;font:700 27px/1.75 'JBM'"><div style="opacity:.8;font-size:22px">claude.ai/code · Environment</div><div id="tl5"></div></div>`+
+      [['🌐 Network','','0'],['⚙ Setup script','vi','1'],['📦 Repo','pk','2']].map((r,i)=>`<div class="pop ${r[1]}" id="h${i+1}" style="left:${i*265-10}px;top:370px;width:250px;height:90px;display:grid;place-items:center;font:800 28px 'Noto Sans'">${r[0]}</div>`).join('');});
+  bg(t);plexus(t,0,0,0);hud(5,19,t);$('#tt').innerHTML=title(5,'ЖҰМЫС<br><span class="k">ОРТАСЫ</span>',t,19.05);
+  const c=eo(pr(T,.1,.6));S('#plat',{transform:`perspective(1400px) rotateX(68deg) rotateZ(${T*12}deg) translateY(${(1-c)*400}px)`});
+  S('#beam',{opacity:pr(T,.5,.8)*(0.8+.2*Math.sin(T*12))});
+  const h=eb(pr(T,.6,1.1));S('#h0',{transform:`translateY(${(1-h)*300}px) scaleY(${h}) rotateX(8deg)`,opacity:cl(h*2)});
+  [1,2,3].forEach(i=>{const p=eb(pr(T,1.0+i*.15,1.4+i*.15));S('#h'+i,{transform:`translateY(${(1-p)*200+Math.sin(T*2+i)*8}px) scale(${p})`,opacity:cl(p*2)})});
+  const L=[['❯ репо қосылды','#fff'],['✓ setup.sh · ffmpeg · шрифт','#7CFFB0'],['❯ Видео монтаж жаса','#fff'],['● Claude жұмыс істеп жатыр…','#19E6FF']];
+  $('#tl5').innerHTML=L.map((l,i)=>`<div style="color:${l[1]};opacity:${pr(T,1.3+i*.4,1.5+i*.4)}">${l[0]}</div>`).join('');
+}
+// ================ 06 Мәтіннен видео 23–28 ================
+function s06(t){const T=t-23;
+  build('s06',`<div id="tt"></div>
+   <div id="bub" class="abs pop vi" style="left:80px;right:80px;top:720px;height:190px;padding:26px 34px;font:700 36px/1.4 'Noto Sans'"><div class="mono" style="font-size:22px;opacity:.85">ПРОМПТ</div><div id="ptx"></div></div>
+   <div id="rg" class="rig" style="left:340px;top:950px;width:400px;height:600px">
+    ${phone('p6',400,600,`<div id="mini" class="abs" style="inset:0;background:linear-gradient(160deg,#2F6BFF,#9B30FF 55%,#FF2BD6)"></div>
+      <div id="mtx" class="abs" style="left:0;right:0;top:230px;text-align:center;font:900 64px/1 'Noto Sans';text-shadow:0 0 30px #fff">3 ҚАДАМ</div>
+      <div class="abs" style="left:40px;right:40px;bottom:50px;height:12px;border-radius:6px;background:rgba(255,255,255,.3)"><i id="pbar" class="abs" style="left:0;top:0;bottom:0;background:#fff;border-radius:6px"></i></div>`)}</div>
+   <div id="lt" class="abs" style="inset:0"></div>`,()=>{let h='';const ch='МӘТІНВИДЕОҚҰҮҢ';for(let i=0;i<26;i++)h+=`<b class="abs" style="font:900 40px 'Noto Sans';color:${barCol(i/25)};text-shadow:0 0 16px ${barCol(i/25)}">${ch[i%ch.length]}</b>`;$('#lt').innerHTML=h;});
+  bg(t);hud(6,23,t);$('#tt').innerHTML=title(6,'МӘТІННЕН<br><span class="k">ВИДЕО</span>',t,23.05);
+  S('#bub',{transform:`scale(${eb(pr(T,.2,.6))})`,opacity:pr(T,.2,.35)});
+  const s='«Телефонмен 3 қадамда Reels монтаждау»';$('#ptx').textContent=s.slice(0,Math.floor(pr(T,.5,1.6)*s.length));
+  // буквы превращаются в plexus-поток и втекают в телефон
+  plexus(t,lerp(780,1200,eio(pr(T,1.6,2.6))),lerp(60,140,pr(T,1.6,2.2)),pr(T,1.6,1.8)*(1-pr(T,2.6,3.0)),0,lerp(120,380,eio(pr(T,1.6,2.6))),lerp(960,700,eio(pr(T,1.6,2.6))));
+  [...$('#lt').children].forEach((e,i)=>{const a=1.6+i*.035,p=eio(pr(T,a,a+.7));S(e,{left:lerp(130+(i*31%800),520,p)+'px',top:lerp(830,1220,p)+'px',opacity:p>0&&p<1?1:0,transform:`scale(${1-p*.8}) rotate(${p*200}deg)`});});
+  const ph=eb(pr(T,1.4,2.0));S('#rg',{transform:`perspective(1600px) rotateY(${(1-ph)*80-10+4*Math.sin(T)}deg) scale(${.6+.4*ph})`,opacity:cl(ph*2)});
+  S('#mtx',{transform:`scale(${eb(pr(T,2.6,3.0))})`});S('#pbar',{width:(pr(T,2.4,4.8)*100)+'%'});S('#mini',{filter:`hue-rotate(${T*35}deg)`});
+}
+// ================ 07 Монтаж 28–33 (реф. 1 интерфейс → большой 3D таймлайн) ================
+function s07(t){const T=t-28;
+  build('s07',`<div id="tt"></div>
+   <div id="tl" class="abs" style="left:50px;right:50px;top:700px;height:840px;border-radius:50px;padding:9px;background:var(--rim);box-shadow:-20px 0 60px rgba(25,230,255,.45),20px 0 60px rgba(255,43,214,.5)">
+    <div class="scr" style="border-radius:42px;padding:30px">
+     <div id="th" style="display:flex;gap:16px"></div>
+     <div class="abs" style="left:30px;right:30px;top:190px;height:250px;border-radius:24px;background:#0b0e22;border:2px solid #1f2550;overflow:hidden">
+       <div class="abs" id="pv7" style="inset:0"></div>
+       <div id="sub7" class="abs" style="left:0;right:0;bottom:24px;text-align:center"><span style="background:#FF2BD6;padding:4px 16px;border-radius:10px;font:900 32px 'Noto Sans'">субтитр</span></div></div>
+     <svg id="wv" class="abs" style="left:30px;top:470px" width="900" height="170"></svg>
+     <div id="dias" class="abs" style="left:30px;right:30px;top:640px;height:30px;border-top:2px solid #2a3060"></div>
+     <div id="ph7" class="abs" style="top:460px;height:220px;width:5px;background:#fff;box-shadow:0 0 18px #fff;border-radius:3px"></div>
+     <div class="abs" style="left:30px;right:30px;top:700px;display:grid;gap:16px">${['Speed','Zoom','Glow'].map((n,i)=>`<div style="display:flex;align-items:center;gap:20px"><span class="mono" style="width:110px;font-size:24px;color:var(--mute)">${n}</span>
+        <div style="position:relative;flex:1;height:34px;border-radius:17px;background:linear-gradient(90deg,#3a3f5c,#e8ecff 60%,#3a3f5c)"><i class="knob" id="k${i}" style="right:0;top:0;width:110px;background:#FF2BD6;box-shadow:0 0 18px #FF2BD6"></i></div></div>`).join('')}</div>
+    </div></div>
+   <div id="sc" class="abs" style="font-size:90px;filter:drop-shadow(0 0 18px #FF2BD6);z-index:9">✂</div>`,()=>{
+    $('#th').innerHTML=Array.from({length:5},(_,i)=>`<div class="thumb" style="flex:1;height:130px"></div>`).join('');
+    let h='';[0,260,560,860].forEach(x=>h+=`<div class="dia" style="left:${x}px;top:-16px"></div>`);$('#dias').innerHTML=h;});
+  bg(t);plexus(t,0,0,0);hud(7,28,t);const ri=T<2.35?0:1;if($('#pv7').dataset.i!=ri){$('#pv7').dataset.i=ri;$('#pv7').innerHTML=`<div class="abs" style="left:50%;top:0;width:300px;height:600px;margin-left:-150px;transform:scale(.4166);transform-origin:50% 0;border-radius:40px;overflow:hidden">${miniReel(ri)}</div>`;}miniReelSet($('#pv7'),ri,t);$('#tt').innerHTML=title(7,'ВИДЕО<br><span class="k">МОНТАЖ</span>',t,28.05);
+  const c=eo(pr(T,.1,.7));S('#tl',{transform:`perspective(1800px) rotateX(${lerp(60,10,c)}deg) rotateY(${-6+3*Math.sin(T*.9)}deg) translateY(${(1-c)*300}px)`,opacity:cl(c*2)});
+  [...$('#th').children].forEach((e,i)=>S(e,{transform:`scale(${eb(pr(T,.5+i*.08,.85+i*.08))})`}));
+  // волна (реф. 1): белая линия + розово-красная заливка
+  let d='M0 85',f='M0 170 L0 85';for(let x=0;x<=900;x+=6){const a=Math.exp(-Math.pow((x-450)/260,2))*70*Math.abs(Math.sin(x*.09+T*5)*Math.cos(x*.023));const y=85-a*eo(pr(T,.6,1.2));d+=` L${x} ${y}`;f+=` L${x} ${y}`;}
+  f+=' L900 170 Z';$('#wv').innerHTML=`<defs><linearGradient id="wf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF2BD6" stop-opacity=".8"/><stop offset="1" stop-color="#FF2B6A" stop-opacity=".25"/></linearGradient></defs><path d="${f}" fill="url(#wf)"/><path d="${d}" stroke="#fff" stroke-width="3" fill="none" style="filter:drop-shadow(0 0 6px #fff)"/>`;
+  S('#ph7',{left:(30+eio(pr(T,1.0,4.6))*880)+'px'});
+  [...$('#dias').children].forEach((e,i)=>S(e,{transform:`rotate(45deg) scale(${eb(pr(T,1.2+i*.25,1.5+i*.25))*(1+.3*bump(T,1.2+i*.9,1.5+i*.9))})`}));
+  [0,1,2].forEach(i=>S('#k'+i,{right:(260*(1-eio(pr(T,1.5+i*.3,2.4+i*.3)))+ 0)+'px'}));
+  S('#sc',{left:lerp(1100,500,eio(pr(T,1.6,2.2)))+'px',top:'1110px',opacity:pr(T,1.5,1.7)*(1-pr(T,2.8,3.0)),transform:`rotate(${-90+40*bump(T,2.2,2.5)}deg)`});
+  S('#sub7',{opacity:pr(T,2.5,2.7),transform:`scale(${eb(pr(T,2.5,2.9))})`});
+}
+// ================ 08 ЖИ дауыс 33–36 (реф. 2 целиком) ================
+function s08(t){const T=t-33;
+  build('s08',`<div id="tt"></div>
+   <div id="vb" class="abs" style="left:${540-(25*36-12)/2}px;top:${1050-330}px;width:${25*36}px;height:660px"></div>
+   <div id="mic" class="abs" style="left:440px;top:950px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,#fff,#19E6FF 35%,rgba(155,48,255,.6) 70%,transparent 72%);display:grid;place-items:center;font-size:80px">🎙</div>
+   <div id="chips" class="abs" style="left:0;right:0;top:1420px;text-align:center"><span class="tag pop pk" style="position:relative">Әйел дауысы</span> &nbsp; <span class="tag pop" style="position:relative">Ер дауысы</span></div>
+   <div id="trk" class="abs" style="left:60px;right:60px;top:1450px;height:90px;border-radius:24px;padding:6px;background:var(--rim)"><div style="height:100%;border-radius:18px;background:#0b0e22;display:flex;align-items:center;padding:0 20px;gap:12px">
+     <span class="mono" style="font-size:24px;color:var(--mute)">VO</span><div id="trkw" style="flex:1;height:50px;border-radius:12px;background:linear-gradient(90deg,#19E6FF,#fff,#FF2BD6);transform-origin:0 50%"></div></div></div>`,()=>barsInit($('#vb'),25,24,12,660));
+  bg(t);hud(8,33,t);$('#tt').innerHTML=title(8,'ЖИ<br><span class="k">ДАУЫС</span>',t,33.05);
+  const m=eio(pr(T,1.8,2.5));
+  barsSet($('#vb'),t,eb(pr(T,.15,.6))*(1-m*.85)*(.35+.85*ENV(RT)),2,1);S('#vb',{transform:`translateY(${m*450}px) scaleY(${1-m*.8})`,opacity:1-pr(T,2.4,2.6)});
+  plexus(t,1050+m*450,150*(1-m),pr(T,.2,.5)*(1-m));
+  S('#mic',{transform:`scale(${eb(pr(T,.1,.4))*(1+.07*Math.sin(T*11))*(1-m)})`});
+  S('#chips',{opacity:pr(T,.6,.8)*(1-pr(T,1.5,1.7))});
+  S('#trk',{opacity:pr(T,2.2,2.4)});S('#trkw',{transform:`scaleX(${eo(pr(T,2.3,2.8))})`,boxShadow:`0 0 ${60*bump(T,2.5,2.95)}px #19E6FF`});
+}
+window.ENVD=[0.006, 0.022, 0.013, 0.846, 1.0, 0.859, 0.841, 0.769, 0.718, 0.901, 0.902, 0.851, 0.942, 0.616, 0.971, 0.896, 0.647, 0.059, 0.714, 1.0, 0.684, 0.686, 0.477, 0.141, 1.0, 0.937, 0.821, 0.977, 0.758, 0.025, 0.173, 0.988, 0.81, 0.686, 0.273, 0.74, 0.598, 0.333, 0.604, 0.707, 0.093, 0.027, 0.005, 0.252, 0.751, 0.474, 0.057, 0.097, 0.044, 0.403, 0.729, 0.681, 0.603, 0.99, 0.12, 0.147, 0.903, 0.805, 0.81, 1.0, 0.856, 0.712, 0.665, 0.435, 0.398, 0.716, 0.613, 0.283, 0.16, 0.082, 0.006, 0.009, 0.091, 0.097, 0.484, 0.689, 0.93, 1.0, 0.961, 0.856, 0.353, 0.009, 0.273, 0.724, 0.732, 0.674, 0.607, 0.106, 0.518, 0.74, 0.642, 0.207, 0.254, 0.068, 0.08, 0.707, 0.669, 0.258, 0.045, 0.051, 0.251, 0.922, 0.863, 0.486, 0.823, 0.794, 0.816, 0.506, 0.164, 0.022, 0.032, 0.525, 0.756, 0.787, 0.757, 0.748, 0.769, 0.79, 0.985, 0.736, 1.0, 1.0, 0.897, 0.789, 0.71, 0.584, 0.753, 0.199, 0.032, 0.031, 0.041, 0.239, 0.164, 0.117, 0.011, 0.005, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.004, 0.007, 0.007, 0.564, 0.759, 0.843, 0.616, 0.411, 0.786, 0.722, 0.881, 0.753, 0.695, 0.752, 0.723, 0.977, 0.879, 0.396, 0.131, 0.717, 0.751, 0.462, 0.022, 0.17, 0.293, 0.199, 0.81, 0.883, 0.434, 0.015, 0.04, 0.055, 0.384, 0.827, 0.657, 0.057, 0.081, 0.684, 0.355, 0.249, 0.021, 0.337, 0.767, 1.0, 0.554, 0.756, 0.845, 0.211, 0.011, 0.021, 0.041, 0.022, 0.081, 0.45, 0.776, 0.922, 0.914, 0.877, 0.442, 0.245, 0.672, 0.531, 0.799, 0.197, 0.043, 0.754, 0.844, 0.539, 0.176, 0.502, 0.608, 0.135, 0.04, 0.714, 0.781, 0.769, 0.66, 0.647, 0.675, 0.917, 0.944, 0.553, 0.819, 0.798, 0.569, 0.307, 0.23, 0.176, 0.613, 0.642, 0.471, 0.37, 0.712, 0.753, 0.733, 0.348, 0.724, 0.5, 0.271, 0.288, 0.297, 0.292, 0.128, 0.027, 0.027, 0.071, 0.196, 0.093, 0.016, 0.006, 0.001, 0.0, 0.0, 0.0, 0.0, 0.003, 0.36, 0.92, 0.938, 0.818, 0.927, 0.875, 0.807, 0.858, 0.151, 0.012, 0.177, 0.122, 0.561, 0.736, 0.928, 0.983, 0.834, 0.103, 0.119, 0.016, 0.247, 0.688, 0.797, 0.142, 0.013, 0.089, 0.54, 0.727, 0.397, 0.04, 0.03, 0.05, 0.866, 0.852, 0.152, 0.011, 0.012, 0.011, 0.009, 0.317, 0.474, 0.594, 0.945, 0.844, 0.684, 0.757, 0.557, 0.515, 0.243, 0.365, 0.566, 0.847, 0.661, 0.501, 0.631, 0.825, 0.729, 0.729, 0.743, 0.804, 0.795, 0.689, 0.265, 0.303, 0.82, 0.514, 0.028, 0.429, 0.908, 0.815, 0.603, 0.281, 0.956, 1.0, 0.802, 0.878, 0.727, 0.506, 0.434, 0.367, 0.259, 0.146, 0.025, 0.018, 0.048, 0.119, 0.148, 0.047, 0.01, 0.007, 0.009, 0.007, 0.01, 0.009, 0.008, 0.007, 0.009, 0.344, 0.623, 0.852, 0.833, 1.0, 0.959, 0.884, 0.412, 0.047, 0.096, 0.824, 0.924, 0.493, 0.102, 0.079, 0.842, 0.741, 0.545, 0.612, 0.46, 0.736, 0.545, 0.038, 0.166, 0.152, 0.859, 0.779, 0.967, 1.0, 0.522, 0.009, 0.009, 0.019, 0.015, 0.012, 0.335, 0.771, 0.848, 0.64, 0.187, 0.51, 0.757, 0.47, 0.516, 0.102, 0.194, 0.856, 0.751, 0.384, 0.691, 0.994, 0.849, 0.465, 0.858, 0.788, 0.494, 0.489, 0.519, 0.523, 0.441, 0.01, 0.217, 0.305, 0.579, 0.563, 0.108, 0.046, 0.194, 0.776, 0.722, 0.38, 0.08, 0.028, 0.043, 0.201, 0.143, 0.105, 0.009, 0.01, 0.004, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.006, 0.278, 0.71, 0.907, 0.865, 0.8, 0.625, 0.509, 0.704, 0.894, 0.867, 0.89, 0.808, 0.859, 0.39, 0.359, 0.65, 0.637, 0.205, 0.159, 0.802, 0.795, 0.22, 0.532, 0.81, 0.874, 0.64, 0.117, 0.014, 0.014, 0.011, 0.009, 0.007, 0.255, 0.758, 0.853, 0.769, 0.673, 0.34, 0.058, 0.037, 0.022, 0.086, 0.681, 0.133, 0.164, 0.29, 0.446, 0.34, 0.104, 0.024, 0.006, 0.001, 0.0, 0.0, 0.0, 0.001, 0.015, 0.044, 0.553, 1.0, 0.96, 0.634, 0.012, 0.074, 0.431, 1.0, 0.942, 0.833, 0.827, 0.69, 0.017, 0.05, 0.841, 0.902, 0.78, 0.704, 0.763, 0.324, 0.091, 0.013, 0.35, 0.746, 0.876, 0.89, 0.855, 0.801, 0.201, 0.025, 0.008, 0.271, 0.671, 0.824, 0.943, 0.827, 0.721, 0.655, 0.677, 0.685, 0.679, 0.681, 0.078, 0.011, 0.059, 0.701, 0.877, 0.803, 0.841, 0.478, 0.054, 0.077, 0.435, 0.779, 0.771, 0.403, 0.223, 0.734, 0.525, 0.31, 0.322, 0.417, 0.245, 0.037, 0.038, 0.344, 0.506, 0.353, 0.171, 0.036, 0.026, 0.032, 0.216, 0.124, 0.077, 0.029, 0.007, 0.003, 0.0, 0.0, 0.0, 0.0, 0.12, 0.512, 0.561, 0.805, 0.918, 0.886, 0.884, 0.874, 0.868, 0.924, 1.0, 0.87, 0.355, 0.614, 0.977, 0.86, 0.39, 0.313, 0.983, 0.848, 0.943, 0.904, 0.889, 0.801, 0.432, 0.261, 0.344, 0.659, 0.471, 0.47, 0.477, 0.5, 0.498, 0.316, 0.009, 0.51, 0.594, 0.471, 0.374, 0.184, 0.239, 0.881, 0.774, 0.789, 0.096, 0.01, 0.008, 0.03, 0.012, 0.011, 0.037, 0.052, 0.068, 0.448, 0.952, 0.403, 0.02, 0.04, 0.094, 0.864, 1.0, 0.303, 0.035, 0.81, 0.663, 0.581, 0.744, 0.872, 0.784, 0.44, 0.502, 0.436, 0.36, 0.333, 0.252, 0.172, 0.106, 0.019, 0.164, 0.264, 0.378, 0.83, 0.944, 0.543, 0.728, 0.764, 0.698, 0.11, 0.292, 0.322, 0.315, 0.813, 0.647, 0.423, 0.052, 0.736, 0.68, 0.087, 0.044, 0.294, 0.942, 0.682, 0.047, 0.034, 0.018, 0.197, 0.48, 0.477, 0.642, 0.366, 0.211, 0.012, 0.057, 0.441, 0.184, 0.045, 0.055, 0.294, 0.502, 0.229, 0.061, 0.029, 0.029, 0.088, 0.115, 0.069, 0.008, 0.004, 0.001, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.003, 0.009, 0.389, 1.0, 0.343, 0.009, 0.008, 0.007, 0.439, 0.876, 0.987, 0.517, 0.426, 0.838, 0.959, 0.632, 0.069, 0.026, 0.446, 0.952, 0.856, 0.793, 1.0, 0.946, 0.781, 0.967, 1.0, 0.599, 0.059, 0.149, 0.808, 1.0, 0.985, 0.162, 0.069, 0.528, 0.813, 0.912, 0.793, 0.848, 0.94, 0.66, 0.13, 0.144, 0.01, 0.635, 0.816, 0.518, 0.315, 0.09, 0.084, 0.208, 0.62, 0.45, 0.471, 0.386, 0.216, 0.095, 0.03, 0.01, 0.011, 0.262, 0.359, 0.75, 0.763, 0.911, 0.796, 0.854, 0.301, 0.077, 0.106, 0.046, 0.131, 0.907, 0.63, 0.071, 0.071, 0.419, 0.663, 0.355, 0.364, 0.937, 0.455, 0.383, 0.893, 0.92, 0.807, 0.74, 0.777, 0.342, 0.85, 0.855, 0.493, 0.279, 0.296, 0.381, 0.308, 0.101, 0.026, 0.027, 0.119, 0.146, 0.115, 0.046, 0.003, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.001, 0.338, 0.354, 0.535, 0.82, 0.788, 0.754, 0.823, 0.535, 0.416, 0.613, 0.729, 0.632, 0.236, 0.137, 0.468, 0.923, 0.918, 0.602, 0.223, 0.033, 0.009, 0.248, 0.238, 0.66, 0.59, 0.193, 0.352, 0.74, 0.515, 0.212, 0.197, 0.087, 0.017, 0.302, 0.654, 0.435, 0.264, 0.279, 0.163, 0.103, 0.361, 0.35, 0.207, 0.096, 0.022, 0.009, 0.009, 0.011, 0.01, 0.012, 0.02, 0.01, 0.533, 0.909, 1.0, 1.0, 1.0, 0.757, 0.858, 0.553, 0.225, 0.54, 0.977, 0.569, 0.397, 0.3, 0.45, 0.42, 0.106, 0.029, 0.017, 0.014, 0.361, 0.233, 0.067, 0.01, 0.008, 0.007, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.002, 0.028, 0.034, 0.033, 0.054, 0.715, 0.889, 0.8, 0.712, 0.959, 0.687, 0.71, 0.991, 0.68, 0.418, 0.562, 0.75, 0.423, 0.057, 0.047, 0.602, 0.935, 0.609, 0.928, 0.745, 0.726, 0.256, 0.393, 0.608, 0.414, 0.186, 0.748, 0.826, 0.76, 0.874, 0.973, 0.616, 0.342, 0.393, 0.611, 0.364, 0.023, 0.139, 0.688, 0.802, 0.639, 0.34, 0.518, 0.904, 0.824, 0.112, 0.507, 0.955, 0.817, 0.611, 0.866, 0.676, 0.297, 0.167, 0.116, 0.049, 0.008, 0.008, 0.006, 0.012, 0.01, 0.006, 0.009, 0.011, 0.013, 0.128, 0.415, 0.93, 0.49, 0.066, 0.126, 0.12, 0.309, 0.896, 0.848, 0.28, 0.021, 0.019, 0.546, 0.591, 0.264, 0.04, 0.051, 0.254, 0.479, 0.589, 0.555, 0.503, 0.24, 0.259, 0.316, 0.65, 0.543, 0.407, 0.233, 0.017, 0.015, 0.011, 0.008, 0.01, 0.051, 0.45, 0.909, 1.0, 0.859, 0.274, 0.094, 0.593, 0.892, 0.591, 0.483, 0.726, 0.959, 0.568, 0.273, 0.927, 0.593, 0.045, 0.079, 0.582, 0.658, 0.184, 0.095, 0.514, 0.759, 0.58, 0.583, 0.507, 0.492, 0.131, 0.615, 0.547, 0.409, 0.262, 0.398, 0.246, 0.2, 0.009, 0.019, 0.031, 0.027, 0.0];
+// ================ «АЛ ЕҢ ҚЫЗЫҒЫ — ПРАКТИКА» 14.70–16.65 ================
+function sPrak(t){
+  build('prak',`
+   <div id="pk1" class="abs" style="left:0;right:0;top:560px;text-align:center;font:900 92px/1 'Noto Sans';letter-spacing:-1px">
+     <span class="w" id="a1">АЛ</span> <span class="w" id="a2">ЕҢ</span> <span class="w" id="a3">ҚЫЗЫҒЫ</span> <span class="w" id="a4" style="color:var(--pink)">—</span></div>
+   <div id="pk2" class="abs" style="left:0;right:0;top:800px;text-align:center;font:900 158px/1 'Noto Sans';letter-spacing:-4px;perspective:1400px"></div>
+   <div id="pkl" class="abs" style="left:90px;right:90px;top:1010px;height:12px;border-radius:6px;background:var(--grad);box-shadow:0 0 30px #9B30FF;transform-origin:50% 50%"></div>
+   <div id="pkc" class="abs" style="left:0;right:0;top:1120px;text-align:center"></div>`,()=>{
+    $('#pk2').innerHTML=[...'ПРАКТИКА'].map((c,i)=>`<span class="w grad-text" style="text-shadow:none;filter:drop-shadow(0 6px 0 #5a1a9a) drop-shadow(0 12px 0 #3a0f6a) drop-shadow(0 0 30px rgba(255,43,214,.7))">${c}</span>`).join('');
+    $('#pkc').innerHTML=['06 · МӘТІННЕН ВИДЕО','07 · МОНТАЖ','08 · ЖИ ДАУЫС'].map((x,i)=>`<div class="pop ${['vi','','pk'][i]}" style="position:relative;display:inline-block;margin:8px 6px;padding:12px 22px;font:800 27px 'Noto Sans'">${x}</div>`).join('');
+  });
+  bg(t);hud(0);
+  plexus(t,1015,90,pr(t,14.8,15.1)*(1-pr(t,16.4,16.65)),ex(pr(t,15.96,16.6))*.7);
+  [['#a1',14.86],['#a2',15.02],['#a3',15.30],['#a4',15.72]].forEach(([s,a])=>{const p=pr(t,a-.03,a+.22),e=eb(p);
+    S(s,{opacity:cl(p*2.5),transform:`translateY(${(1-e)*-80}px) scale(${.6+.4*e})`,filter:`blur(${(1-cl(p*1.5))*10}px)`})});
+  const kq=pr(t,15.35,15.6);S('#a3',{color:`rgb(${Math.round(lerp(255,25,kq))},${Math.round(lerp(255,230,kq))},255)`,textShadow:`0 0 ${30*kq}px #19E6FF`});
+  S('#pk1',{transform:`translateY(${-40*eio(pr(t,15.9,16.1))}px) scale(${1-.15*eio(pr(t,15.9,16.1))})`});
+  [...$('#pk2').children].forEach((e,i)=>{const a=15.96+i*.025,p=pr(t,a,a+.3),e2=eb(p);
+    S(e,{opacity:cl(p*3),transform:`translateY(${(1-e2)*-260}px) rotateX(${(1-e2)*-90}deg) scale(${1+.12*bump(t,a+.2,a+.45)})`})});
+  S('#pk2',{transform:`translate(${t>15.96&&t<16.2?Math.sin(t*95)*10*(1-pr(t,15.96,16.2)):0}px,0)`});
+  S('#pkl',{transform:`scaleX(${eo(pr(t,16.0,16.3))})`,opacity:pr(t,16.0,16.05)});
+  [...$('#pkc').children].forEach((e,i)=>{const p=eb(pr(t,16.12+i*.08,16.4+i*.08));S(e,{opacity:cl(p*2),transform:`translateY(${(1-p)*60}px) scale(${p})`})});
+  S('#fx',{background:`radial-gradient(circle at 50% 46%,rgba(255,200,250,${bump(t,15.94,16.15)*.7}),transparent 60%)`});
+}
+// мини-рилс внутри телефонов (заглушка до реальных видео пользователя)
+function miniReel(i){const w=['REELS','МОНТАЖ','ЖИ ДАУЫС'][i],g=[['#2F6BFF','#9B30FF'],['#9B30FF','#FF2BD6'],['#19E6FF','#2F6BFF']][i];
+  return `<div class="abs mr" style="inset:0;background:linear-gradient(160deg,${g[0]},${g[1]} 70%,#02030A)"></div>
+   <div class="abs mrw" style="left:0;right:0;top:250px;text-align:center;font:900 ${i==2?50:60}px/1 'Noto Sans';text-shadow:0 0 24px #fff">${w}</div>
+   <div class="abs mrs" style="left:30px;right:30px;top:360px;text-align:center"><span style="background:#FF2BD6;padding:4px 12px;border-radius:10px;font:900 22px 'Noto Sans'">субтитр</span></div>
+   <div class="abs" style="left:30px;right:30px;bottom:40px;height:10px;border-radius:5px;background:rgba(255,255,255,.3)"><i class="abs mrp" style="left:0;top:0;bottom:0;background:#fff;border-radius:5px"></i></div>`;}
+function miniReelSet(root,i,t){S(root.querySelector('.mr'),{filter:`hue-rotate(${Math.sin(t*1.2+i)*30}deg)`});
+  S(root.querySelector('.mrw'),{transform:`scale(${1+.08*Math.sin(t*4+i*2)}) translateY(${Math.sin(t*2+i)*10}px)`});
+  S(root.querySelector('.mrp'),{width:(((t*.3+i*.33)%1)*100)+'%'});}
+// ================ ФИНАЛ 27.70–35.55 ================
+function sFin(t){
+  build('fin',`<div id="phs" class="abs" style="left:0;right:0;top:260px;height:700px;perspective:1700px"></div>
+   <div id="fa" class="abs" style="left:40px;right:40px;top:1010px;text-align:center">
+     <div style="font:900 74px/1.1 'Noto Sans'"><span class="w" id="b1">БАРЛЫҒЫ —</span></div>
+     <div style="margin-top:22px"><span class="w pop pk" id="b2" style="position:relative;padding:16px 34px;font:900 58px 'Noto Sans'">ҚАЗАҚ ТІЛІНДЕ</span></div>
+     <div style="margin-top:34px"><span class="w pop" id="b3" style="position:relative;padding:16px 34px;font:900 58px 'Noto Sans'">НӨЛДЕН БАСТАП</span></div></div>
+   <div id="ft" class="abs" style="left:40px;right:40px;top:990px;text-align:center">
+     <div style="font:900 80px/1.05 'Noto Sans';letter-spacing:-2px"><span class="w" id="f1">СЕН ДЕ</span> <span class="w grad-text glow" id="f2">ОСЫНДАЙ</span></div>
+     <div style="font:900 80px/1.05 'Noto Sans';letter-spacing:-2px"><span class="w grad-text glow" id="f3">ВИДЕОЛАР</span></div>
+     <div style="font:900 80px/1.05 'Noto Sans';letter-spacing:-2px"><span class="w" id="f4">ЖАСАУДЫ</span> <span class="w" id="f5">ҮЙРЕН!</span></div></div>
+   <div id="cta" class="abs" style="left:150px;right:150px;top:1300px;height:140px;border-radius:999px;background:var(--grad);display:grid;place-items:center;font:900 58px 'Noto Sans';letter-spacing:2px">КУРСҚА ҚОСЫЛ</div>
+   <div id="link" class="abs" style="left:0;right:0;top:1468px;text-align:center;font:800 42px 'Noto Sans'">Сілтеме профильде <span id="arr" style="display:inline-block;color:var(--cyan)">↑</span></div>
+   <div id="cur" class="cursor">${CUR}</div><div id="rip" class="ripple"></div>`,()=>{
+    $('#phs').innerHTML=[0,1,2].map(i=>`<div class="rig" id="fp${i}" style="left:390px;top:30px;width:300px;height:600px">${phone('fq'+i,300,600,miniReel(i))}</div>`).join('');});
+  bg(t);plexus(t,0,0,0);hud(0);
+  const sq=eio(pr(t,30.6,31.0));
+  [0,1,2].forEach(i=>{const o=i-1,p=eb(pr(t,27.72+i*.1,28.25+i*.1));
+    S('#fp'+i,{transform:`translateX(${o*320*p}px) translateY(${(1-p)*500+Math.abs(o)*50+Math.sin(t*1.5+i)*8}px) rotateY(${o*-26+Math.sin(t*.8)*4}deg) rotateZ(${o*7}deg) translateZ(${-Math.abs(o)*140}px)`,opacity:cl(p*2),zIndex:o?1:2});
+    miniReelSet($('#fp'+i),i,t);});
+  // «Барлығы — қазақ тілінде, нөлден бастап»
+  [['#b1',27.86],['#b2',28.58],['#b3',29.6]].forEach(([s,a])=>{const p=pr(t,a-.04,a+.28),e=eb(p);S(s,{opacity:cl(p*2.5)*(1-sq),transform:`translateY(${(1-e)*70-sq*60}px) scale(${(.7+.3*e)*(1+.06*bump(t,a+.25,a+.5))})`,filter:`blur(${(1-cl(p*1.6))*10+sq*12}px)`})});
+  // «Сен де осындай видеолар жасауды үйрен»
+  [['#f1',30.74],['#f2',31.14],['#f3',31.54],['#f4',31.9],['#f5',32.36]].forEach(([s,a])=>{const p=pr(t,a-.04,a+.28),e=eb(p);S(s,{opacity:cl(p*2.5),transform:`translateY(${(1-e)*70}px) scale(${.7+.3*e})`,filter:`blur(${(1-cl(p*1.6))*10}px)`})});
+  const kk=pr(t,32.36,32.6);S('#f5',{color:`rgb(255,${Math.round(lerp(255,43,kk))},${Math.round(lerp(255,214,kk))})`,textShadow:`0 0 ${30*kk}px #FF2BD6`});
+  // «курсқа қосылу үшін профильдегі сілтемеге өт»
+  S('#cta',{opacity:pr(t,33.0,33.12),transform:`scale(${eb(pr(t,33.0,33.35))*(1-.06*bump(t,33.9,34.1))*(1+.03*Math.sin(t*7)*pr(t,34.2,34.4))})`,boxShadow:`0 0 ${50+30*Math.sin(t*7)}px rgba(255,43,214,.85)`});
+  cursorAt(t,33.3,33.9,980,1800,620,1380,33.9);
+  S('#link',{opacity:pr(t,34.0,34.2),transform:`translateY(${(1-eb(pr(t,34.0,34.35)))*40}px)`});S('#arr',{transform:`translateY(${-14*Math.abs(Math.sin(t*5))}px)`});
+}
+// ================ СУБТИТРЫ (по словам диктора) ================
+const SUB=[
+ [['Алдымен',4.92,5.34],['GitHub-қа',5.34,6.02,1],['тіркеліп,',6.02,6.52]],
+ [['өз',6.64,6.86],['репозиторийіңді',6.86,7.68,1],['ашуды',7.68,7.94],['үйренесің.',7.94,8.46]],
+ [['Оны',8.72,9.0],['Claude-қа',9.0,9.55,1],['қосып,',9.55,9.92]],
+ [['дайын',10.18,10.32],['шаблондарды',10.32,10.92,1],['пайдаланасың.',10.92,11.7]],
+ [['Жұмыс',11.94,12.2,1],['ортаңды',12.2,12.68,1],['құрап,',12.68,13.02]],
+ [['алғашқы',13.02,13.56],['жобаңа',13.56,13.94,1],['кірісесің.',13.94,14.5]],
+ [['Тек',16.8,16.98],['мәтін',16.98,17.38,1],['арқылы',17.38,17.78]],
+ [['анимациялық',17.78,18.52],['видео',18.52,18.9,1],['жасайсың.',18.9,19.32]],
+ [['Дайын',19.32,19.9],['видеоларды',19.9,20.48],['монтаждап,',20.48,21.16,1]],
+ [['субтитрлермен,',21.16,22.02,1],['ерекше',22.02,22.62],['эффектілер',22.62,23.3,1],['қосасың.',23.3,23.98]],
+ [['Тіпті',24.08,24.4],['жасанды',24.4,24.96,1],['интеллект',24.96,25.46,1],['арқылы',25.46,26.0]],
+ [['дауыс',26.0,26.45,1],['қосуды',26.45,26.75],['да',26.75,26.9],['үйренесің.',26.9,27.48]],
+];
+(function(){const d=document.createElement('div');d.id='subs';d.className='abs';d.style.cssText='left:70px;right:70px;top:1398px;text-align:center;z-index:30;pointer-events:none';document.getElementById('stage').insertBefore(d,document.getElementById('fx'));})();
+let subCur=-1;
+function subs(t){const el=$('#subs');let k=-1;
+  SUB.forEach((c,i)=>{const a=c[0][1]-.12,b=(SUB[i+1]&&SUB[i+1][0][1]-c[c.length-1][2]<.5)?SUB[i+1][0][1]-.12:c[c.length-1][2]+.25;if(t>=a&&t<b)k=i;});
+  if(k<0){el.style.opacity=0;return;}
+  if(k!==subCur){subCur=k;el.innerHTML=`<div id="sp" style="display:inline-block;padding:16px 30px;border-radius:30px;background:rgba(4,6,24,.62);border:2px solid rgba(160,140,255,.45);box-shadow:0 0 40px rgba(155,48,255,.35);backdrop-filter:blur(12px);font:800 50px/1.25 'Noto Sans'">${SUB[k].map((w,j)=>`<span class="w sw" style="margin:0 6px">${w[0]}</span>`).join(' ')}</div>`;}
+  const c=SUB[k],a=c[0][1]-.12,p=eb(pr(t,a,a+.2));el.style.opacity=cl(pr(t,a,a+.1)*1);S('#sp',{transform:`scale(${.85+.15*p})`});
+  [...el.querySelectorAll('.sw')].forEach((s,j)=>{const w=c[j],act=t>=w[1]-.03&&t<w[2]+.02,past=t>=w[2];
+    S(s,{color:act?'#FF2BD6':(w[3]?'#19E6FF':'#fff'),opacity:act||past?1:.45,transform:`scale(${act?1+.12*eb(pr(t,w[1]-.03,w[1]+.15)):1})`,textShadow:act?'0 0 24px rgba(255,43,214,.9)':(w[3]&&past?'0 0 16px rgba(25,230,255,.6)':'none')});});
+}
+// ===== таймлайн: реальные секунды озвучки → «дизайн-время» сцены =====
+// [начало, конец, функция, [дизайн_от, дизайн_до] | null, переход, ox, oy]
+const TL=[[0,4.70,hook,null,'screen',540,1500],
+ [4.70,6.60,s01,[3.0,6.3],'zoom'],[6.60,8.60,s02,[7.0,10.6],'line'],[8.60,10.10,s03,[11.0,13.6],'zoom'],
+ [10.10,11.85,s04,[15.0,18.4],'screen',540,1100],[11.85,14.70,s05,[19.0,23.0],'line'],[14.70,16.65,sPrak,null,'zoom'],
+ [16.65,19.30,s06,[23.0,27.0],'screen',540,1220],[19.30,24.00,s07,[28.0,33.0],'line'],[24.00,27.70,s08,[33.0,36.0],'zoom'],[27.70,36,sFin,null,'']];
+let RT=0;
+function ENV(t){const e=window.ENVD||[];const i=Math.max(0,Math.min(e.length-1,Math.round((t)*30)));return e[i]||0;}
+window.frame=function(t){RT=t;const i=TL.findIndex(s=>t>=s[0]&&t<s[1]),sc=TL[i<0?TL.length-1:i];
+  S('#scene',{transform:'',filter:'',opacity:1,transformOrigin:'50% 50%'});S('#fx',{background:'transparent'});
+  const td=sc[3]?sc[3][0]+(t-sc[0])*(sc[3][1]-sc[3][0])/(sc[1]-sc[0]):t;
+  sc[2](td); if(sc[0]>0) sceneIn(t,sc[0]);
+  const a=sc[1]-.3; if(t>a&&sc[1]<35.6){ if(sc[4]==='screen') intoScreen(t,a,sc[5],sc[6]); else if(sc[4]==='line') lineWipe(t,a); else intoScreen(t,a,540,1000);}
+  subs(t);
+};
+window.frame(0);
+</script></body></html>
