@@ -166,14 +166,14 @@ export const EndCard: React.FC<{ dur: number; startSec: number }> = ({ startSec 
   return (
     <AbsoluteFill>
       <div style={{
-        position: "absolute", left: 0, right: 0, top: 900, bottom: 0, background: "#FFFDF8",
+        position: "absolute", left: 0, right: 0, top: 1030, bottom: 0, background: "#FFFDF8",
         borderTopLeftRadius: 56, borderTopRightRadius: 56, transform: `translateY(${(1 - panel) * 1100}px)`,
         boxShadow: "0 -20px 60px rgba(0,0,0,0.25)", display: "flex", flexDirection: "column", alignItems: "center", paddingTop: 34, paddingLeft: SAFE.left, paddingRight: SAFE.rightLow,
       }}>
-        <div style={{ ...anim(0), fontFamily: FONT.sans, fontWeight: 900, fontSize: 50, letterSpacing: 16, color: COLORS.ruby }}>{BRAND.city}</div>
+        <div style={{ ...anim(0), fontFamily: FONT.sans, fontWeight: 800, fontSize: 40, letterSpacing: 18, color: COLORS.goldDeep }}>{BRAND.city}</div>
         <div style={{ ...anim(0), height: 3, width: 110, background: GOLD_GRADIENT, margin: "12px 0 14px" }} />
-        <div style={{ ...anim(1), fontFamily: FONT.sans, fontWeight: 800, fontSize: 29, lineHeight: 1.2, color: "#3A2A1E", textAlign: "center", letterSpacing: 0.5 }}>
-          ТҰСАУКЕСЕР ЖӘНЕ 1 ЖАСҚА КИІМДЕР ПРОКАТЫ
+        <div style={{ ...anim(1), fontFamily: FONT.sans, fontWeight: 900, fontSize: 40, lineHeight: 1.18, color: COLORS.ruby, textAlign: "center", letterSpacing: 0.5 }}>
+          ТҰСАУКЕСЕР ЖӘНЕ 1 ЖАСҚА<br />КИІМДЕР ПРОКАТЫ
         </div>
         <div style={{ marginTop: 10, clipPath: `inset(0 ${100 - wipe * 100}% 0 0)`, fontFamily: FONT.sans, fontWeight: 900, fontSize: 112, lineHeight: 1.08, backgroundImage: GOLD_GRADIENT, WebkitBackgroundClip: "text", color: "transparent" }}>
           7 000 ₸ <span style={{ fontSize: 64 }}>БАСТАП</span>
@@ -182,7 +182,7 @@ export const EndCard: React.FC<{ dur: number; startSec: number }> = ({ startSec 
         {BRAND.whatsapp && (
           <div style={{ ...anim(4), marginTop: 14, fontFamily: FONT.sans, fontWeight: 800, fontSize: 48, color: COLORS.ruby }}>{BRAND.whatsapp}</div>
         )}
-        <div style={{ ...anim(4), marginTop: 28, fontFamily: FONT.sans, fontWeight: 700, fontSize: 34, color: "#5B4A3A" }}>
+        <div style={{ ...anim(4), marginTop: 20, fontFamily: FONT.sans, fontWeight: 700, fontSize: 32, color: "#5B4A3A" }}>
           Instagram: <span style={{ color: COLORS.goldDeep }}>{BRAND.instagram}</span>
         </div>
       </div>

@@ -74,8 +74,8 @@ const SceneView: React.FC<{ s: Scene; dur: number }> = ({ s, dur }) => {
     case "end":
       return (
         <AbsoluteFill style={{ background: "#FFFDF8" }}>
-          <div style={{ position: "absolute", left: 0, top: 0, width: 1080, height: 960, overflow: "hidden" }}>
-            <ClipLayer src={s.clip} zoom={[1.0, 1.03]} dur={dur} origin="50% 45%" pos="50% 31%" />
+          <div style={{ position: "absolute", left: 0, top: 0, width: 1080, height: 1080, overflow: "hidden" }}>
+            <ClipLayer src={s.clip} zoom={[1.1, 1.15]} dur={dur} origin="40% 42%" pos="50% 30%" />
           </div>
           <EndCard dur={dur} startSec={s.from} />
         </AbsoluteFill>
