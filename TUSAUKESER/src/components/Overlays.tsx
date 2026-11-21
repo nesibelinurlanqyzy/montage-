@@ -179,23 +179,10 @@ export const EndCard: React.FC<{ dur: number; startSec: number }> = ({ startSec 
           7 000 ₸ <span style={{ fontSize: 64 }}>БАСТАП</span>
         </div>
         <div style={{ height: 4, width: 520 * wipe, background: GOLD_GRADIENT, borderRadius: 2, marginTop: 2 }} />
-        <div style={{
-          ...anim(3), marginTop: 22, width: SAFE_W, boxSizing: "border-box", padding: "22px 24px", borderRadius: 36, background: COLORS.ruby,
-          display: "flex", alignItems: "center", gap: 24, transform: `${anim(3).transform} scale(${pulse})`,
-          boxShadow: waOn ? "0 14px 40px rgba(126,16,34,0.45)" : "0 10px 26px rgba(126,16,34,0.3)",
-        }}>
-          <div style={{ width: 86, height: 86, borderRadius: 43, background: COLORS.whatsapp, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-            <WhatsAppIcon />
-          </div>
-          <div style={{ fontFamily: FONT.sans, fontWeight: 900, fontSize: 41, lineHeight: 1.18, letterSpacing: 0, whiteSpace: "nowrap" }}>
-            <span style={hl(t >= 21.8 && t < 22.54)}>БОС КҮНДЕРДІ</span> <span style={hl(false)}>БІЛУ ҮШІН</span><br />
-            <span style={hl(waOn)}>WHATSAPP-ҚА</span> <span style={hl(t >= 24.52)}>ЖАЗЫҢЫЗ</span>
-          </div>
-        </div>
         {BRAND.whatsapp && (
           <div style={{ ...anim(4), marginTop: 14, fontFamily: FONT.sans, fontWeight: 800, fontSize: 48, color: COLORS.ruby }}>{BRAND.whatsapp}</div>
         )}
-        <div style={{ ...anim(4), marginTop: 18, fontFamily: FONT.sans, fontWeight: 700, fontSize: 32, color: "#5B4A3A" }}>
+        <div style={{ ...anim(4), marginTop: 28, fontFamily: FONT.sans, fontWeight: 700, fontSize: 34, color: "#5B4A3A" }}>
           Instagram: <span style={{ color: COLORS.goldDeep }}>{BRAND.instagram}</span>
         </div>
       </div>
