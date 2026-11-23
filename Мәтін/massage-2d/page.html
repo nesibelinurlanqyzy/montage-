@@ -1,0 +1,254 @@
+<!doctype html><html><head><meta charset="utf-8">
+<style>
+@font-face{font-family:MS;src:url(../../.claude/skills/montazh-kz/fonts/Montserrat.ttf);font-weight:100 900}
+html,body{margin:0;width:360px;height:640px;overflow:hidden;background:#D8B796}
+#st{position:absolute;inset:0;overflow:hidden;font-family:MS,sans-serif}
+svg{position:absolute;inset:0}
+.sub{position:absolute;left:24px;right:24px;top:468px;text-align:center;font:800 19px/1.18 MS;color:#fff;
+ -webkit-text-stroke:5px #241c1a;paint-order:stroke fill;letter-spacing:-.2px}
+.sub b{color:#FFE27A}
+.hd{position:absolute;left:14px;right:14px;top:96px;text-align:center;color:#fff;font:900 34px/0.98 MS;letter-spacing:-.6px;
+ -webkit-text-stroke:6px #241c1a;paint-order:stroke fill;text-transform:uppercase}
+.pill{display:inline-block;background:#E5322D;color:#fff;border:3px solid #241c1a;border-radius:12px;padding:2px 12px 4px;
+ font:900 22px/1.1 MS;-webkit-text-stroke:0;text-transform:none;margin-top:6px;box-shadow:3px 3px 0 #241c1a}
+.sm{font:800 17px/1.15 MS;-webkit-text-stroke:4px #241c1a;text-transform:none;display:block;margin-top:6px}
+.ig{position:absolute;left:0;right:0;text-align:center;top:76px;font:700 9.5px MS;color:#fff;-webkit-text-stroke:2.6px #241c1a;paint-order:stroke fill;opacity:.95}
+</style></head><body><div id="st"><svg id="bg" viewBox="0 0 360 640"></svg><svg id="sv" viewBox="0 0 360 640"></svg>
+<div id="hd" class="hd"></div><div id="sub" class="sub"></div><div id="ig" class="ig"></div></div>
+<script>
+const INK='#241c1a', SKIN='#F2C9A6', HAIR='#1f1a1d', BLUSH='#EE8E86', GOLD='#E6B44C', RED='#E5322D';
+const HANDLE='@ainurana_massaj_ashibulak';
+let D=null;
+const cl=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const ez=x=>{x=cl(x);return x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2};
+const back=x=>{x=cl(x);const c=1.7;return 1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2)};
+const pop=(t,t0,d=.35)=>t<t0?0:back((t-t0)/d);
+const st=(s)=>`stroke="${INK}" stroke-width="${s||3}" stroke-linejoin="round" stroke-linecap="round"`;
+
+// ---------- кейіпкер: әйел (бюст), origin = мойын түбі
+function face(expr,t,blinkSeed){
+  const bl=((t*0.7+blinkSeed)%3.1)<0.12;
+  let eyes='',brows='',mouth='',extra='';
+  const eyeDot=(x)=>bl||expr==='closed'||expr==='bliss'?`<path d="M${x-6} -56 Q${x} -51 ${x+6} -56" fill="none" ${st(2.6)}/>`
+     :expr==='happy'?`<path d="M${x-6} -55 Q${x} -62 ${x+6} -55" fill="none" ${st(2.8)}/>`
+     :expr==='wide'?`<ellipse cx="${x}" cy="-57" rx="5" ry="6.5" fill="${INK}"/><circle cx="${x+1.6}" cy="-59" r="1.6" fill="#fff"/>`
+     :`<ellipse cx="${x}" cy="-57" rx="4.2" ry="5.4" fill="${INK}"/><circle cx="${x+1.4}" cy="-59" r="1.3" fill="#fff"/>`;
+  eyes=eyeDot(-18)+eyeDot(18);
+  if(expr==='tired'||expr==='sad'||expr==='pain'){
+    brows=`<path d="M-27 -70 L-11 -74" fill="none" ${st(2.6)}/><path d="M27 -70 L11 -74" fill="none" ${st(2.6)}/>`;
+    if(expr==='tired') extra=`<path d="M-24 -48 Q-18 -45 -12 -48" fill="none" stroke="#B98C7A" stroke-width="1.8"/><path d="M24 -48 Q18 -45 12 -48" fill="none" stroke="#B98C7A" stroke-width="1.8"/>`;
+  } else if(expr==='angry'){
+    brows=`<path d="M-27 -74 L-11 -69" fill="none" ${st(2.8)}/><path d="M27 -74 L11 -69" fill="none" ${st(2.8)}/>`;
+  } else brows=`<path d="M-27 -71 Q-19 -77 -11 -73" fill="none" ${st(2.6)}/><path d="M27 -71 Q19 -77 11 -73" fill="none" ${st(2.6)}/>`;
+  mouth = expr==='happy'||expr==='bliss'?`<path d="M-11 -32 Q0 -20 11 -32 Z" fill="#B8343F" ${st(2.4)}/>`
+    : expr==='sad'?`<path d="M-8 -26 Q0 -33 8 -26" fill="none" ${st(2.6)}/>`
+    : expr==='pain'?`<path d="M-10 -29 L-5 -32 L0 -28 L5 -32 L10 -29" fill="none" ${st(2.4)}/>`
+    : expr==='wide'?`<ellipse cx="0" cy="-29" rx="5" ry="6" fill="#B8343F" ${st(2.2)}/>`
+    : expr==='angry'?`<path d="M-8 -28 L8 -29" fill="none" ${st(2.6)}/>`
+    : expr==='closed'?`<path d="M-7 -30 Q0 -26 7 -30" fill="none" ${st(2.4)}/>`
+    : `<path d="M-7 -29 Q0 -31 7 -28" fill="none" ${st(2.4)}/>`;
+  return eyes+brows+extra+
+   `<ellipse cx="-30" cy="-41" rx="8" ry="5" fill="${BLUSH}" opacity=".75"/><ellipse cx="30" cy="-41" rx="8" ry="5" fill="${BLUSH}" opacity=".75"/>`+
+   `<path d="M0 -50 L-2 -41 L2 -40" fill="none" stroke="#B98C7A" stroke-width="2" stroke-linecap="round"/>`+mouth;
+}
+function woman(o){
+  const {x,y,s=1,hair='bun',top='#FFFFFF',expr='tired',t=0,seed=0,arms='none',rot=0}=o;
+  const br=Math.sin(t*2.2+seed)*1.2;
+  let h='';
+  if(hair==='down') h+=`<path d="M-54 -96 C-74 -40 -70 30 -62 66 L62 66 C70 30 74 -40 54 -96 Z" fill="${HAIR}" ${st()}/>`;
+  // дене
+  h+=`<path d="M-82 140 C-84 60 -52 28 0 28 C52 28 84 60 82 140 Z" fill="${top}" ${st()}/>`;
+  if(top==='#FFFFFF') h+=`<path d="M-20 30 Q0 44 20 30" fill="none" ${st(2.5)}/>`;
+  if(o.cardigan) h+=`<path d="M-82 140 C-84 60 -52 28 -20 30 L-8 140Z" fill="${o.cardigan}" ${st()}/><path d="M82 140 C84 60 52 28 20 30 L8 140Z" fill="${o.cardigan}" ${st()}/>`;
+  h+=`<path d="M-13 -8 L-13 30 Q0 38 13 30 L13 -8Z" fill="${SKIN}" ${st()}/>`;
+  if(hair==='towel') h+=`<path d="M-58 -70 C-62 -128 62 -128 58 -70 C54 -60 -54 -60 -58 -70Z" fill="#fff" ${st()}/>`;
+  if(hair==='bun') h+=`<circle cx="0" cy="-122" r="24" fill="${HAIR}" ${st()}/><path d="M-12 -120 Q0 -112 12 -122" fill="none" stroke="#3a3236" stroke-width="2"/>`;
+  // бас
+  h+=`<ellipse cx="0" cy="-58" rx="47" ry="54" fill="${SKIN}" ${st()}/>`;
+  h+=`<circle cx="-47" cy="-44" r="3.4" fill="${GOLD}" ${st(1.6)}/><circle cx="47" cy="-44" r="3.4" fill="${GOLD}" ${st(1.6)}/>`;
+  if(hair!=='towel'){
+    h+=`<path d="M-49 -60 C-56 -128 56 -128 49 -60 C44 -88 14 -100 0 -98 C-14 -100 -44 -88 -49 -60Z" fill="${HAIR}" ${st()}/>`;
+    if(hair==='bun') h+=`<path d="M-46 -70 C-52 -64 -50 -50 -47 -46" fill="none" stroke="${HAIR}" stroke-width="4" stroke-linecap="round"/><path d="M44 -74 C52 -62 46 -52 49 -44" fill="none" stroke="${HAIR}" stroke-width="3" stroke-linecap="round"/>`;
+    if(hair==='down') h+=`<path d="M-49 -62 C-54 -30 -52 0 -56 30" fill="none" stroke="${HAIR}" stroke-width="8" stroke-linecap="round"/><path d="M49 -62 C54 -30 52 0 56 30" fill="none" stroke="${HAIR}" stroke-width="8" stroke-linecap="round"/>`;
+  } else h+=`<path d="M-50 -76 C-40 -112 40 -112 50 -76 C30 -92 -30 -92 -50 -76Z" fill="#fff" ${st()}/><path d="M-30 -96 Q0 -104 30 -96" fill="none" stroke="#e5ddd6" stroke-width="3"/>`;
+  h+=face(expr,t,seed);
+  if(o.sweat) h+=`<path d="M52 -88 Q58 -76 52 -72 Q46 -76 52 -88Z" fill="#9ED3F0" ${st(1.8)}/>`;
+  // қолдар
+  if(arms==='neck') h+=`<path d="M70 120 C80 60 60 20 30 2" fill="none" stroke="${INK}" stroke-width="20" stroke-linecap="round"/><path d="M70 120 C80 60 60 20 30 2" fill="none" stroke="${o.cardigan||top}" stroke-width="13" stroke-linecap="round"/><ellipse cx="26" cy="0" rx="14" ry="12" fill="${SKIN}" ${st()}/>`;
+  if(arms==='cup') h+=`<g transform="translate(0 92)"><path d="M-22 -18 L22 -18 L18 16 Q0 24 -18 16Z" fill="#fff" ${st()}/><path d="M22 -10 Q36 -8 22 6" fill="none" ${st(3)}/><ellipse cx="-24" cy="2" rx="12" ry="10" fill="${SKIN}" ${st()}/><ellipse cx="24" cy="2" rx="12" ry="10" fill="${SKIN}" ${st()}/></g>`;
+  return `<g transform="translate(${x} ${y+br}) rotate(${rot}) scale(${s})">${h}</g>`;
+}
+// массажист (сіздің суреттегідей: орамал + ақ форма)
+function master(o){
+  const {x,y,s=1,t=0,hands=null}=o; const br=Math.sin(t*2+1)*1;
+  let h=`<path d="M-84 140 C-86 60 -54 28 0 28 C54 28 86 60 84 140 Z" fill="#fff" ${st()}/>`;
+  h+=`<path d="M0 34 L0 140" stroke="${GOLD}" stroke-width="2.5"/><rect x="-4" y="44" width="8" height="12" rx="2" fill="${GOLD}" ${st(1.4)}/>`;
+  h+=`<path d="M-60 60 L-60 140 M60 60 L60 140" stroke="#bfbfc6" stroke-width="2"/>`;
+  h+=`<path d="M-30 -10 C-34 20 -22 36 0 38 C22 36 34 20 30 -10Z" fill="#fff" ${st()}/>`;
+  h+=`<ellipse cx="0" cy="-54" rx="54" ry="62" fill="#fff" ${st()}/>`;
+  h+=`<ellipse cx="0" cy="-54" rx="40" ry="47" fill="#F4D0B4" ${st(2.5)}/>`;
+  // орамал (ақ-қара өрнекті)
+  h+=`<defs><pattern id="pt" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="#2a2a33"/><path d="M1 1h3v3h-3z" fill="#e8e8ee"/></pattern></defs>`;
+  h+=`<path d="M-50 -58 C-58 -126 58 -126 50 -58 C40 -84 -40 -84 -50 -58Z" fill="url(#pt)" ${st()}/><path d="M44 -90 L70 -70 L60 -60 L48 -74Z" fill="url(#pt)" ${st(2.5)}/>`;
+  h+=`<path d="M-48 -60 C-40 -76 40 -76 48 -60" fill="none" stroke="#fff" stroke-width="5"/>`;
+  h+=`<path d="M-26 -52 Q-18 -47 -10 -52" fill="none" ${st(2.6)}/><path d="M26 -52 Q18 -47 10 -52" fill="none" ${st(2.6)}/><path d="M-28 -63 Q-19 -68 -10 -64" fill="none" ${st(2.4)}/><path d="M28 -63 Q19 -68 10 -64" fill="none" ${st(2.4)}/>`;
+  h+=`<ellipse cx="-30" cy="-38" rx="8" ry="5" fill="${BLUSH}" opacity=".6"/><ellipse cx="30" cy="-38" rx="8" ry="5" fill="${BLUSH}" opacity=".6"/><path d="M-8 -26 Q0 -20 8 -26" fill="none" ${st(2.4)}/>`;
+  for(const [fx,fy] of [[-20,-36],[-14,-33],[16,-35],[22,-38]]) h+=`<circle cx="${fx}" cy="${fy}" r="1.1" fill="#c48b6c"/>`;
+  let arms='';
+  if(hands){ for(const [ax,ay,hx,hy] of hands){
+    arms+=`<path d="M${ax} ${ay} Q${(ax+hx)/2} ${Math.max(ay,hy)+10} ${hx} ${hy}" fill="none" stroke="${INK}" stroke-width="21" stroke-linecap="round"/><path d="M${ax} ${ay} Q${(ax+hx)/2} ${Math.max(ay,hy)+10} ${hx} ${hy}" fill="none" stroke="#fff" stroke-width="14" stroke-linecap="round"/><ellipse cx="${hx}" cy="${hy}" rx="13" ry="10" fill="#F4D0B4" ${st()}/>`; } }
+  return `<g transform="translate(${x} ${y+br}) scale(${s})">${h}${arms}</g>`;
+}
+// ---------- заттар
+const spark=(x,y,r,c='#fff')=>`<path d="M${x} ${y-r} Q${x+r*.18} ${y-r*.18} ${x+r} ${y} Q${x+r*.18} ${y+r*.18} ${x} ${y+r} Q${x-r*.18} ${y+r*.18} ${x-r} ${y} Q${x-r*.18} ${y-r*.18} ${x} ${y-r}Z" fill="${c}"/>`;
+function sparkles(t,n,box,seed=1,c='#fff'){let h='';for(let i=0;i<n;i++){const a=Math.sin(i*12.9898+seed)*43758.5453%1, b=Math.sin(i*78.233+seed)*12345.678%1;
+ const x=box[0]+Math.abs(a)*box[2], y=box[1]+Math.abs(b)*box[3]; const k=Math.max(0,Math.sin(t*3+i*1.7)); h+=spark(x,y,2+6*k,c);}return h;}
+function mirror(x,y,s,inner){return `<g transform="translate(${x} ${y}) scale(${s})"><path d="M0 120 L0 160 M-40 166 L40 166" ${st(6)} fill="none"/><ellipse cx="0" cy="0" rx="78" ry="112" fill="${GOLD}" ${st()}/><ellipse cx="0" cy="0" rx="66" ry="100" fill="#CFE6EA" ${st(2.5)}/><clipPath id="mc"><ellipse cx="0" cy="0" rx="66" ry="100"/></clipPath><g clip-path="url(#mc)">${inner||''}</g><path d="M-40 -60 L-20 -80 M-44 -36 L-10 -70" stroke="#fff" stroke-width="5" opacity=".7"/></g>`;}
+const laptop=(x,y,s)=>`<g transform="translate(${x} ${y}) scale(${s})"><rect x="-60" y="-80" width="120" height="78" rx="6" fill="#4b5568" ${st()}/><rect x="-52" y="-72" width="104" height="62" fill="#A8D8EE"/><path d="M-44 -58h60M-44 -46h80M-44 -34h44" stroke="#fff" stroke-width="5" stroke-linecap="round"/><path d="M-76 0 L76 0 L66 12 L-66 12Z" fill="#9aa3b5" ${st()}/></g>`;
+const pot=(x,y,s,t)=>`<g transform="translate(${x} ${y}) scale(${s})"><rect x="-50" y="-30" width="100" height="60" rx="10" fill="#E2725B" ${st()}/><rect x="-60" y="-36" width="120" height="12" rx="6" fill="#C95A45" ${st()}/><path d="M-50 -10 h-14 M50 -10 h14" ${st(6)}/>${[-24,0,24].map((d,i)=>`<path d="M${d} -46 q${-8+4*Math.sin(t*4+i)} -14 0 -28 q8 -14 0 -28" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".85"/>`).join('')}</g>`;
+const toys=(x,y,s,t)=>`<g transform="translate(${x} ${y}) scale(${s})"><circle cx="-56" cy="${-10+Math.sin(t*6)*6}" r="20" fill="#F7C948" ${st()}/><path d="M-76 -10 h40 M-56 -30 v40" stroke="${RED}" stroke-width="4"/><g transform="translate(10 ${Math.sin(t*5+1)*5})"><circle cx="0" cy="-4" r="20" fill="#B07A4F" ${st()}/><circle cx="-14" cy="-22" r="8" fill="#B07A4F" ${st()}/><circle cx="14" cy="-22" r="8" fill="#B07A4F" ${st()}/><circle cx="-6" cy="-6" r="2.5" fill="${INK}"/><circle cx="6" cy="-6" r="2.5" fill="${INK}"/></g><g transform="translate(64 ${Math.sin(t*7+2)*5})"><rect x="-22" y="-14" width="44" height="22" rx="6" fill="#4FA3E0" ${st()}/><circle cx="-12" cy="10" r="7" fill="${INK}"/><circle cx="12" cy="10" r="7" fill="${INK}"/></g></g>`;
+const note=(x,y,r,c,s=1)=>`<g transform="translate(${x} ${y}) rotate(${r}) scale(${s})"><rect x="-26" y="-26" width="52" height="52" fill="${c}" ${st(2.5)}/><path d="M-16 -10h32M-16 0h24M-16 10h28" stroke="${INK}" stroke-width="2.5" opacity=".55"/></g>`;
+const phone=(x,y,s,ring,t)=>{const sh=ring?Math.sin(t*60)*4:0;return `<g transform="translate(${x+sh} ${y}) scale(${s})"><rect x="-22" y="-40" width="44" height="80" rx="9" fill="#2b2b33" ${st()}/><rect x="-17" y="-33" width="34" height="62" rx="4" fill="${ring?'#7FD48F':'#46465a'}"/>${ring?`<path d="M-8 -6 q8 -10 16 0 l-4 6 h-8z" fill="#fff"/><path d="M-36 -20 q-10 20 0 40 M36 -20 q10 20 0 40 M-46 -28 q-14 28 0 56 M46 -28 q14 28 0 56" fill="none" stroke="${RED}" stroke-width="4" stroke-linecap="round"/>`:''}</g>`;};
+const cup=(x,y,s,t)=>`<g transform="translate(${x} ${y}) scale(${s})"><path d="M-24 -16 L24 -16 L20 18 Q0 26 -20 18Z" fill="#fff" ${st()}/><path d="M24 -8 Q38 -6 24 8" fill="none" ${st(3)}/><ellipse cx="0" cy="22" rx="34" ry="6" fill="#fff" ${st(2.5)}/>${[-8,8].map((d,i)=>`<path d="M${d} -24 q${-5+3*Math.sin(t*3+i)} -10 0 -20 q5 -10 0 -20" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".9"/>`).join('')}</g>`;
+const calPage=(x,y,r,n,s=1)=>`<g transform="translate(${x} ${y}) rotate(${r}) scale(${s})"><rect x="-30" y="-34" width="60" height="68" rx="5" fill="#fff" ${st(2.5)}/><rect x="-30" y="-34" width="60" height="18" rx="5" fill="${RED}" ${st(2.5)}/><text x="0" y="20" text-anchor="middle" font-family="MS" font-weight="900" font-size="30" fill="${INK}">${n}</text></g>`;
+const clock=(x,y,s,t)=>`<g transform="translate(${x} ${y}) scale(${s})"><circle r="46" fill="#fff" ${st(4)}/><path d="M0 0 L0 -32" ${st(5)} transform="rotate(${t*720})"/><path d="M0 0 L22 0" ${st(5)} transform="rotate(${t*60})"/><circle r="5" fill="${INK}"/></g>`;
+const towelsRoll=(x,y)=>`<g transform="translate(${x} ${y})"><rect x="-30" y="-12" width="60" height="22" rx="11" fill="#fff" ${st(2.5)}/><rect x="-24" y="-34" width="48" height="22" rx="11" fill="#fff" ${st(2.5)}/><circle cx="-30" cy="-1" r="8" fill="#f2ebe6" ${st(2)}/></g>`;
+const candle=(x,y,t)=>`<g transform="translate(${x} ${y})"><rect x="-10" y="-22" width="20" height="26" rx="3" fill="#FFF3E2" ${st(2.5)}/><path d="M0 -24 q${6+2*Math.sin(t*9)} -10 0 -22 q-6 10 0 22" fill="#FFC24A" ${st(2)}/></g>`;
+const plant=(x,y,s)=>`<g transform="translate(${x} ${y}) scale(${s})"><path d="M-16 0 L16 0 L12 30 L-12 30Z" fill="#D98B62" ${st(2.5)}/><path d="M0 0 C-30 -20 -24 -50 -4 -56 C-6 -36 -2 -20 0 0 C6 -24 20 -44 34 -40 C30 -20 14 -8 0 0" fill="#6FAF7A" ${st(2.5)}/></g>`;
+
+// ---------- фон
+function bg(kind,t){
+  const P={warm:['#E2C3A3','#D2AE8C'],dim:['#C9AE95','#B4987F'],dark:['#A88D78','#8F7765'],spa:['#F1D9CC','#E9C7B6'],gold:['#F3D8A8','#E9BE79'],final:['#E2C3A3','#D9B693']}[kind];
+  let h=`<rect width="360" height="640" fill="${P[1]}"/>`;
+  for(let i=7;i>=1;i--) h+=`<circle cx="180" cy="300" r="${i*62+((t*14)%62)}" fill="none" stroke="${P[0]}" stroke-width="26" opacity=".55"/>`;
+  return h;
+}
+// ---------- субтитр
+function subtitle(sc,t){
+  const ws=[];for(const w of sc.words){ if(ws.length&&/^\d+$/.test(w.w.replace(/\W/g,''))&&/^\d+$/.test(ws[ws.length-1].w)) ws[ws.length-1].w+=' '+w.w; else ws.push({...w}); }
+  const ch=[];let c=[];for(const w of ws){c.push(w);if(c.length>=3||/[.,!?…»]$/.test(w.w)){ch.push(c);c=[];}} if(c.length)ch.push(c);
+  let cur=null;for(const g of ch){ if(t>=g[0].s-0.08) cur=g; }
+  if(!cur) return '';
+  if(t>cur[cur.length-1].e+0.6 && cur===ch[ch.length-1]) return '';
+  return cur.map(w=>t>=w.s-0.05?(t<w.e+0.05?`<b>${w.w}</b>`:w.w):'').filter(Boolean).join(' ');
+}
+// ---------- сахналар
+const T=(sc,w)=>{const f=D.scenes[sc].words.find(x=>x.w.toLowerCase().startsWith(w));return f?f.s:D.scenes[sc].s;};
+function scene(i,t,lt,dur){
+  let h='',hd='',bgk='warm';
+  const zoom=1+0.05*ez(lt/dur);
+  switch(i){
+  case 0:{ bgk='dim';
+    const inner=`<rect x="-80" y="-120" width="160" height="240" fill="#F6E3C8"/>`+woman({x:0,y:40,s:.62,hair:'down',top:'#F3B6C2',expr:'happy',t,seed:2})+sparkles(t,5,[-60,-90,120,120],3);
+    h+=mirror(250,250,.9,inner)+woman({x:110,y:390,s:1.05,hair:'bun',top:'#FFFFFF',cardigan:'#9AA0A8',expr:'tired',t});
+    break;}
+  case 1:{ bgk='warm';
+    const tj=T(1,'жұмыс'),tu=T(1,'үй'),tb=T(1,'бала'),tt=T(1,'бітпейтін');
+    h+=woman({x:180,y:360,s:1,hair:'bun',top:'#FFFFFF',cardigan:'#9AA0A8',expr:t>tb?'pain':'tired',t,sweat:t>tu});
+    const k=(a)=>pop(t,a);
+    if(t>=tj-0.3) h+=`<g transform="translate(70 470) scale(${k(tj-0.3)})">${laptop(0,0,.75)}</g>`;
+    if(t>=tu-0.1) h+=`<g transform="translate(292 470) scale(${k(tu-0.1)})">${pot(0,0,.62,t)}</g>`;
+    if(t>=tb-0.1) h+=`<g transform="translate(180 545) scale(${k(tb-0.1)})">${toys(0,0,.8,t)}</g>`;
+    if(t>=tt-0.2){const n=Math.min(9,Math.floor((t-tt+0.2)*9)+1);const P=[[60,150,-12,'#FFE27A'],[300,140,10,'#FFB8C8'],[40,300,8,'#B8E6FF'],[320,300,-8,'#FFE27A'],[100,90,6,'#C9F2B8'],[260,90,-6,'#FFB8C8'],[30,220,-4,'#FFE27A'],[330,220,6,'#B8E6FF'],[180,80,0,'#FFE27A']];
+      for(let j=0;j<n;j++) h+=note(P[j][0],P[j][1],P[j][2]+Math.sin(t*5+j)*4,P[j][3],pop(t,tt-0.2+j*0.11)*.9);}
+    break;}
+  case 2:{ bgk='warm';
+    const ta=T(2,'ал');
+    h+=`<g transform="translate(285 420)"><path d="M-50 40 L-50 -30 Q-50 -60 -20 -60 L20 -60 Q50 -60 50 -30 L50 40Z" fill="#C98E5E" ${st()}/><rect x="-62" y="0" width="124" height="44" rx="14" fill="#DDA172" ${st()}/><path d="M-50 44 v26 M50 44 v26" ${st(6)}/></g>`;
+    const calls=[['Ана!',62,215,0.0],['Апа!',298,235,0.5],['Жаным!',52,300,1.0]];
+    for(const [txt,x,y,d] of calls){const p=pop(t,D.scenes[2].s+d); if(p>0) h+=`<g transform="translate(${x} ${y}) scale(${p})"><rect x="-44" y="-22" width="88" height="40" rx="14" fill="#fff" ${st()}/><path d="M-8 18 L0 34 L8 18" fill="#fff" ${st()}/><text x="0" y="6" text-anchor="middle" font-family="MS" font-weight="900" font-size="17" fill="${INK}">${txt}</text></g>`;}
+    h+=woman({x:150,y:380,s:1,hair:'bun',top:'#FFFFFF',cardigan:'#9AA0A8',expr:t>ta?'sad':'tired',t});
+    if(t>ta) hd=`<div>АЛ ӨЗІҢЕ ШЕ?</div>`;
+    break;}
+  case 3:{ bgk='dim';
+    h+=woman({x:180,y:370,s:1.12,hair:'bun',top:'#FFFFFF',cardigan:'#9AA0A8',expr:'pain',t,arms:'neck'});
+    const pts=[[180,352,T(3,'мойн')],[110,410,T(3,'арқа')],[250,410,T(3,'арқа')+.15],[180,470,T(3,'денең')]];
+    for(const [px,py,t0] of pts){ if(t<t0-0.1) continue; const k=(t-t0)%0.9; h+=`<circle cx="${px}" cy="${py}" r="${10+k*40}" fill="${RED}" opacity="${.45*(1-k/0.9)}"/><circle cx="${px}" cy="${py}" r="12" fill="${RED}" opacity=".55"/>`;
+      h+=`<path d="M${px+18} ${py-30} l8 10 l-8 4 l10 12" fill="none" stroke="${RED}" stroke-width="3.5" stroke-linecap="round"/>`;}
+    break;}
+  case 4:{ bgk='dim';
+    const tk=T(4,'«кейін')-0.1;
+    h+=`<g transform="translate(180 470)"><rect x="-160" y="-60" width="320" height="110" rx="30" fill="#C98E5E" ${st()}/><rect x="-150" y="-10" width="300" height="60" rx="20" fill="#DDA172" ${st()}/></g>`;
+    h+=woman({x:180,y:400,s:.95,hair:'bun',top:'#FFFFFF',cardigan:'#9AA0A8',expr:t<tk?'closed':'angry',t});
+    h+=cup(300,520,.8,t);
+    h+=phone(70,505,.8,t>=tk,t);
+    if(t<tk) h+=`<text x="245" y="${230-((t*20)%30)}" font-family="MS" font-weight="900" font-size="26" fill="#fff" stroke="${INK}" stroke-width="3" paint-order="stroke">z</text><text x="265" y="${205-((t*20)%30)}" font-family="MS" font-weight="900" font-size="18" fill="#fff" stroke="${INK}" stroke-width="3" paint-order="stroke">z</text>`;
+    if(t>=tk) hd=`<div class="sm">«кейін демаламын…»</div>`;
+    break;}
+  case 5:{ bgk='dark';
+    h+=clock(290,230,.75,lt);
+    for(let j=0;j<9;j++){const u=((lt*0.55+j/9)%1); const x=-40+u*440, y=250+Math.sin(j*2.3+u*6)*150+ (j%3)*30; h+=calPage(x,y,u*540+j*40,(j*7+3)%30+1,.8);}
+    h+=woman({x:180,y:420,s:1,hair:'bun',top:'#FFFFFF',cardigan:'#9AA0A8',expr:'tired',t});
+    hd=t>T(5,'қашан')?`<div>ҚАШАН?</div>`:'';
+    break;}
+  case 6:{ bgk='gold';
+    const op=ez((lt-0.2)/1.0);
+    h+=`<g transform="translate(180 300)">${[...Array(12)].map((_,j)=>`<path d="M0 0 L${Math.cos(j*0.52+lt*.3)*400} ${Math.sin(j*0.52+lt*.3)*400} L${Math.cos(j*0.52+0.2+lt*.3)*400} ${Math.sin(j*0.52+0.2+lt*.3)*400}Z" fill="#fff" opacity="${.25*op}"/>`).join('')}
+      <rect x="-70" y="-120" width="140" height="240" fill="#FFF6D8" ${st()}/><rect x="-70" y="-120" width="140" height="240" fill="#FFE9A6" opacity="${op}"/>
+      <path d="M-70 -120 L${-70+60*(1-op)+10} ${-110} L${-70+60*(1-op)+10} 110 L-70 120Z" fill="#B57B4E" ${st()}/>
+      <rect x="-84" y="-132" width="168" height="264" fill="none" ${st(6)}/></g>`;
+    h+=sparkles(t,10,[60,160,240,280],7);
+    h+=woman({x:180,y:455,s:.85,hair:'bun',top:'#FFFFFF',cardigan:'#9AA0A8',expr:t>T(6,'бар')?'happy':'wide',t});
+    if(t>T(6,'2')-0.1) hd=`<div style="transform:scale(${back((t-T(6,'2')+0.1)/0.35)})">2 САҒАТ</div>`;
+    break;}
+  case 7:{ bgk='spa';
+    const tf=T(7,'бетке')-0.15, face=t>=tf;
+    h+=`<rect x="0" y="150" width="360" height="12" fill="#C7A48C"/>`+towelsRoll(60,140)+plant(310,110,.9)+candle(250,140,t)+candle(120,140,t);
+    // үстел + клиент
+    h+=`<rect x="20" y="430" width="320" height="40" rx="14" fill="#7CC4C0" ${st()}/><path d="M50 470 v90 M310 470 v90" ${st(8)}/>`;
+    h+=woman({x:110,y:420,s:.72,hair:'towel',top:'#F2C9A6',expr:'bliss',t,rot:-90});
+    h+=`<path d="M132 432 C132 372 336 376 336 432Z" fill="#fff" ${st()}/><path d="M160 400 q40 -10 80 0 M200 418 q40 -8 90 0" fill="none" stroke="#e8dfd8" stroke-width="3"/>`;
+    const sx=Math.sin(t*5)*6;
+    const hands=face?[[-60,60,-150+sx,142],[60,60,-128-sx,160]]:[[-60,60,-10+sx,134],[60,60,50-sx,142]];
+    h+=master({x:205,y:265,s:.95,t,hands});
+    h+=sparkles(t,6,[40,180,280,200],5);
+    hd=`<span class="pill" style="font-size:20px">${face?'бет массажы':'дене массажы'}</span>`;
+    if(t>T(7,'толық')-0.1) hd=`<div>ТОЛЫҚ РЕЛАКС!</div>`;
+    break;}
+  case 8:{ bgk='spa';
+    h+=sparkles(t,10,[20,230,320,200],4);
+    h+=master({x:255,y:420,s:.85,t});
+    h+=woman({x:105,y:440,s:.85,hair:'down',top:'#F3B6C2',expr:'happy',t,seed:1});
+    const p=pop(t,T(8,'13')-0.1);
+    hd=`<div style="font-size:30px">ДЕНЕ + БЕТ<br>МАССАЖЫ</div><span class="pill" style="transform:scale(${p})">бар болғаны 13 000 ₸</span><span class="sm">2 сағат толық релакс</span>`;
+    break;}
+  case 9:{ bgk='spa';
+    const inner=`<rect x="-80" y="-120" width="160" height="240" fill="#FBE6D6"/>`+woman({x:0,y:40,s:.62,hair:'down',top:'#F3B6C2',expr:'happy',t,seed:3})+sparkles(t,5,[-60,-90,120,120],8);
+    h+=mirror(250,250,.9,inner)+woman({x:110,y:390,s:1.05,hair:'down',top:'#F3B6C2',expr:'happy',t});
+    h+=sparkles(t,12,[20,120,320,320],9);
+    if(t>T(9,'лайық')-0.1) hd=`<div style="transform:scale(${back((t-T(9,'лайық')+0.1)/0.35)})">ЛАЙЫҚСЫҢ!</div>`;
+    break;}
+  case 10:{ bgk='spa';
+    h+=`<rect x="0" y="150" width="360" height="12" fill="#C7A48C"/>`+plant(50,110,.9)+candle(300,140,t);
+    h+=`<g transform="translate(180 470)"><path d="M-120 60 L-120 -60 Q-120 -110 -70 -110 L70 -110 Q120 -110 120 -60 L120 60Z" fill="#E9D3BE" ${st()}/><rect x="-140" y="0" width="280" height="70" rx="26" fill="#F4E4D4" ${st()}/></g>`;
+    h+=woman({x:180,y:410,s:.95,hair:'down',top:'#FFFFFF',expr:'happy',t,arms:'cup'});
+    h+=`<g transform="translate(305 560)"><rect x="-30" y="-6" width="60" height="12" rx="4" fill="#2b2b33" ${st(2.5)}/></g>`;
+    break;}
+  case 11:{ bgk='final';
+    const a=(d)=>ez((lt-d)/0.35);
+    h+=`<g transform="translate(180 160)" opacity="${a(0)}"><circle r="56" fill="#F3E2CF" ${st(3)}/>`+`<g transform="translate(0 46) scale(.62)">`+woman({x:0,y:0,s:1,hair:'down',top:'#F3B6C2',expr:'happy',t})+`</g></g>`;
+    h+=sparkles(t,14,[20,60,320,520],11);
+    const b=pop(t,D.scenes[11].s+0.9);
+    h+=`<g transform="translate(180 488) scale(${b*(1+0.04*Math.sin(t*6))})"><rect x="-120" y="-30" width="240" height="60" rx="30" fill="${RED}" ${st(4)}/><text x="0" y="9" text-anchor="middle" font-family="MS" font-weight="900" font-size="24" fill="#fff">ҚАЗІР ЖАЗЫЛ!</text></g>`;
+    hd=`<div style="margin-top:165px;opacity:${a(0.2)}">2 САҒАТ<br>ТОЛЫҚ РЕЛАКС</div><span class="sm" style="opacity:${a(0.4)}">ДЕНЕ + БЕТ МАССАЖЫ</span><span class="pill" style="font-size:30px;opacity:${a(0.6)}">13 000 ₸</span>`;
+    break;}
+  }
+  return {h:`<g transform="translate(180 320) scale(${zoom}) translate(-180 -320)">${h}</g>`,hd,bgk};
+}
+window.setup=d=>{D=d};
+window.draw=t=>{
+  let i=0;for(let k=0;k<D.scenes.length;k++) if(t>=D.scenes[k].s) i=k;
+  const sc=D.scenes[i], lt=t-sc.s, dur=(sc.e-sc.s);
+  const r=scene(i,t,lt,dur);
+  // ауысу: жылдам масштаб + жарқыл
+  const tin=cl(lt/0.22); const sIn=0.9+0.1*ez(tin);
+  document.getElementById('bg').innerHTML=bg(r.bgk,t);
+  let flash='';
+  if(i===6&&lt<0.5) flash=`<rect width="360" height="640" fill="#fff" opacity="${1-lt/0.5}"/>`;
+  else if(lt<0.12&&i>0) flash=`<rect width="360" height="640" fill="#fff" opacity="${.5*(1-lt/0.12)}"/>`;
+  document.getElementById('sv').innerHTML=`<g transform="translate(180 320) scale(${sIn}) translate(-180 -320)" opacity="${.3+.7*tin}">${r.h}</g>${flash}`;
+  document.getElementById('hd').innerHTML=r.hd;
+  document.getElementById('sub').innerHTML=i===11&&lt>0.9?'':subtitle(sc,t);
+  document.getElementById('ig').textContent=(i>=6)?HANDLE:'';
+};
+</script></body></html>
