@@ -46,7 +46,8 @@ for j, f in enumerate([784.0, 1046.5, 1318.5]):
 # дауыс шыққанда музыка төмендейді (ducking)
 env = np.convolve(np.abs(mix_v), np.ones(4800) / 4800, "same"); duck = 1 - 0.55 * np.clip(env / (np.percentile(env, 90) + 1e-6), 0, 1)
 vnorm = mix_v / (np.percentile(np.abs(mix_v), 99.5) + 1e-6) * 0.5
-final = vnorm + mus * duck * 0.55 + sfx
+MUSIC = 0.0 if "--no-music" in sys.argv else 0.55
+final = vnorm + mus * duck * MUSIC + sfx
 final = np.stack([final, final], 1).astype(np.float32)
 open("/tmp/claude-0/mix.f32", "wb").write(final.tobytes())
 subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "f32le", "-ar", str(SR), "-ac", "2", "-i", "/tmp/claude-0/mix.f32",
