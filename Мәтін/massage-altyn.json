@@ -1,0 +1,144 @@
+{
+ "name": "massage-altyn",
+ "lang": "kk",
+ "look": "altyn",
+ "voice": {
+  "engine": "file",
+  "file": ".montazh/voice/voice.mp3"
+ },
+ "theme": {
+  "bg1": "#063A3E",
+  "bg2": "#020D0F",
+  "accent": "#F2B73A"
+ },
+ "chips": [
+  "ШАРШАУ",
+  "ҚАЛПЫНА КЕЛУ",
+  "МАССАЖ",
+  "ЖАЗЫЛУ"
+ ],
+ "watermark": "@ainurana_massaj_ashibulak",
+ "music": "none",
+ "scenes": [
+  {
+   "kind": "hook",
+   "chip": 0,
+   "bg": "gray",
+   "icon": "mirror",
+   "label": "✕ ӨЗІҢЕ УАҚЫТ ЖОҚ",
+   "text": "Соңғы рет қашан *өзің үшін* өмір сүрдің?"
+  },
+  {
+   "kind": "features",
+   "chip": 0,
+   "bg": "gray",
+   "text": "Таңнан кешке дейін жұмыс, үй, бала-шаға, бітпейтін тірлік…",
+   "items": [
+    {
+     "icon": "laptop",
+     "label": "ЖҰМЫС",
+     "word": "жұмыс"
+    },
+    {
+     "icon": "house",
+     "label": "ҮЙ",
+     "word": "үй"
+    },
+    {
+     "icon": "kids",
+     "label": "БАЛА-ШАҒА",
+     "word": "бала"
+    },
+    {
+     "icon": "tasks",
+     "label": "ТІРЛІК",
+     "word": "тірлік"
+    }
+   ]
+  },
+  {
+   "kind": "say",
+   "chip": 0,
+   "bg": "navy",
+   "icon": "hourglass",
+   "label": "АЛ ӨЗІҢЕ ШЕ?",
+   "text": "Бәріне уақытың бар. Ал *өзіңе ше?*"
+  },
+  {
+   "kind": "say",
+   "chip": 0,
+   "bg": "navy",
+   "icon": "back",
+   "label": "МОЙЫН · ИЫҚ · АРҚА",
+   "text": "*Мойның* ауырады, *арқаң* талады, денең шаршайды…"
+  },
+  {
+   "kind": "say",
+   "chip": 0,
+   "bg": "navy",
+   "icon": "phone_ring",
+   "label": "«КЕЙІН ДЕМАЛАМЫН»",
+   "text": "Бірақ сен бәрібір «кейін демаламын» деп жүрсің."
+  },
+  {
+   "kind": "say",
+   "chip": 0,
+   "bg": "night",
+   "icon": "calendar",
+   "label": "ҚАШАН?",
+   "text": "Ал сол «кейін» *қашан* келеді?"
+  },
+  {
+   "kind": "say",
+   "chip": 1,
+   "bg": "teal",
+   "icon": "door",
+   "label": "2 САҒАТ",
+   "text": "Саған қазір керегі — бар болғаны *2 сағат.*"
+  },
+  {
+   "kind": "photo",
+   "chip": 2,
+   "bg": "emerald",
+   "photo": "Раскадровка/massage-3d/dizain-ref.png",
+   "focus_y": 0.62,
+   "label": "ДЕНЕ + БЕТ МАССАЖЫ",
+   "text": "Бүкіл денеге және бетке массаж. *Толық релакс!*",
+   "ph": 780,
+   "pw": 660,
+   "py": 350
+  },
+  {
+   "kind": "say",
+   "chip": 2,
+   "bg": "warm",
+   "icon": "tenge",
+   "label": "2 САҒАТ · ДЕНЕ + БЕТ МАССАЖЫ",
+   "text": "Бар болғаны *13 000 теңге.*"
+  },
+  {
+   "kind": "say",
+   "chip": 2,
+   "bg": "emerald",
+   "icon": "mirror_smile",
+   "label": "СЕН ЛАЙЫҚСЫҢ",
+   "text": "Сен тек жұмыс істеуге емес, *демалуға да лайықсың!*"
+  },
+  {
+   "kind": "say",
+   "chip": 3,
+   "bg": "emerald",
+   "icon": "tea",
+   "label": "ӨЗІҢЕ УАҚЫТ БӨЛ",
+   "text": "Өзіңді тағы да *кейінге қалдырма.*"
+  },
+  {
+   "kind": "cta",
+   "chip": 3,
+   "bg": "night",
+   "button": "ҚАЗІР ЖАЗЫЛ!",
+   "card": "Дене + бет массажы *2 сағат* *13 000 ₸*",
+   "text": "Қазір жазыл!"
+  }
+ ]
+}
