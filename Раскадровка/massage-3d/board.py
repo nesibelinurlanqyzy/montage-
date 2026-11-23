@@ -26,7 +26,7 @@ SHOTS = [
  ("38.0–41.5", "Бар болғаны 13 000 теңге.", "SPA интерьері; ортада көлемді баға", "Slow lateral track", "13 000 ₸\n2 сағат • Дене + бет массажы", 0.40, "light"),
  ("41.5–46.0", "Сен тек жұмыс істеуге емес, демалуға да лайықсың!", "Айна алдында жайнап күледі (Кадр 1 рифмасы)", "Orbit 180° айна арқылы", "ЛАЙЫҚСЫҢ", 0.16, "light"),
  ("46.0–50.0", "Өзіңді тағы да кейінге қалдырма.", "SPA креслода шаймен; телефон экраны төмен қаратылған", "Slow dolly-out", "—", None, "light"),
- ("50.0–55.0", "Қазір жазыл!", "Premium финал: teal фон, алтын арка, алтын жазулар", "Gentle push-in + gold particles", "2 САҒАТ ТОЛЫҚ РЕЛАКС\nДЕНЕ + БЕТ МАССАЖЫ\n13 000 ₸\n[ ҚАЗІР ЖАЗЫЛ! ]", 0.30, "light"),
+ ("50.0–55.0", "Қазір жазыл!", "Premium финал: teal фон, алтын арка, алтын жазулар", "Gentle push-in + gold particles", "2 САҒАТ ТОЛЫҚ РЕЛАКС\nДЕНЕ + БЕТ МАССАЖЫ\n13 000 ₸\n[ ҚАЗІР ЖАЗЫЛ! ]\n@ainurana_massaj_ashibulak", 0.30, "light"),
 ]
 
 PAL = {"dark": ("#3B4446", "#5E5A52", "#E9E2D6"),
@@ -93,9 +93,9 @@ for i, (tc, vo, scene, cam, title, ty, ph) in enumerate(SHOTS):
         fd.line([(sx1, y), (sx1, y + 5)], fill="#F5C518", width=2)
     # титр
     if title != "—":
-        tf = font(MONT, 21 if i != 11 else 16, 800)
+        tf = font(MONT, 21 if i != 11 else 13, 800)
         lines = wrap(title, tf, sx1 - sx0 - 16)
-        lh = 26 if i != 11 else 22
+        lh = 26 if i != 11 else 19
         ty0 = int(FH * ty) if i != 11 else int(FH * 0.18)
         if i == 8: ty0 = int(FH * 0.24)
         for li, ln in enumerate(lines):
