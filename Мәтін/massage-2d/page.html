@@ -4,15 +4,15 @@
 html,body{margin:0;width:360px;height:640px;overflow:hidden;background:#D8B796}
 #st{position:absolute;inset:0;overflow:hidden;font-family:MS,sans-serif}
 svg{position:absolute;inset:0}
-.sub{position:absolute;left:24px;right:24px;top:468px;text-align:center;font:800 19px/1.18 MS;color:#fff;
+.sub{position:absolute;left:24px;right:48px;top:468px;text-align:center;font:800 19px/1.18 MS;color:#fff;
  -webkit-text-stroke:5px #241c1a;paint-order:stroke fill;letter-spacing:-.2px}
 .sub b{color:#FFE27A}
-.hd{position:absolute;left:14px;right:14px;top:96px;text-align:center;color:#fff;font:900 34px/0.98 MS;letter-spacing:-.6px;
+.hd{position:absolute;left:22px;right:48px;top:96px;text-align:center;color:#fff;font:900 30px/0.98 MS;letter-spacing:-.6px;
  -webkit-text-stroke:6px #241c1a;paint-order:stroke fill;text-transform:uppercase}
-.pill{display:inline-block;background:#E5322D;color:#fff;border:3px solid #241c1a;border-radius:12px;padding:2px 12px 4px;
- font:900 22px/1.1 MS;-webkit-text-stroke:0;text-transform:none;margin-top:6px;box-shadow:3px 3px 0 #241c1a}
+.pill{display:inline-block;background:#E5322D;color:#fff;border:3px solid #241c1a;border-radius:12px;padding:2px 10px 4px;
+ font:900 19px/1.1 MS;-webkit-text-stroke:0;text-transform:none;margin-top:6px;box-shadow:3px 3px 0 #241c1a}
 .sm{font:800 17px/1.15 MS;-webkit-text-stroke:4px #241c1a;text-transform:none;display:block;margin-top:6px}
-.ig{position:absolute;left:0;right:0;text-align:center;top:76px;font:700 9.5px MS;color:#fff;-webkit-text-stroke:2.6px #241c1a;paint-order:stroke fill;opacity:.95}
+.ig{position:absolute;left:20px;right:48px;text-align:center;top:76px;font:700 9.5px MS;color:#fff;-webkit-text-stroke:2.6px #241c1a;paint-order:stroke fill;opacity:.95}
 </style></head><body><div id="st"><svg id="bg" viewBox="0 0 360 640"></svg><svg id="sv" viewBox="0 0 360 640"></svg>
 <div id="hd" class="hd"></div><div id="sub" class="sub"></div><div id="ig" class="ig"></div></div>
 <script>
@@ -230,7 +230,7 @@ function scene(i,t,lt,dur){
     h+=sparkles(t,14,[20,60,320,520],11);
     const b=pop(t,D.scenes[11].s+0.9);
     h+=`<g transform="translate(180 488) scale(${b*(1+0.04*Math.sin(t*6))})"><rect x="-120" y="-30" width="240" height="60" rx="30" fill="${RED}" ${st(4)}/><text x="0" y="9" text-anchor="middle" font-family="MS" font-weight="900" font-size="24" fill="#fff">ҚАЗІР ЖАЗЫЛ!</text></g>`;
-    hd=`<div style="margin-top:165px;opacity:${a(0.2)}">2 САҒАТ<br>ТОЛЫҚ РЕЛАКС</div><span class="sm" style="opacity:${a(0.4)}">ДЕНЕ + БЕТ МАССАЖЫ</span><span class="pill" style="font-size:30px;opacity:${a(0.6)}">13 000 ₸</span>`;
+    hd=`<div style="margin-top:165px;opacity:${a(0.2)}">2 САҒАТ<br>ТОЛЫҚ РЕЛАКС</div><span class="sm" style="opacity:${a(0.4)}">ДЕНЕ + БЕТ МАССАЖЫ</span><span class="pill" style="font-size:26px;opacity:${a(0.6)}">13 000 ₸</span>`;
     break;}
   }
   return {h:`<g transform="translate(180 320) scale(${zoom}) translate(-180 -320)">${h}</g>`,hd,bgk};
