@@ -21,8 +21,8 @@ FACE_MODEL = os.path.join(SKILL, "models", "face_yunet.onnx")
 W, H, FPS = 1080, 1920, 30
 # Қауіпсіз рамка (Instagram батырмалары жаппайтын аймақ)
 SAFE_L, SAFE_R, SAFE_T, SAFE_B = 70, 1000, 220, 1490
-LOW_Y, LOW_R = 1070, 915          # y>LOW_Y болса, оң шекара LOW_R
-SUB_CX, SUB_MAXW = 540, 730        # субтитр ортасы және ең үлкен ені (175..905)
+LOW_Y, LOW_R = 1080, 875          # y>LOW_Y болса, оң шекара LOW_R (Insta иконкалары x≥887, y≥1096)
+SUB_CX, SUB_MAXW = 540, 670        # субтитр ортасы және ең үлкен ені (205..875 — иконкаларға тимейді)
 GAP = 40                           # беттен ең аз қашықтық, px
 
 STYLES = {

@@ -34,9 +34,9 @@ SKILL = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FONTS = os.path.join(SKILL, "fonts")
 MODELS = os.path.join(SKILL, "models")
 W, H = 1080, 1920
-SAFE_L, SAFE_T, SAFE_R, SAFE_B = 78, 222, 999, 1543
-LOW_Y, LOW_R = 1194, 887            # ниже y 1194 правый край ≤ 887 (кнопки Instagram)
-SUB_L, SUB_R = 193, 887             # бокс субтитров (центр X = 540)
+SAFE_L, SAFE_T, SAFE_R, SAFE_B = 78, 222, 999, 1500
+LOW_Y, LOW_R = 1080, 875            # ниже y 1080 правый край ≤ 875 (иконки Instagram x≥887, y≥1096)
+SUB_L, SUB_R = 205, 875             # бокс субтитров (центр X = 540)
 LINE_CHARS = 19
 MIN_CHUNK = 1.0
 HEAD_GAP = 30                       # зазор от волос/подбородка
