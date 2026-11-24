@@ -36,6 +36,7 @@ def prep(plan):
         for s, src in zip(d["scenes"], P["scenes"]):
             s["id"] = src["id"]
         d["audio"] = audio
+        sfx(d, wd, d["dur"])
     else:  # болжамды уақыт: ~2.5 сөз/сек, сахна арасы 0.35 с
         ws = words_of(P); t = 0.3; scenes = []
         for si, sc in enumerate(P["scenes"]):
@@ -49,6 +50,47 @@ def prep(plan):
         d = {"fps": FPS, "dur": round(t + 1.2, 3), "scenes": scenes, "audio": None}
     json.dump(d, open(os.path.join(wd, "qdata.json"), "w"), ensure_ascii=False)
     return P, wd, d
+
+
+def sfx(d, wd, dur):
+    """Жұмсақ дыбыс эффектілері (музыкасыз): ауысу — вжух, маңызды сөз — поп, мөр, баға, басу."""
+    import numpy as np, wave
+    sr = 44100; n = int((dur + 1) * sr); out = np.zeros(n, np.float32); rng = np.random.default_rng(1)
+    def put(t, x, g):
+        i = int(max(0, t) * sr); x = x[: n - i]; out[i:i + len(x)] += x * g
+    def env(L, a, dcy):
+        tt = np.arange(int(L * sr)) / sr; return np.minimum(1, tt / a) * np.exp(-tt / dcy), tt
+    def whoosh():
+        e, tt = env(.45, .18, .12); x = rng.standard_normal(len(tt)).astype(np.float32)
+        k = np.linspace(.02, .3, len(tt)); y = np.zeros_like(x); acc = 0.0
+        for i in range(len(x)): acc += k[i] * (x[i] - acc); y[i] = acc
+        return y * e * 3
+    def pop(f=880):
+        e, tt = env(.12, .002, .03); return np.sin(2 * np.pi * (f + 600 * np.exp(-tt * 60)) * tt) * e
+    def thump():
+        e, tt = env(.35, .002, .08); return (np.sin(2 * np.pi * (60 + 120 * np.exp(-tt * 30)) * tt) + .3 * rng.standard_normal(len(tt)) * np.exp(-tt * 40)) * e
+    def ding():
+        e, tt = env(1.2, .002, .35); return (np.sin(2 * np.pi * 1318 * tt) + .5 * np.sin(2 * np.pi * 1976 * tt) + .25 * np.sin(2 * np.pi * 2637 * tt)) * e * .6
+    def click():
+        e, tt = env(.03, .0005, .006); return rng.standard_normal(len(tt)) * e
+    W = lambda sc, stem, dflt: next((w["t"] for w in sc["words"] if norm(w["w"]).startswith(norm(stem))), dflt)
+    for i, sc in enumerate(d["scenes"]):
+        if i: put(sc["t0"] - .25, whoosh(), .22)
+        last = None
+        for w in sc["words"]:
+            if w["e"] and last is not True: put(w["t"], pop(700 + 120 * (i % 3)), .16)
+            last = w["e"]
+        if sc["id"] == "team": put(W(sc, "қажеті", sc["t0"] + 3) + .26, thump(), .55)
+        if sc["id"] == "ai":
+            for k in range(14): put(sc["t0"] + .25 + k * .075, click(), .12)
+        if sc["id"] == "price": put(W(sc, "небәрі", sc["t0"] + 2) + .37, thump(), .45); put(W(sc, "небәрі", sc["t0"] + 2) + .4, ding(), .25)
+        if sc["id"] == "cta": put(W(sc, "подробнее", sc["t0"] + 3) + 1.15, pop(1400), .25)
+    out = np.clip(out, -1, 1); f = os.path.join(wd, "sfx.wav")
+    w = wave.open(f, "w"); w.setnchannels(1); w.setsampwidth(2); w.setframerate(sr); w.writeframes((out * 32000).astype(np.int16).tobytes()); w.close()
+
+
+def norm(s):
+    return re.sub(r"[^0-9a-zа-яёәғқңөұүһі]", "", s.lower())
 
 
 def node(*args, stdout=None):

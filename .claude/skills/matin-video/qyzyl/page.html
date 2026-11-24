@@ -101,8 +101,8 @@ function buildHL(sc,col,acc){
 }
 function drawHL(sc,t){
  sc.chunks.forEach((c,k)=>{
-  const inn=pr(t,c.t0-.12,.22),out=pr(t,c.t1-.1,.14);
-  const vis=t>=c.t0-.12&&(t<c.t1||k===sc.chunks.length-1);
+  const inn=pr(t,c.t0-.08,.2),out=pr(t,c.t1-.2,.12);
+  const vis=t>=c.t0-.08&&(t<c.t1-.08||k===sc.chunks.length-1);
   c.el.style.visibility=vis?'visible':'hidden';
   c.el.style.transform=`translateY(${(1-eo(inn))*14-out*10}px)`;c.el.style.opacity=k===sc.chunks.length-1?1:1-out;
   c.ws.forEach((s,j)=>{const w=sc.words[c.ix[j]];const p=pr(t,w.t-.06,.2);
@@ -236,6 +236,7 @@ B.price_d=(sc,t)=>{const t0=sc.t0;const tP=wt(sc,'небәрі',t0+2),tU=wt(sc,'
 };
 // 6 — CTA: «Подробнее»
 B.cta=sc=>{sc.bgc='#9C1B1F';sc.fg='#EFE7D9';sc.acc='#E7B52C';
+ sc.fan=STY.map((x,i)=>styleCard(sc.el,i,58,86));
  sc.word=E(sc.el,'el','Өзіңіз',`left:0;top:0;font:700 82px CV;color:#E7B52C;white-space:nowrap;text-shadow:0 4px 0 rgba(0,0,0,.18)`);
  sc.line=E(sc.el,'el','',`left:0;top:0;width:200px;height:6px;border-radius:3px;background:#E7B52C`);
  sc.sub=E(sc.el,'el','креатив жасаңыз',`left:0;top:0;background:#1A1716;color:#EFE7D9;font:700 14px RB;padding:4px 10px;white-space:nowrap`);
@@ -247,6 +248,9 @@ B.cta=sc=>{sc.bgc='#9C1B1F';sc.fg='#EFE7D9';sc.acc='#E7B52C';
  sc.ring=E(sc.el,'el','',`left:0;top:0;width:60px;height:60px;border-radius:50%;border:3px solid #EFE7D9`);
 };
 B.cta_d=(sc,t)=>{const t0=sc.t0;const tW=wt(sc,'өзіңіз',t0+1),tB=wt(sc,'подробнее',t0+3);
+ const fo=eio(pr(t,tW-.25,.35));
+ sc.fan.forEach((c,i)=>{const p=bk(pr(t,t0+.1+.12*i,.45));const k=i-2;
+  T(c,180+k*47*p,262+Math.abs(k)*9-fo*60,(.6+.4*p)*(1-fo*.4),k*9*p+Math.sin(t*1.8+i)*2,cl(p*2)*(1-fo))});
  const w=pr(t,tW-.05,.6);sc.word.style.clipPath=`inset(0 ${100-eo(w)*100}% 0 0)`;T(sc.word,180,232,1,-5,w>0?1:0);
  T(sc.line,180,270,1,-5,1);sc.line.style.transform+=` scaleX(${eo(pr(t,tW+.4,.4))})`;
  const s=bk(pr(t,tW+.6,.4));T(sc.sub,180,298,s,-3,cl(s*2));
