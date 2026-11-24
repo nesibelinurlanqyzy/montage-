@@ -1,0 +1,287 @@
+<!doctype html><html><head><meta charset="utf-8">
+<style>
+@font-face{font-family:MV;font-weight:100 900;src:url(../../montazh-kz/fonts/Montserrat.ttf)}
+@font-face{font-family:MS;font-weight:900;font-style:italic;unicode-range:U+0000-024F,U+2000-206F;src:url(../mult/fonts/montserrat-latin-900-italic.woff2)}
+@font-face{font-family:MS;font-weight:900;font-style:italic;unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1;src:url(../mult/fonts/montserrat-cyrillic-900-italic.woff2)}
+@font-face{font-family:MS;font-weight:900;font-style:italic;unicode-range:U+0460-052F;src:url(../mult/fonts/montserrat-cyrillic-ext-900-italic.woff2)}
+@font-face{font-family:RB;font-weight:300 900;src:url(../fonts/Rubik.ttf)}
+@font-face{font-family:CV;font-weight:400 700;src:url(../fonts/Caveat.ttf)}
+:root{--red:#9C1B1F;--red2:#C8262B;--cream:#EFE7D9;--cream2:#E4D9C6;--teal:#1D6A61;--mus:#E7B52C;--ink:#1A1716;--pink:#E9A3A0}
+*{box-sizing:border-box;margin:0}
+html,body{width:360px;height:640px;overflow:hidden;background:#000}
+#stage{position:absolute;inset:0;overflow:hidden;font-family:MV,sans-serif}
+.sc{position:absolute;inset:0;overflow:hidden;visibility:hidden}
+.bg{position:absolute;inset:-20px}
+.el{position:absolute;transform-origin:50% 50%;will-change:transform}
+.ctr{left:0;top:0}
+/* мәтін (субтитр-заголовок) */
+.hl{position:absolute;left:26px;width:308px;top:78px;text-align:center;font:800 24px/1.18 MV;letter-spacing:-.3px}
+.hl .w{display:inline-block;white-space:pre}
+.hl .e{font:900 italic 26px/1.1 MS;letter-spacing:-.4px}
+.pill{position:absolute;left:50%;top:452px;transform:translateX(-50%);white-space:nowrap;
+ background:var(--red2);color:#fff;font:700 12.5px RB;padding:6px 14px;border-radius:999px;box-shadow:0 2px 0 rgba(0,0,0,.25)}
+.paper{box-shadow:0 2px 0 rgba(0,0,0,.18),0 8px 18px rgba(0,0,0,.18)}
+.tag{font:800 13px RB;padding:4px 9px;white-space:nowrap;box-shadow:0 2px 0 rgba(0,0,0,.25)}
+.card{position:absolute;border-radius:6px;overflow:hidden}
+#grain{position:absolute;inset:-40px;pointer-events:none;opacity:.10;mix-blend-mode:multiply}
+#vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 90% at 50% 45%,transparent 55%,rgba(0,0,0,.22) 100%)}
+#wipe{position:absolute;inset:0;pointer-events:none}
+.qm{font:900 italic 40px MS;color:var(--ink);background:var(--mus);width:52px;height:56px;display:flex;align-items:center;justify-content:center;border-radius:6px}
+</style></head><body><div id="stage"></div>
+<svg width="0" height="0" style="position:absolute"><defs>
+<filter id="gr"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="3"/><feColorMatrix values="0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 1.4 -.3"/></filter>
+</defs></svg>
+<script>
+const S=document.getElementById('stage');
+const cl=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const eo=x=>1-Math.pow(1-cl(x),3);
+const eio=x=>{x=cl(x);return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2};
+const bk=x=>{x=cl(x);const c=1.9;return 1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2)};
+const pr=(t,a,d)=>cl((t-a)/d);
+let R=1;const rnd=()=>{R=(R*16807)%2147483647;return (R-1)/2147483646};
+function E(par,cls,html,css){const d=document.createElement('div');d.className=cls||'';if(html!=null)d.innerHTML=html;if(css)d.style.cssText=css;par.appendChild(d);return d}
+function T(el,x,y,s=1,r=0,o=1){el.style.transform=`translate(${x}px,${y}px) translate(-50%,-50%) rotate(${r}deg) scale(${s})`;el.style.opacity=o}
+const norm=s=>s.toLowerCase().replace(/[^0-9a-zа-яёәғқңөұүһі]/g,'');
+// жыртылған қағаз шеті
+function torn(n=40,amp=1.2,seed=1){R=seed*7919+13;const p=[];
+ for(let i=0;i<=n;i++)p.push(`${i/n*100}% ${rnd()*amp}%`);
+ for(let i=0;i<=n;i++)p.push(`${100-rnd()*amp*.7}% ${i/n*100}%`);
+ for(let i=n;i>=0;i--)p.push(`${i/n*100}% ${100-rnd()*amp}%`);
+ for(let i=n;i>=0;i--)p.push(`${rnd()*amp*.7}% ${i/n*100}%`);
+ return `polygon(${p.join(',')})`}
+// бояу дағы
+function splash(col,seed){R=seed;let d='';const N=46,cx=150,cy=150;
+ for(let i=0;i<N;i++){const a=i/N*Math.PI*2;let r=92+rnd()*14;if(rnd()<.28)r+=24+rnd()*40;const x=cx+Math.cos(a)*r,y=cy+Math.sin(a)*r;d+=(i?'L':'M')+x.toFixed(1)+' '+y.toFixed(1)}
+ let dots='';for(let i=0;i<14;i++){const a=rnd()*6.28,r=130+rnd()*30;dots+=`<circle cx="${cx+Math.cos(a)*r}" cy="${cy+Math.sin(a)*r}" r="${2+rnd()*7}"/>`}
+ return `<svg viewBox="0 0 300 300" width="300" height="300" fill="${col}"><path d="${d}Z" style="filter:url(#sm)"/>${dots}</svg>`}
+// иконкалар
+const IC={
+ person:(c='#1A1716',sh='#E7B52C')=>`<svg viewBox="0 0 60 70" width="60" height="70"><circle cx="30" cy="22" r="14" fill="${c}"/><path d="M6 70 Q6 40 30 40 Q54 40 54 70Z" fill="${c}"/><rect x="22" y="44" width="16" height="6" rx="3" fill="${sh}"/></svg>`,
+ cam:c=>`<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="${c}" stroke-width="2.4" stroke-linejoin="round"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="M16 10l6-3v10l-6-3z"/></svg>`,
+ pen:c=>`<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="${c}" stroke-width="2.4" stroke-linecap="round"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M14 6l3 3"/></svg>`,
+ cut:c=>`<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="${c}" stroke-width="2.4"><circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/><path d="M8 16L19 3M16 16L5 3"/></svg>`,
+ tgt:c=>`<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="${c}" stroke-width="2.4"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="${c}"/></svg>`,
+ spark:c=>`<svg viewBox="0 0 24 24" width="100%" height="100%" fill="${c}"><path d="M12 0C13 8 16 11 24 12C16 13 13 16 12 24C11 16 8 13 0 12C8 11 11 8 12 0Z"/></svg>`,
+ box:(a,b)=>`<svg viewBox="0 0 80 80" width="100%" height="100%"><path d="M40 8 L72 22 L40 36 L8 22Z" fill="${b}"/><path d="M8 22 L40 36 L40 74 L8 60Z" fill="${a}"/><path d="M72 22 L40 36 L40 74 L72 60Z" fill="${a}" style="filter:brightness(.8)"/><path d="M24 15 L56 29 L56 40 L50 37 L50 32 L18 18Z" fill="rgba(255,255,255,.55)"/></svg>`,
+ check:c=>`<svg viewBox="0 0 24 24" width="100%" height="100%" fill="none" stroke="${c}" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6"/></svg>`,
+ heart:c=>`<svg viewBox="0 0 24 24" width="12" height="12" fill="${c}"><path d="M12 21s-8-5.2-8-11a4.5 4.5 0 018-2.8A4.5 4.5 0 0120 10c0 5.8-8 11-8 11z"/></svg>`,
+ hand:()=>`<svg viewBox="0 0 64 64" width="100%" height="100%"><path d="M24 30V10a5 5 0 0110 0v16l3-1a5 5 0 016 3l1 2a5 5 0 016 4v10c0 10-7 16-16 16h-3c-6 0-10-3-13-8L10 40a5 5 0 018-6l6 6z" fill="#F6D9C0" stroke="#1A1716" stroke-width="3" stroke-linejoin="round"/></svg>`,
+ arrow:c=>`<svg viewBox="0 0 60 90" width="100%" height="100%" fill="none" stroke="${c}" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M30 6 C 22 30, 40 46, 30 80"/><path d="M14 64 L30 82 L46 62"/></svg>`,
+ plane:c=>`<svg viewBox="0 0 24 24" width="100%" height="100%" fill="${c}"><path d="M2 11L22 2 15 22l-3-8z"/><path d="M12 14l3-4" stroke="#fff" stroke-width="1.2"/></svg>`,
+ cap:c=>`<svg viewBox="0 0 64 48" width="100%" height="100%"><path d="M32 4L62 17 32 30 2 17Z" fill="${c}"/><path d="M14 23v12c0 4 8 9 18 9s18-5 18-9V23L32 31Z" fill="${c}" style="filter:brightness(.8)"/><path d="M56 19v16" stroke="#E7B52C" stroke-width="3"/><circle cx="56" cy="37" r="3.5" fill="#E7B52C"/></svg>`,
+};
+// стиль карточкалары (бір идея — әр стильде)
+const STY=[
+ {n:'Коллаж',bg:'#E7B52C',ink:'#1A1716',a:'#C8262B',b:'#EFE7D9'},
+ {n:'Минимал',bg:'#F4F0E8',ink:'#1A1716',a:'#1A1716',b:'#D8D0C2'},
+ {n:'3D',bg:'linear-gradient(160deg,#6E5BFF,#2B1E7A)',ink:'#fff',a:'#FF8A3D',b:'#FFD1A8'},
+ {n:'Мульт',bg:'#8ED1C6',ink:'#1A1716',a:'#E86A5C',b:'#FFE7A3'},
+ {n:'Премиум',bg:'linear-gradient(160deg,#1B1B1F,#3A2E1C)',ink:'#E8C06A',a:'#B98A2E',b:'#F1D38A'},
+];
+function styleCard(par,i,w,h){const s=STY[i];
+ const c=E(par,'el card paper','',`width:${w}px;height:${h}px;background:${s.bg};left:0;top:0;border-radius:7px`);
+ E(c,'', IC.box(s.a,s.b),`position:absolute;left:${w*.2}px;top:${h*.2}px;width:${w*.6}px;height:${w*.6}px`);
+ E(c,'',s.n,`position:absolute;left:0;right:0;bottom:${h*.09}px;text-align:center;font:800 ${Math.round(w*.16)}px RB;color:${s.ink};letter-spacing:-.2px`);
+ if(i===0){c.style.clipPath=torn(12,2.2,i+3)}
+ if(i===3){c.style.border='2.5px solid #1A1716';c.style.borderRadius='12px'}
+ return c}
+let D,SC=[];
+// ------------------------------------------------------------------ заголовок (сөзбе-сөз)
+function buildHL(sc,col,acc){
+ const chunks=[];let cur=[],len=0;const L=w=>(w.w+(w.p||'')).length;
+ const tot=sc.words.reduce((a,w)=>a+L(w)+1,0),n=Math.max(1,Math.ceil(tot/24)),tg=tot/n;
+ sc.words.forEach((w,i)=>{const l=L(w)+1;
+  if(cur.length&&chunks.length<n-1&&(len+l>tg*1.2||(len>=tg*.6&&/[,.?!:»]$/.test(sc.words[i-1].w+(sc.words[i-1].p||''))))){chunks.push(cur);cur=[];len=0}
+  cur.push(i);len+=l});
+ if(cur.length)chunks.push(cur);
+ sc.chunks=chunks.map(ix=>{const el=E(sc.el,'hl','',`color:${col}`);
+  const ws=ix.map(i=>{const w=sc.words[i];const s=E(el,'w'+(w.e?' e':''),(w.w+(w.p||'')).replace(/\*/g,''));if(w.e)s.style.color=acc;el.appendChild(document.createTextNode(' '));return s});
+  return {el,ix,ws,t0:sc.words[ix[0]].t}});
+ sc.chunks.forEach((c,k)=>c.t1=k+1<sc.chunks.length?sc.chunks[k+1].t0:sc.t1);
+}
+function drawHL(sc,t){
+ sc.chunks.forEach((c,k)=>{
+  const inn=pr(t,c.t0-.12,.22),out=pr(t,c.t1-.1,.14);
+  const vis=t>=c.t0-.12&&(t<c.t1||k===sc.chunks.length-1);
+  c.el.style.visibility=vis?'visible':'hidden';
+  c.el.style.transform=`translateY(${(1-eo(inn))*14-out*10}px)`;c.el.style.opacity=k===sc.chunks.length-1?1:1-out;
+  c.ws.forEach((s,j)=>{const w=sc.words[c.ix[j]];const p=pr(t,w.t-.06,.2);
+   const sh=w.e?bk(pr(t,w.t-.04,.32)):eo(p);
+   s.style.opacity=cl(p*1.6);
+   s.style.transform=w.e?`scale(${.55+.45*sh}) rotate(${(1-cl(sh))*-6}deg)`:`translateY(${(1-eo(p))*8}px)`});
+ });
+}
+// сөздің уақыты
+function wt(sc,stem,def){const n=norm(stem);const w=sc.words.find(w=>norm(w.w).startsWith(n));return w?w.t:(def!=null?def:sc.t0)}
+function pill(sc,text){if(!text)return;sc.pill=E(sc.el,'pill',text)}
+function drawPill(sc,t){if(!sc.pill)return;const p=bk(pr(t,sc.t0+.45,.35));sc.pill.style.transform=`translateX(-50%) scale(${p})`;sc.pill.style.opacity=cl(p)}
+
+// ================================================================== СЦЕНАЛАР
+const B={};
+// 1 — ХУК: қызыл фон, телефон, сұрақ белгілері
+B.hook=sc=>{sc.bgc='#9C1B1F';sc.fg='#EFE7D9';sc.acc='#E7B52C';
+ const sp=E(sc.el,'el',splash('#EFE7D9',11),'left:0;top:0;width:300px;height:300px');sc.sp=sp;
+ const ph=E(sc.el,'el','', 'left:0;top:0;width:142px;height:262px;background:#1A1716;border-radius:24px;padding:7px;box-shadow:0 14px 30px rgba(0,0,0,.35)');sc.ph=ph;
+ const scr=E(ph,'','',`position:absolute;inset:7px;border-radius:18px;background:#F4EFE6;overflow:hidden`);
+ E(scr,'',`<div style="display:flex;align-items:center;gap:5px;padding:9px 8px 6px"><div style="width:16px;height:16px;border-radius:50%;background:#C8262B"></div><div style="font:700 7.5px RB;color:#1A1716;line-height:1.1">brand<br><span style="font-weight:500;color:#7a7066">Реклама</span></div></div>`);
+ sc.vid=E(scr,'','',`position:absolute;left:8px;right:8px;top:36px;height:150px;border-radius:8px;background:repeating-linear-gradient(45deg,#E2D8C7 0 8px,#DCD1BF 8px 16px)`);
+ sc.bigq=E(sc.vid,'','?',`position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font:900 italic 62px MS;color:#C8262B`);
+ E(scr,'',`Подробнее <span style="float:right">›</span>`,`position:absolute;left:8px;right:8px;top:192px;background:#2E64F6;color:#fff;font:700 8px RB;padding:5px 7px;border-radius:4px`);
+ E(scr,'',`${IC.heart('#C8262B')}`,`position:absolute;left:9px;top:214px`);
+ sc.q=[0,1,2].map(i=>E(sc.el,'el qm paper','?',`left:0;top:0;transform-origin:50% 80%`));
+ sc.q[1].style.background='#EFE7D9';sc.q[1].style.color='#C8262B';
+ pill(sc,'Таргет жарнамасы');
+};
+B.hook_d=(sc,t)=>{const t0=sc.t0;
+ const a=eo(pr(t,t0,.55)),drift=Math.sin((t-t0)*1.3)*2;
+ T(sc.sp,180,322,.2+.85*bk(pr(t,t0+.05,.5)),-8+ (t-t0)*2,1);
+ T(sc.ph,180,320+(1-a)*40,1.12-.12*a+(t-t0)*.008,-4+drift*.6,a);
+ const tq=wt(sc,'қандай',t0+1);
+ sc.bigq.style.transform=`translate(-50%,-50%) scale(${.6+.4*bk(pr(t,tq,.4))+Math.sin(t*6)*.03*pr(t,tq,.4)})`;
+ const pos=[[66,248,-14],[296,300,12],[78,396,-6]];
+ sc.q.forEach((q,i)=>{const s=bk(pr(t,tq+.12*i,.38));T(q,pos[i][0],pos[i][1]+Math.sin(t*2.2+i)*3,s*(i==1?.9:1),pos[i][2]+Math.sin(t*3+i)*3,cl(s*2))});
+};
+// 2 — бір өнім → он креатив; команда → қажеті жоқ
+B.team=sc=>{sc.bgc='#EFE7D9';sc.fg='#1A1716';sc.acc='#C8262B';
+ sc.prod=E(sc.el,'el','',`left:0;top:0;width:96px;height:96px`);E(sc.prod,'',IC.box('#C8262B','#E7B52C'),'width:96px;height:96px');
+ sc.plab=E(sc.el,'el tag','ӨНІМ',`left:0;top:0;background:#1A1716;color:#EFE7D9`);
+ sc.cards=[];for(let i=0;i<10;i++){const c=styleCard(sc.el,i%5,40,56);sc.cards.push(c)}
+ sc.x10=E(sc.el,'el','×10',`left:0;top:0;font:900 italic 44px MS;color:#C8262B`);
+ const roles=[['Оператор','cam'],['Дизайнер','pen'],['Монтажер','cut'],['Таргетолог','tgt']];
+ sc.ppl=roles.map((r,i)=>{const p=E(sc.el,'el','',`left:0;top:0;width:70px;text-align:center`);
+  E(p,'',IC.person(['#1A1716','#9C1B1F','#1D6A61','#2B2B2B'][i]),'');
+  E(p,'',IC[r[1]]('#1A1716'),'position:absolute;right:2px;top:-4px;background:#E7B52C;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;padding:2px');
+  E(p,'',r[0],'font:700 10px RB;color:#1A1716;margin-top:2px');return p});
+ sc.stamp=E(sc.el,'el','ҚАЖЕТІ ЖОҚ',`left:0;top:0;font:900 italic 30px MS;color:#C8262B;border:4px solid #C8262B;padding:4px 12px;border-radius:6px;background:rgba(239,231,217,.75);white-space:nowrap`);
+ pill(sc,'1 өнім → 10 креатив');
+};
+B.team_d=(sc,t)=>{const t0=sc.t0;const tA=wt(sc,'он',t0+.6),tB=wt(sc,'үлкен',t0+2.4),tC=wt(sc,'қажеті',t0+3.6);
+ const out=eio(pr(t,tB-.15,.45));
+ const pin=bk(pr(t,t0,.45));
+ const gone=eio(pr(t,tA+.35,.3));T(sc.prod,180,300,pin*(1-gone*.6)+Math.sin(t*2)*.01,Math.sin(t*1.5)*3,cl(pin*2)*(1-gone));
+ T(sc.plab,180,358,pin*(1-gone),-3,cl(pin*2)*(1-gone));
+ sc.cards.forEach((c,i)=>{const a=-Math.PI/2+i/10*Math.PI*2,p=bk(pr(t,tA+.04*i,.45));const r=104*p;
+  T(c,180+Math.cos(a)*r*1.02,300+Math.sin(a)*r*.9-out*40,p*(1-out*.4),Math.sin(a)*14+Math.sin(t*2+i)*3,cl(p*2)*(1-out))});
+ const xp=bk(pr(t,tA+.45,.4));T(sc.x10,180,300,xp*(1-out),-6,cl(xp*2)*(1-out));
+ sc.ppl.forEach((p,i)=>{const q=bk(pr(t,tB+.1+.1*i,.4));const g=pr(t,tC+.2,.3);
+  T(p,63+78*i,298+(1-q)*30,q*.98,(i-1.5)*3,cl(q*2)*(1-g*.3));p.style.filter=`grayscale(${g*.8})`});
+ const s=pr(t,tC+.05,.22);T(sc.stamp,180,300,2.2-1.2*eo(s),-9,cl(s*3));
+};
+// 3 — ИИ: бір идея → бірнеше стиль (көкжасыл фон, кинотаспа)
+B.ai=sc=>{sc.bgc='#1D6A61';sc.fg='#EFE7D9';sc.acc='#E7B52C';
+ sc.bar=E(sc.el,'el','',`left:0;top:0;width:250px;height:44px;background:#EFE7D9;border-radius:999px;display:flex;align-items:center;padding:0 8px;gap:8px;box-shadow:0 6px 18px rgba(0,0,0,.25)`);
+ E(sc.bar,'','ИИ',`width:30px;height:30px;border-radius:50%;background:#C8262B;color:#fff;font:800 12px RB;display:flex;align-items:center;justify-content:center;flex:none`);
+ sc.typ=E(sc.bar,'','',`font:600 14px RB;color:#1A1716;white-space:nowrap;overflow:hidden`);
+ sc.fan=STY.map((s,i)=>styleCard(sc.el,i,70,104));
+ sc.film=E(sc.el,'el','',`left:0;top:0;width:520px;height:34px;background:#1A1716;overflow:hidden`);
+ sc.filmIn=E(sc.film,'','',`position:absolute;left:0;top:0;width:1200px;height:34px;background:repeating-linear-gradient(90deg,transparent 0 6px,#E7B52C 6px 16px,transparent 16px 24px) 0 4px/1200px 6px no-repeat,repeating-linear-gradient(90deg,transparent 0 6px,#E7B52C 6px 16px,transparent 16px 24px) 0 24px/1200px 6px no-repeat`);
+ sc.tags=['Коллаж','Мульт'].map((n,i)=>E(sc.el,'el tag',n,`left:0;top:0;background:${['#EFE7D9','#C8262B','#E7B52C'][i]};color:${['#1A1716','#fff','#1A1716'][i]};font-size:12px`));
+ pill(sc,'1 идея → 5 стиль');
+};
+B.ai_d=(sc,t)=>{const t0=sc.t0;const tA=wt(sc,'бір',t0+1.2),tB=wt(sc,'бірнеше',t0+1.8);
+ const txt='бір идея — 5 стиль';const n=Math.floor(cl((t-t0-.2)/1.1)*txt.length);
+ sc.typ.textContent=txt.slice(0,n)+((t*2|0)%2&&n<txt.length?'|':'');
+ const bi=eo(pr(t,t0,.4)),up=eio(pr(t,tB-.1,.4));
+ T(sc.bar,180,248-up*30+(1-bi)*20,1-.12*up,0,bi);
+ sc.fan.forEach((c,i)=>{const p=bk(pr(t,tB+.08*i,.5));const k=i-2;
+  T(c,180+k*58*p,330+Math.abs(k)*10*p-(1-p)*10,.6+.4*p,k*9*p+Math.sin(t*1.6+i)*1.5,cl(p*2))});
+ T(sc.film,180,410,1,-4,eo(pr(t,t0+.2,.4)));sc.filmIn.style.transform=`translateX(${-((t*40)%24)}px)`;
+ const tp=[[74,268,-8],[290,262,7],[268,376,-6]];
+ sc.tags.forEach((g,i)=>{const p=bk(pr(t,tB+.5+.12*i,.35));T(g,tp[i][0],tp[i][1],p,tp[i][2],cl(p*2))});
+};
+// 4 — таргетке жіберу → жақсы нәтиже → тексеру
+B.test=sc=>{sc.bgc='#EFE7D9';sc.fg='#1A1716';sc.acc='#C8262B';
+ const pick=[0,2,4];sc.ads=pick.map((s,i)=>{const c=styleCard(sc.el,s,82,146);
+  const bar=E(c,'','',`position:absolute;left:8px;right:8px;bottom:-1px;height:0;background:rgba(26,23,22,.0)`);c.bar=bar;
+  const fill=E(c,'','',`position:absolute;left:6px;bottom:6px;width:0;height:7px;border-radius:4px;background:${i==1?'#2FA866':'#E9A3A0'}`);c.fill=fill;return c});
+ sc.plane=E(sc.el,'el','',`left:0;top:0;width:44px;height:44px`);sc.plane.innerHTML=IC.plane('#C8262B');
+ sc.ring=E(sc.el,'el','',`left:0;top:0;width:100px;height:164px;border:4px solid #2FA866;border-radius:10px`);
+ sc.win=E(sc.el,'el tag','★ ЖЕҢІМПАЗ',`left:0;top:0;background:#2FA866;color:#fff;font-size:12px`);
+ sc.chk=E(sc.el,'el','',`left:0;top:0;width:46px;height:46px;background:#2FA866;border-radius:50%;padding:9px;box-shadow:0 4px 10px rgba(0,0,0,.25)`);sc.chk.innerHTML=IC.check('#fff');
+ pill(sc,'A/B тест');
+};
+B.test_d=(sc,t)=>{const t0=sc.t0;const tB=wt(sc,'қайсысы',t0+1.2),tC=wt(sc,'тексере',t0+2.6);
+ const xs=[84,180,276],ws=[.45,.92,.62];
+ sc.ads.forEach((c,i)=>{const p=bk(pr(t,t0+.1*i,.45));const win=i==1?eo(pr(t,tC,.4)):0;const lose=i!=1?pr(t,tC,.4):0;
+  T(c,xs[i],290+(1-p)*40-win*8,(.9+.1*p)*(1+win*.12)*(1-lose*.08),[-5,0,5][i]*(1-win),cl(p*2)*(1-lose*.35));
+  c.fill.style.width=(eo(pr(t,tB+.1*i,.9))*ws[i]*70)+'px'});
+ const pp=pr(t,t0+.2,1.0);T(sc.plane,20+pp*360,250-Math.sin(pp*3.14)*70,1,20,pp>0&&pp<1?1:0);
+ const w=eo(pr(t,tC,.4));T(sc.ring,180,282,1.08*(.8+.2*w),0,w);
+ const wb=bk(pr(t,tC+.15,.4));T(sc.win,180,192,wb,-4,cl(wb*2));
+ const ck=bk(pr(t,tC+.3,.4));T(sc.chk,228,350,ck,0,cl(ck*2));
+};
+// 5 — тек телефон + баға
+B.price=sc=>{sc.bgc='#9C1B1F';sc.fg='#EFE7D9';sc.acc='#E7B52C';
+ const sp=E(sc.el,'el',splash('#C8262B',29),'left:0;top:0;width:300px;height:300px');sc.sp=sp;
+ const ph=E(sc.el,'el','', 'left:0;top:0;width:128px;height:236px;background:#1A1716;border-radius:22px;box-shadow:0 14px 30px rgba(0,0,0,.35)');sc.ph=ph;
+ const scr=E(ph,'','',`position:absolute;inset:6px;border-radius:17px;background:#F4EFE6;overflow:hidden`);sc.scr=scr;
+ sc.mini=STY.map((s,i)=>styleCard(scr,i,86,128));
+ sc.tick=E(sc.el,'el paper','',`left:0;top:0;background:#E7B52C;padding:8px 18px 10px;clip-path:${torn(16,3,5)};text-align:center`);
+ sc.tick.innerHTML=`<div style="font:900 italic 44px/1 MS;color:#1A1716;letter-spacing:-1px">3990 ₸</div>`;
+ sc.sparks=[0,1,2,3].map(i=>{const s=E(sc.el,'el','',`left:0;top:0;width:${[22,14,18,12][i]}px;height:${[22,14,18,12][i]}px`);s.innerHTML=IC.spark('#E7B52C');return s});
+ sc.cap=E(sc.el,'el','',`left:0;top:0;width:58px;height:44px`);sc.cap.innerHTML=IC.cap('#1A1716');
+ pill(sc,'Тек телефон арқылы');
+};
+B.price_d=(sc,t)=>{const t0=sc.t0;const tP=wt(sc,'небәрі',t0+2),tU=wt(sc,'үйретемін',t0+3);
+ const a=bk(pr(t,t0,.5));const dn=eio(pr(t,tP-.1,.35));
+ T(sc.sp,180,300,.9+.1*a,(t-t0)*3,cl(a*2)*.9);
+ T(sc.ph,180,292-dn*22,a*(1-dn*.12),5-dn*3+Math.sin(t*1.4)*1.2,cl(a*2));
+ const k=Math.floor((t-t0)*2.2)%5,f=((t-t0)*2.2)%1;
+ sc.mini.forEach((m,i)=>{const on=i===k,nx=i===(k+1)%5;T(m,58,112-(on?eo(cl(f*3-2))*128:0)+(nx?(1-eo(cl(f*3-2)))*128:0),1,0,on||nx?1:0)});
+ const s=pr(t,tP+.15,.22);const sh=s>=1?Math.sin((t-tP-.37)*40)*Math.exp(-(t-tP-.37)*8)*3:0;
+ T(sc.tick,180+sh,382,2.4-1.4*eo(s),-6+sh,cl(s*3));
+ const sp=[[100,348],[262,352],[118,420],[246,414]];
+ sc.sparks.forEach((x,i)=>{const p=pr(t,tP+.35+.06*i,.5);T(x,sp[i][0]+(sp[i][0]-180)*p*.3,sp[i][1]+(sp[i][1]-382)*p*.3,Math.sin(p*3.14)*1.2,p*90,p>0&&p<1?1:0)});
+ const c=bk(pr(t,tU,.4));T(sc.cap,262,200,c,14,cl(c*2));
+};
+// 6 — CTA: «Подробнее»
+B.cta=sc=>{sc.bgc='#9C1B1F';sc.fg='#EFE7D9';sc.acc='#E7B52C';
+ sc.word=E(sc.el,'el','Өзіңіз',`left:0;top:0;font:700 82px CV;color:#E7B52C;white-space:nowrap;text-shadow:0 4px 0 rgba(0,0,0,.18)`);
+ sc.line=E(sc.el,'el','',`left:0;top:0;width:200px;height:6px;border-radius:3px;background:#E7B52C`);
+ sc.sub=E(sc.el,'el','креатив жасаңыз',`left:0;top:0;background:#1A1716;color:#EFE7D9;font:700 14px RB;padding:4px 10px;white-space:nowrap`);
+ sc.btn=E(sc.el,'el','',`left:0;top:0;width:214px;height:52px;border-radius:14px;background:#EFE7D9;overflow:hidden;box-shadow:0 6px 0 #6E1013,0 14px 24px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;gap:8px;font:800 21px RB;color:#9C1B1F`);
+ sc.btn.innerHTML=`Подробнее <span style="font:800 24px RB">›</span><i style="position:absolute;top:-10px;bottom:-10px;width:40px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.8),transparent);transform:skewX(-20deg)"></i>`;
+ sc.shine=sc.btn.querySelector('i');
+ sc.arr=E(sc.el,'el','',`left:0;top:0;width:34px;height:52px`);sc.arr.innerHTML=IC.arrow('#E7B52C');
+ sc.hand=E(sc.el,'el','',`left:0;top:0;width:54px;height:54px`);sc.hand.innerHTML=IC.hand();
+ sc.ring=E(sc.el,'el','',`left:0;top:0;width:60px;height:60px;border-radius:50%;border:3px solid #EFE7D9`);
+};
+B.cta_d=(sc,t)=>{const t0=sc.t0;const tW=wt(sc,'өзіңіз',t0+1),tB=wt(sc,'подробнее',t0+3);
+ const w=pr(t,tW-.05,.6);sc.word.style.clipPath=`inset(0 ${100-eo(w)*100}% 0 0)`;T(sc.word,180,232,1,-5,w>0?1:0);
+ T(sc.line,180,270,1,-5,1);sc.line.style.transform+=` scaleX(${eo(pr(t,tW+.4,.4))})`;
+ const s=bk(pr(t,tW+.6,.4));T(sc.sub,180,298,s,-3,cl(s*2));
+ const b=bk(pr(t,tB-.25,.45));const pulse=1+Math.max(0,Math.sin((t-tB)*5))*.04*pr(t,tB+.3,.2);
+ const tap=pr(t,tB+.9,.5),press=Math.sin(cl(tap)*3.14);
+ T(sc.btn,180,364,b*pulse*(1-press*.06),0,cl(b*2));
+ sc.shine.style.left=(-60+((t-tB)*160)%380)+'px';
+ const ap=pr(t,tB+.3,.4);T(sc.arr,180,418+Math.sin(t*7)*5,eo(ap),0,eo(ap));
+ const hp=eo(pr(t,tB+.5,.45));T(sc.hand,262+(1-hp)*30,398+(1-hp)*50-press*8,1,-14,hp);
+ T(sc.ring,256,372,.4+tap*1.4,0,tap>0&&tap<1?1-tap:0);
+};
+// ------------------------------------------------------------------ setup/draw
+window.setup=d=>{D=d;S.innerHTML='';
+ SC=d.scenes.map((s,i)=>{const sc=Object.assign({},s);sc.i=i;sc.el=E(S,'sc');sc.bgEl=E(sc.el,'bg');
+  B[s.id](sc);sc.bgEl.style.background=sc.bgc;
+  if(sc.bgc==='#EFE7D9'){sc.bgEl.style.background='radial-gradient(120% 80% at 50% 38%,#F5EFE4 0%,#EFE7D9 55%,#E2D6C2 100%)'}
+  else if(sc.bgc==='#1D6A61'){sc.bgEl.style.background='radial-gradient(120% 80% at 50% 38%,#24786E 0%,#1D6A61 55%,#164F49 100%)'}
+  else sc.bgEl.style.background='radial-gradient(120% 80% at 50% 38%,#AE2126 0%,#9C1B1F 55%,#7A1418 100%)';
+  buildHL(sc,sc.fg,sc.acc);if(sc.pill)sc.el.appendChild(sc.pill);return sc});
+ E(S,'','','').id='wipe';
+ const g=E(S,'','<svg width="440" height="720"><rect width="440" height="720" filter="url(#gr)"/></svg>','');g.id='grain';
+ E(S,'','','').id='vig';
+};
+window.draw=t=>{
+ SC.forEach((sc,i)=>{
+  const nx=SC[i+1];const tin=sc.t0-(i?.18:0),tout=nx?nx.t0+.14:1e9;
+  const on=t>=tin&&t<tout;sc.el.style.visibility=on?'visible':'hidden';
+  if(!on)return;
+  // кіріс: жыртылған қағаз жоғары сырғиды / дөңгелек ашылу
+  if(i){const p=eio(pr(t,sc.t0-.18,.32));
+   if(i%2)sc.el.style.clipPath=`circle(${p*120}% at 50% 55%)`;else sc.el.style.clipPath=`inset(${(1-p)*100}% 0 0 0)`;}
+  const cam=1+(t-sc.t0)*.006;const em=sc.words.filter(w=>w.e).reduce((m,w)=>m+Math.max(0,1-Math.abs(t-w.t-.08)/.18),0);
+  sc.el.style.transform=`scale(${cam+em*.018})`;
+  B[sc.id+'_d'](sc,t);drawHL(sc,t);drawPill(sc,t);
+ });
+ const g=document.getElementById('grain');g.style.transform=`translate(${(t*97%40)-20}px,${(t*61%40)-20}px)`;
+};
+</script></body></html>
