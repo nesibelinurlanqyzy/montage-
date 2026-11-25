@@ -1,0 +1,24 @@
+{
+ "name": "qaralym",
+ "style": "mult",
+ "character": "mysyk",
+ "audio": ".matin/qaralym/voice.wav",
+ "audio_orig": ".matin/qaralym/voice.wav",
+ "voice": {"engine": "file", "file": ".matin/qaralym/daus_orig.mp3"},
+ "button": "Подробнее",
+ "button_key": "подробнее",
+ "sfx": true,
+ "scenes": [
+  {"card": "views", "label": "қаралым", "pose": "wow", "text": "Қанша видео салсаңыз да, *қаралымыңыз өспей* жүр ме?"},
+  {"card": "content", "label": "01 · себебі", "pose": "talk", "text": "Мүмкін, мәселе *контентіңізде емес*,"},
+  {"card": "deliver", "label": "02 · жеткізу", "pose": "point", "text": "оны *қалай жеткізіп* жүргеніңізде шығар."},
+  {"card": "swipe", "label": "03 · көрермен", "pose": "talk", "text": "Адамдар видеоны көру немесе өткізіп жіберу туралы шешімді"},
+  {"card": "timer", "label": "04 · 3 секунд", "pose": "wow", "text": "*алғашқы секундтарда* қабылдайды."},
+  {"card": "anim", "label": "05 · не керек?", "pose": "point", "text": "Сондықтан *ерекше анимация*, динамикалық монтаж"},
+  {"card": "visual", "label": "06 · визуал", "pose": "thumb", "text": "және *көз тартатын визуал* өте маңызды."},
+  {"card": "claude", "label": "07 · телефоннан", "pose": "point", "text": "Ал осындай видеоларды *Claude арқылы* тек *телефонмен* жасауға болады."},
+  {"card": "price", "label": "08 · баға", "pose": "wow", "text": "Небәрі *3990 теңгеге*"},
+  {"card": "standout", "label": "09 · ерекшелен", "pose": "thumb", "text": "контентіңізді басқалардан *ерекшелендіретін* монтаж жасауды үйреніңіз."},
+  {"card": "kurs", "label": "толығырақ", "pose": "down", "text": "Курс туралы толық ақпарат алу үшін *«Подробнее»* батырмасын басыңыз."}
+ ]
+}

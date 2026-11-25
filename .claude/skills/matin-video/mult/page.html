@@ -21,6 +21,8 @@ html,body{margin:0;width:360px;height:640px;overflow:hidden;background:var(--bg)
 #dots i.on{background:var(--ink)} #dots i.cur{background:var(--red);border-color:var(--red)}
 .hl{position:absolute;left:18px;right:16px;top:36px;font:800 21px/1.22 MS;letter-spacing:-.2px}
 .hl span{display:inline-block;white-space:pre;transform-origin:50% 70%}
+.hl span.act{background:var(--red);color:#fff;border-radius:6px;box-shadow:0 0 0 3px var(--red)}
+.hl span.act .e{color:#fff}
 .hl .e,.hl b.e{font-weight:900;font-style:italic;color:var(--red)}
 .scene{position:absolute;inset:0}
 .el{position:absolute;transform-origin:50% 50%}
@@ -188,6 +190,103 @@ function card(kind, si){
   <div class="el" id="c_ph" style="left:278px;top:212px">${IC.phone}</div>
   <div class="el pill" id="c_m" style="left:120px;top:318px;background:#E5322D;color:#fff;font-size:14px">монтаж ✓</div>`,
   [['#c_gh','github',-4],['#c_cc','claude',3],['#c_ph','телефон',6],['#c_m','монтаж',-4],['#c_ln','claude',0,'fade']]];
+
+ case 'views': return [`
+  <div class="el win" id="v_ph" style="left:18px;top:196px;width:196px">
+   <div class="bar">○○○ @сіздің_парақша</div>
+   <div style="padding:7px;display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
+    ${[0,1,2,3,4,5].map(i=>`<div class="el" id="v_t${i}" style="position:relative;height:52px;border-radius:6px;border:2.5px solid #1d1d2b;background:${['#F7C948','#9fd3ff','#F28B7D','#b9e6c9','#d9c8ff','#ffd6a8'][i]};display:flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 30 30"><path d="M9 5 L25 15 L9 25Z" fill="#1d1d2b"/></svg></div>`).join('')}
+   </div></div>
+  <div class="el win" id="v_ch" style="left:226px;top:206px;width:118px">
+   <div class="bar">қаралым</div>
+   <div style="padding:6px 8px"><div style="font:900 italic 24px MS">👁 <span id="v_n">312</span></div>
+    <svg width="100" height="46" viewBox="0 0 100 46"><path d="M4 40 H96" stroke="#d8ccb9" stroke-width="2"/><path id="v_line" d="M4 14 L22 18 L40 15 L58 24 L76 30 L94 38" fill="none" stroke="#E5322D" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="120" stroke-dashoffset="120"/></svg></div></div>
+  <div class="el pill" id="v_dn" style="left:232px;top:318px;background:#E5322D;color:#fff;font-size:14px">↓ өспейді</div>
+  <div class="el" id="v_q" style="left:182px;top:170px;width:46px;height:46px;border-radius:50%;background:#F7C948;border:3.5px solid #1d1d2b;box-shadow:3px 3px 0 #1d1d2b;font:900 30px/40px MS;text-align:center">?</div>`,
+  [['#v_ph',0.0,-2],['#v_t0',0.25,0],['#v_t1',0.4,0],['#v_t2',0.55,0],['#v_t3',0.7,0],['#v_t4',0.85,0],['#v_t5',1.0,0],['#v_ch','қаралым',3],['#v_dn','өспей',-5],['#v_q','ме',-8,'q']]];
+ case 'content': return [`
+  <div class="el win" id="ct_w" style="left:40px;top:200px;width:200px">
+   <div class="bar">○○○ контент.mp4</div>
+   <div style="height:120px;background:linear-gradient(135deg,#6A4BD6,#E5322D);display:flex;align-items:center;justify-content:center"><div style="width:46px;height:46px;border-radius:50%;background:#fff;border:3px solid #1d1d2b;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 30 30"><path d="M9 5 L25 15 L9 25Z" fill="#1d1d2b"/></svg></div></div></div>
+  <div class="el stk" id="ct_ok" style="left:236px;top:208px;background:#2FA866;color:#fff;display:flex;gap:6px;align-items:center">${IC.check} сапалы</div>
+  <div class="el" id="ct_st" style="left:150px;top:290px;padding:6px 12px;border:4px solid #2FA866;color:#2FA866;border-radius:8px;font:900 italic 20px MS;background:#ffffffdd;white-space:nowrap">МӘСЕЛЕ ЕМЕС</div>`,
+  [['#ct_w',0.0,-3],['#ct_ok','контент',6],['#ct_st','емес',-9,'stamp']]];
+ case 'deliver': return [`
+  <svg class="el" id="d_ln" style="left:0;top:0" width="360" height="640"><path class="dash" d="M104 268 C150 228 210 228 252 268" stroke="#1d1d2b" stroke-width="3.5" stroke-dasharray="7 6" fill="none"/></svg>
+  <div class="el stk" id="d_v" style="left:18px;top:232px;width:86px;height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font-size:12px;padding:4px">${IC.phone.replace('width="44" height="70"','width="26" height="42"')}видео</div>
+  <div class="el stk" id="d_a" style="left:252px;top:232px;width:90px;height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font-size:12px;padding:4px;background:#FBE3D6"><span style="font-size:26px;line-height:1">👀</span>көрермен</div>
+  <div class="el pill" id="d_how" style="left:112px;top:184px;background:#F7C948;font-size:15px">ҚАЛАЙ?</div>
+  <div class="el pill" id="d_p" style="left:116px;top:300px;background:#E5322D;color:#fff;font-size:13px">жеткізу — шешім</div>`,
+  [['#d_v',0.0,-4],['#d_a',0.15,4],['#d_ln',0.2,0,'fade'],['#d_how','қалай',-5],['#d_p','жүргеніңізде',3]]];
+ case 'swipe': return [`
+  <div class="el win" id="sw_ph" style="left:118px;top:186px;width:124px;height:186px;border-radius:18px">
+   <div id="sw_feed" style="position:absolute;left:0;right:0;top:0">
+    <div style="height:182px;background:linear-gradient(160deg,#9fd3ff,#6A4BD6);display:flex;align-items:flex-end;padding:10px"><div style="width:70%;height:8px;border-radius:4px;background:#fff"></div></div>
+    <div style="height:182px;background:linear-gradient(160deg,#ffd6a8,#E5322D)"></div></div></div>
+  <div class="el" id="sw_h" style="left:196px;top:300px">${IC.hand}</div>
+  <div class="el pill" id="sw_y" style="left:14px;top:214px;background:#2FA866;color:#fff;font-size:14px">✓ көру</div>
+  <div class="el pill" id="sw_n" style="left:254px;top:262px;background:#E5322D;color:#fff;font-size:14px">✕ өткізу</div>`,
+  [['#sw_ph',0.0,0],['#sw_y','көру',-6],['#sw_n','өткізіп',6],['#sw_h','жіберу',0,'swipe']]];
+ case 'timer': return [`
+  <div class="el" id="tm_c" style="left:110px;top:186px;width:140px;height:140px">
+   <svg width="140" height="140" viewBox="0 0 140 140" style="position:absolute;inset:0;overflow:visible"><circle cx="74" cy="74" r="60" fill="#1d1d2b"/><circle cx="70" cy="70" r="60" fill="#fff" stroke="#1d1d2b" stroke-width="4"/>
+   <circle id="tm_r" cx="70" cy="70" r="48" fill="none" stroke="#E5322D" stroke-width="12" stroke-dasharray="301.6" stroke-dashoffset="301.6" transform="rotate(-90 70 70)"/>
+   <rect x="58" y="-2" width="24" height="12" rx="3" fill="#1d1d2b"/></svg>
+   <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center"><div id="tm_n" style="font:900 italic 46px/1 MS">0</div><div style="font:800 11px MS">секунд</div></div></div>
+  <div class="el pill" id="tm_p" style="left:236px;top:300px;background:#F7C948;font-size:15px">шешім!</div>
+  <div class="el pill" id="tm_f" style="left:18px;top:210px;background:#1d1d2b;color:#fff;font-size:13px">1–3 сек</div>`,
+  [['#tm_c',0.0,0],['#tm_f','алғашқы',-6],['#tm_p','қабылдайды',6]]];
+ case 'anim': return [`
+  <div class="el win" id="an_w" style="left:18px;top:194px;width:150px;height:120px;display:flex;flex-direction:column">
+   <div class="bar">анимация</div>
+   <div style="flex:1;position:relative;background:#FFF4C9"><div id="an_b" style="position:absolute;left:20px;top:30px;width:30px;height:30px;border-radius:8px;background:#E5322D;border:3px solid #1d1d2b"></div><div id="an_s" style="position:absolute;left:96px;top:20px">${IC.spark}</div></div></div>
+  <div class="el win" id="mo_w" style="left:180px;top:212px;width:164px">
+   <div class="bar">монтаж · 00:15</div>
+   <div style="padding:8px;display:flex;flex-direction:column;gap:5px;position:relative">
+    <div style="display:flex;gap:3px"><i style="flex:3;height:14px;border-radius:3px;background:#6A4BD6;border:2px solid #1d1d2b"></i><i style="flex:2;height:14px;border-radius:3px;background:#E5322D;border:2px solid #1d1d2b"></i><i style="flex:2;height:14px;border-radius:3px;background:#F7C948;border:2px solid #1d1d2b"></i></div>
+    <div style="display:flex;gap:3px"><i style="flex:2;height:14px;border-radius:3px;background:#2FA866;border:2px solid #1d1d2b"></i><i style="flex:4;height:14px;border-radius:3px;background:#9fd3ff;border:2px solid #1d1d2b"></i></div>
+    <div id="mo_ph" style="position:absolute;top:2px;bottom:2px;width:3px;background:#E5322D;left:8px"></div></div></div>
+  <div class="el pill" id="an_p" style="left:150px;top:318px;background:#F7C948;font-size:14px">⚡ динамика</div>`,
+  [['#an_w','ерекше',-3],['#mo_w','монтаж',3],['#an_p','динамикалық',-4]]];
+ case 'visual': return [`
+  <div class="el" id="vi_e" style="left:96px;top:186px;width:168px;height:118px">
+   <svg width="168" height="118" viewBox="0 0 168 118" stroke="#1d1d2b" stroke-width="4" stroke-linejoin="round" style="overflow:visible"><path d="M10 63 Q84 -12 158 63 Q84 138 10 63Z" fill="#1d1d2b" transform="translate(4 4)"/><path d="M10 59 Q84 -16 158 59 Q84 134 10 59Z" fill="#fff"/><circle id="vi_i" cx="84" cy="59" r="30" fill="#6A4BD6"/><circle cx="84" cy="59" r="14" fill="#1d1d2b"/><circle cx="92" cy="51" r="6" fill="#fff" stroke="none"/></svg></div>
+  <div class="el" id="vi_s1" style="left:72px;top:184px">${IC.spark}</div>
+  <div class="el" id="vi_s2" style="left:262px;top:268px">${IC.spark}</div>
+  <div class="el pill" id="vi_p" style="left:106px;top:314px;background:#E5322D;color:#fff;font-size:15px">өте маңызды!</div>`,
+  [['#vi_e','көз',0],['#vi_s1','тартатын',-10],['#vi_s2','визуал',10],['#vi_p','маңызды',-3]]];
+ case 'claude': return [`
+  <div class="el stk" id="cl_l" style="left:16px;top:200px;padding:8px 10px">${IC.laptop}</div>
+  <div class="el win" id="cl_ph" style="left:112px;top:186px;width:150px;height:184px;border-radius:20px">
+   <div class="bar" style="display:flex;gap:5px;align-items:center">${IC.spark.replace(/width="22" height="22"/,'width="13" height="13"')} Claude</div>
+   <div style="padding:8px;display:flex;flex-direction:column;gap:7px">
+    <div class="bub n el" id="cl_b1" style="position:relative;align-self:flex-end;font-size:10px">Reels монтажда 🎬</div>
+    <div class="bub o el" id="cl_b2" style="position:relative;font-size:10px">Дайын ✓<br>reels_v1.mp4</div>
+    <div class="el" id="cl_v" style="position:relative;height:44px;border-radius:8px;border:2.5px solid #1d1d2b;background:linear-gradient(135deg,#F7C948,#E5322D);display:flex;align-items:center;justify-content:center">${IC.play}</div></div></div>
+  <div class="el pill" id="cl_t" style="left:14px;top:290px;background:#F7C948;font-size:13px">📱 тек телефон</div>`,
+  [['#cl_l','ал',-8],['#cl_ph','видеоларды',0],['#cl_b1','claude',0],['#cl_b2','телефонмен',0],['#cl_v','жасауға',0],['#cl_t','телефонмен',6]]];
+ case 'price': return [`
+  <div class="el" id="pr_t" style="left:62px;top:196px;width:236px;height:118px">
+   <svg width="236" height="118" viewBox="0 0 236 118" stroke="#1d1d2b" stroke-width="4" stroke-linejoin="round" style="position:absolute;inset:0;overflow:visible"><path d="M40 8 H228 V110 H40 L6 59Z" fill="#1d1d2b" transform="translate(5 5)"/><path d="M40 8 H228 V110 H40 L6 59Z" fill="#F7C948"/><circle cx="36" cy="59" r="8" fill="#fff"/></svg>
+   <div style="position:absolute;left:52px;right:8px;top:14px;text-align:center"><div style="font:800 13px MS">небәрі</div><div style="font:900 italic 44px/1.05 MS;color:#E5322D">3 990 ₸</div></div></div>
+  <div class="el" id="pr_s1" style="left:286px;top:184px">${IC.spark}</div>
+  <div class="el" id="pr_s2" style="left:48px;top:300px">${IC.spark}</div>`,
+  [['#pr_t','небәрі',-5,'price'],['#pr_s1','3990',12],['#pr_s2','теңгеге',-12]]];
+ case 'standout': return [`
+  <div class="el win" id="so_w" style="left:18px;top:192px;width:324px">
+   <div class="bar">○○○ Reels ленталар</div>
+   <div style="padding:8px;display:grid;grid-template-columns:repeat(4,1fr);gap:7px">
+    ${[0,1,2,3,4,5,6,7].map(i=>`<div id="so_${i}" style="height:52px;border-radius:7px;border:2.5px solid #1d1d2b;background:#d8d2c8;position:relative"></div>`).join('')}
+   </div></div>
+  <div class="el pill" id="so_p" style="left:200px;top:340px;background:#2FA866;color:#fff;font-size:14px">үйреніңіз ✓</div>`,
+  [['#so_w',0.0,0],['#so_p','үйреніңіз',-5]]];
+ case 'kurs': return [`
+  <div class="el win" id="k_win" style="left:30px;top:196px;width:300px">
+   <div class="bar">○○○ курс · 3 990 ₸</div>
+   <div style="padding:10px 12px;font:800 13px/1.3 MS">Телефоннан WOW монтаж:<br>Claude + анимация + субтитр</div></div>
+  <div class="el" id="k_btn" style="left:60px;top:286px;width:240px;height:48px;border-radius:12px;background:#E5322D;border:3.5px solid #1d1d2b;box-shadow:4px 4px 0 #1d1d2b;color:#fff;font:900 19px/41px MS;text-align:center">${D.button||'Подробнее'} ›</div>
+  <div class="el" id="k_hand" style="left:236px;top:310px">${IC.hand}</div>`,
+  [['#k_win',0.0,-2],['#k_btn',(D.button_key||'подробнее'),0,'btn'],['#k_hand','батырмасын',0,'tap']]];
  case 'cta': return [`
   <div class="el win" id="k_win" style="left:30px;top:204px;width:300px">
    <div class="bar">○○○ толық ақпарат</div>
@@ -280,6 +379,8 @@ function draw(t){
    if(t<w.t){ sp.style.opacity=hook?0:0.2; sp.style.transform=hook?'scale(.4)':'none'; }
    else if(hook){ sp.style.opacity=clamp(p*3); sp.style.transform=`scale(${0.4+0.6*eob(p)}) translateY(${(1-eo(p))*8}px)`; }
    else { sp.style.opacity=0.2+0.8*eo(p); sp.style.transform=`translateY(${(1-eo(p))*-3}px)`; }
+   const nx=s.words[j+1]; const act=!hook&&t>=w.t&&(!nx||t<nx.t)&&t<w.t+1.2;
+   sp.classList.toggle('act',act);
   });
   s.els.forEach(o=>{
    const p=clamp((t-o.t)/0.38);
@@ -287,8 +388,13 @@ function draw(t){
    let sc=0.5+0.5*eob(p), extra='';
    if(o.kind==='row'){o.el.style.opacity=eo(p);o.el.style.transform=`translateX(${(1-eo(p))*-24}px)`;return}
    if(o.kind==='fade'){o.el.style.opacity=eo(p);o.el.style.transform='none';
-     s.div.querySelectorAll('#c_p1,#c_p2').forEach(q=>q.style.strokeDashoffset=-t*30);return}
+     s.div.querySelectorAll('#c_p1,#c_p2,.dash').forEach(q=>q.style.strokeDashoffset=-t*30);return}
    if(o.kind==='slide'){o.el.style.opacity=eo(p);o.el.style.transform=`translate(${(1-eo(p))*-110}px,${(1-eo(p))*-40}px) rotate(${o.rot*eo(p)}deg)`;return}
+   if(o.kind==='stamp'){const q=eo(p);o.el.style.opacity=clamp(p*4);o.el.style.transform=`scale(${2.2-1.2*q}) rotate(${o.rot}deg)`;return}
+   if(o.kind==='swipe'){const c=((t-o.t)%1.3)/1.3;const up=c<0.45?eo(c/0.45):1;o.el.style.opacity=c<0.8?eo(p):1-(c-0.8)/0.2;
+     o.el.style.transform=`translateY(${-up*70}px) rotate(-8deg)`;
+     const f=s.div.querySelector('#sw_feed');const k=Math.floor((t-o.t)/1.3);f.style.transform=`translateY(${-(c<0.45?eo(c/0.45):1)*182}px)`;return}
+   if(o.kind==='price'){const w=Math.sin((t-o.t)*5)*2;o.el.style.opacity=clamp(p*3);o.el.style.transform=`scale(${sc*(1+0.03*Math.sin(t*6))}) rotate(${o.rot+w}deg)`;return}
    if(o.kind==='q') extra=` rotate(${Math.sin(t*6)*8}deg)`;
    if(o.kind==='btn'){ const pu=1+0.05*Math.sin(t*7); sc*=pu; }
    if(o.kind==='tap'){ const c=((t-o.t)%1.0); const press=c<0.15?c/0.15:c<0.3?1-(c-0.15)/0.15:0;
@@ -306,6 +412,20 @@ function draw(t){
    s.div.querySelector('#s_fork').style.transform=`scale(${t>=tf?1+0.25*Math.sin(Math.PI*pf):1})`;
    s.div.querySelector('#s_fork').style.background=t>=tf?'#d9f2e3':'#fff';
   }
+  if(s.card==='views'){const tc=wtime(s,'өспей');const q=clamp((t-wtime(s,'қаралым'))/0.9);
+   s.div.querySelector('#v_line').style.strokeDashoffset=120*(1-eo(q));
+   s.div.querySelector('#v_n').textContent=Math.round(312-(312-48)*eo(clamp((t-tc)/0.8)));}
+  if(s.card==='timer'){const q=clamp((t-s.t0-0.1)/1.5);s.div.querySelector('#tm_r').style.strokeDashoffset=301.6*(1-q);
+   s.div.querySelector('#tm_n').textContent=Math.min(3,Math.floor(q*3.02));}
+  if(s.card==='anim'){const u=t-s.t0;const b=s.div.querySelector('#an_b');b.style.transform=`translate(${Math.abs(Math.sin(u*2.2))*52}px,${-Math.abs(Math.sin(u*4.4))*16}px) rotate(${u*220}deg)`;
+   s.div.querySelector('#an_s').style.transform=`rotate(${u*120}deg) scale(${1+0.2*Math.sin(u*6)})`;
+   s.div.querySelector('#mo_ph').style.left=(8+((u*60)%140))+'px';}
+  if(s.card==='visual'){const u=t-s.t0;s.div.querySelector('#vi_i').setAttribute('r',28+3*Math.sin(u*5));
+   ['#vi_s1','#vi_s2'].forEach((q,i)=>{const e=s.div.querySelector(q);if(t>s.els[i+1].t)e.style.transform+=` rotate(${u*90*(i?-1:1)}deg)`;});}
+  if(s.card==='standout'){const te=wtime(s,'ерекшелендіретін');const q=eob(clamp((t-te)/0.4));
+   for(let i=0;i<8;i++){const e=s.div.querySelector('#so_'+i);const ap=clamp((t-s.t0-0.05*i)/0.25);
+    if(i===5&&t>=te){e.style.background='linear-gradient(135deg,#F7C948,#E5322D 60%,#6A4BD6)';e.style.transform=`scale(${1+0.22*q}) rotate(${-4*q}deg)`;e.style.zIndex=3;e.style.boxShadow='4px 4px 0 #1d1d2b';e.style.opacity=1;}
+    else{e.style.background='#d8d2c8';e.style.transform=`scale(${0.6+0.4*eob(ap)})`;e.style.opacity=(t>=te?0.45:1)*ap;e.style.zIndex=1;e.style.boxShadow='none';}}}
   if(s.card==='noprog'){
    const tb=wtime(s,'бағдарламашы'); const on=t>=tb;
    s.div.querySelector('#n_tog').style.background='#ccc';
@@ -315,5 +435,9 @@ function draw(t){
  });
  drawCat(t,D.scenes[cur].pose,t-D.scenes[cur].t0);
 }
-window.setup=setup; window.draw=draw;
+function events(){const ev=[];D.scenes.forEach((s,i)=>{if(i)ev.push([s.t0,'whoosh']);
+ s.els.forEach(o=>{if(o.t>=s.t1-0.05)return;const k=o.kind==='row'?'tick':o.kind==='stamp'?'stamp':o.kind==='price'?'cash':o.kind==='tap'?'click':o.kind==='swipe'?'swish':o.kind==='fade'?null:'pop';if(k)ev.push([o.t,k]);});
+ if(s.card==='timer'){for(let k=1;k<=3;k++)ev.push([s.t0+0.1+1.5*k/3,'tick']);}
+ if(s.card==='standout')ev.push([wtime(s,'ерекшелендіретін'),'sparkle']);});return ev.sort((a,b)=>a[0]-b[0]);}
+window.events=events;window.setup=setup; window.draw=draw;
 </script></body></html>

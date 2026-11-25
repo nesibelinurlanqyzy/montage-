@@ -96,7 +96,7 @@ def prep(plan):
                        "words": [{"w": w["w"], "e": w["e"], "p": w.get("p", ""), "t": round(w["t"], 3)} for w in ws]})
     for si, sc in enumerate(scenes):
         sc["t1"] = scenes[si + 1]["t0"] if si + 1 < len(scenes) else dur + 1
-    data = {"fps": FPS, "dur": round(dur, 3), "env": [round(float(x), 3) for x in env], "scenes": scenes}
+    data = {"fps": FPS, "dur": round(dur, 3), "button": P.get("button", "Подробнее"), "button_key": P.get("button_key", "подробнее"), "env": [round(float(x), 3) for x in env], "scenes": scenes}
     json.dump(data, open(os.path.join(wd, "data.json"), "w"), ensure_ascii=False)
     for sc in scenes:
         print(f"{sc['t0']:6.2f}  " + " ".join(f"{w['w']}@{w['t']:.1f}" for w in sc["words"][:6]) + " …")
@@ -135,9 +135,20 @@ def render(plan, max_mb):
     while os.path.exists(f"Дайын/{P['name']}_v{v}.mp4"): v += 1
     out = f"Дайын/{P['name']}_v{v}.mp4"
     br = int(min(12000, max_mb * 8 * 1024 * 0.92 / data["dur"] - 192))
+    aud = P["audio"]
+    if P.get("sfx", True):
+        evf = os.path.join(wd, "events.json")
+        node(os.path.join(wd, "data.json"), "events", "", evf).wait()
+        sys.path.insert(0, HERE); import sfx
+        sw = os.path.join(wd, "sfx.wav"); sfx.track(json.load(open(evf)), data["dur"], sw)
+        aud = os.path.join(wd, "mix.wav")
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", P["audio"], "-i", sw, "-filter_complex",
+                        "[0:a]highpass=f=70,acompressor=threshold=-20dB:ratio=3:attack=5:release=80,loudnorm=I=-15:TP=-1.5:LRA=9[v];"
+                        f"[1:a]volume={P.get('sfx_volume', 0.55)}[s];[v][s]amix=inputs=2:normalize=0:duration=longest,alimiter=limit=0.95",
+                        "-ar", "48000", aud], check=True)
     pr = node(os.path.join(wd, "data.json"), "video", "", "", stdout=subprocess.PIPE)
     ff = subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "image2pipe", "-framerate", str(FPS), "-c:v", "mjpeg", "-i", "-",
-                         "-i", P["audio"], "-filter_complex", "[1:a]apad[a]", "-map", "0:v", "-map", "[a]",
+                         "-i", aud, "-filter_complex", "[1:a]apad[a]", "-map", "0:v", "-map", "[a]",
                          "-c:v", "libx264", "-preset", "medium", "-b:v", f"{br}k", "-maxrate", f"{br}k", "-bufsize", f"{2 * br}k",
                          "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", "-shortest", "-movflags", "+faststart", out],
                         stdin=pr.stdout)
