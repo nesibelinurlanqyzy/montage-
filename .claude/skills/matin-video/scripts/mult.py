@@ -141,10 +141,13 @@ def render(plan, max_mb):
         node(os.path.join(wd, "data.json"), "events", "", evf).wait()
         sys.path.insert(0, HERE); import sfx
         sw = os.path.join(wd, "sfx.wav"); sfx.track(json.load(open(evf)), data["dur"], sw)
-        aud = os.path.join(wd, "mix.wav")
-        subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", P["audio"], "-i", sw, "-filter_complex",
-                        "[0:a]highpass=f=70,acompressor=threshold=-20dB:ratio=3:attack=5:release=80,loudnorm=I=-15:TP=-1.5:LRA=9[v];"
-                        f"[1:a]volume={P.get('sfx_volume', 0.55)}[s];[v][s]amix=inputs=2:normalize=0:duration=longest,alimiter=limit=0.95",
+        aud = os.path.join(wd, "mix.wav"); vn = os.path.join(wd, "voice_norm.wav")
+        # дауысты бөлек өңдейміз: loudnorm + amix бір графта болса, соңғы секундтар жоғалады
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", P["audio"], "-af",
+                        "highpass=f=70,acompressor=threshold=-20dB:ratio=3:attack=5:release=80,loudnorm=I=-15:TP=-1.5:LRA=9",
+                        "-ar", "48000", "-ac", "1", vn], check=True)
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", vn, "-i", sw, "-filter_complex",
+                        f"[1:a]volume={P.get('sfx_volume', 0.55)}[s];[0:a][s]amix=inputs=2:normalize=0:duration=longest,alimiter=limit=0.95",
                         "-ar", "48000", aud], check=True)
     pr = node(os.path.join(wd, "data.json"), "video", "", "", stdout=subprocess.PIPE)
     ff = subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "image2pipe", "-framerate", str(FPS), "-c:v", "mjpeg", "-i", "-",
