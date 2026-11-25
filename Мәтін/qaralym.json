@@ -2,6 +2,7 @@
  "name": "qaralym",
  "style": "mult",
  "character": "qyz",
+ "page": "ref.html",
  "audio": ".matin/qaralym/voice.wav",
  "audio_orig": ".matin/qaralym/voice.wav",
  "voice": {"engine": "file", "file": ".matin/qaralym/daus_orig.mp3"},

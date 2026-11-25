@@ -3,7 +3,7 @@ const {chromium}=require('playwright');const fs=require('fs');const path=require
 (async()=>{
  const [,,dataF,mode,arg,out]=process.argv; const data=JSON.parse(fs.readFileSync(dataF,'utf8'));
  const b=await chromium.launch(); const p=await b.newPage({viewport:{width:360,height:640},deviceScaleFactor:3});
- await p.goto('file://'+path.join(__dirname,'page.html')); await p.evaluate(async()=>{for(const f of ['800 21px MS','italic 900 21px MS','600 12px MS']) await document.fonts.load(f,'Aaәғқңөұүһі'); await document.fonts.ready;});
+ await p.goto('file://'+path.join(__dirname,data.page||'page.html')); await p.evaluate(async()=>{for(const f of ['800 21px MS','italic 900 21px MS','600 12px MS']) await document.fonts.load(f,'Aaәғқңөұүһі'); await document.fonts.ready;});
  await p.evaluate(d=>window.setup(d),data); await p.waitForTimeout(300);
  if(mode==='events'){ fs.writeFileSync(out,JSON.stringify(await p.evaluate(()=>window.events()))); }
  else if(mode==='frames'){ const ts=arg.split(',').map(Number); let i=0;

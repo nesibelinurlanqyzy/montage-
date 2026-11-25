@@ -1,0 +1,261 @@
+<!doctype html><html><head><meta charset="utf-8">
+<style>
+@font-face{font-family:MS;font-weight:800;font-style:normal;unicode-range:U+0000-024F,U+2000-206F,U+203A;src:url(fonts/montserrat-latin-800-normal.woff2)}
+@font-face{font-family:MS;font-weight:800;font-style:normal;unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116;src:url(fonts/montserrat-cyrillic-800-normal.woff2)}
+@font-face{font-family:MS;font-weight:800;font-style:normal;unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F;src:url(fonts/montserrat-cyrillic-ext-800-normal.woff2)}
+@font-face{font-family:MS;font-weight:900;font-style:italic;unicode-range:U+0000-024F,U+2000-206F;src:url(fonts/montserrat-latin-900-italic.woff2)}
+@font-face{font-family:MS;font-weight:900;font-style:italic;unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1;src:url(fonts/montserrat-cyrillic-900-italic.woff2)}
+@font-face{font-family:MS;font-weight:900;font-style:italic;unicode-range:U+0460-052F;src:url(fonts/montserrat-cyrillic-ext-900-italic.woff2)}
+@font-face{font-family:MS;font-weight:600;font-style:normal;unicode-range:U+0000-024F,U+2000-206F;src:url(fonts/montserrat-latin-600-normal.woff2)}
+@font-face{font-family:MS;font-weight:600;font-style:normal;unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1;src:url(fonts/montserrat-cyrillic-600-normal.woff2)}
+@font-face{font-family:MS;font-weight:600;font-style:normal;unicode-range:U+0460-052F;src:url(fonts/montserrat-cyrillic-ext-600-normal.woff2)}
+
+:root{--ink:#2B211C;--acc:#C0583B;--bg:#F5EFE9;--chip:#2E2420;--cream:#F6EBDD}
+*{box-sizing:border-box}
+html,body{margin:0;width:360px;height:640px;overflow:hidden;background:var(--bg)}
+#stage{position:absolute;inset:0;overflow:hidden;font-family:MS,'Noto Color Emoji',sans-serif;color:var(--ink);background:var(--bg)}
+#grid{position:absolute;inset:0;background-image:linear-gradient(rgba(190,150,128,.22) 1px,transparent 1px),linear-gradient(90deg,rgba(190,150,128,.22) 1px,transparent 1px);background-size:13px 13px;background-position:-2px -2px}
+#panel{position:absolute;left:10px;top:30px;width:340px;height:176px;border-radius:10px;overflow:hidden;
+ background:linear-gradient(140deg,#F4ECE1 0%,#EFE4D5 60%,#EADDCB 100%);box-shadow:0 4px 14px rgba(90,60,40,.16),0 1px 0 rgba(255,255,255,.7) inset}
+.blob{position:absolute;border-radius:50%;background:rgba(222,198,176,.45)}
+.arc{position:absolute;border-radius:50%;border:7px solid rgba(196,120,90,.22)}
+.scene{position:absolute;inset:0}
+.el{position:absolute;transform-origin:50% 50%}
+.ttl{position:absolute;left:150px;right:12px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
+.step{font:600 10px MS;color:#8b7d72;margin-bottom:3px}
+.tt{max-width:100%;font:800 23px/1.08 MS;letter-spacing:-.4px;color:var(--ink)}
+.tt b{color:var(--acc);font-weight:800}
+.tt span{display:inline-block}
+.card{background:#FBF6EF;border-radius:8px;box-shadow:0 2px 6px rgba(90,60,40,.18)}
+.chip{background:var(--chip);color:#F4EAD8;border-radius:5px;font:600 10px MS;padding:4px 8px;white-space:nowrap}
+.pill{border-radius:999px;font:800 14px MS;padding:7px 16px;white-space:nowrap;background:var(--acc);color:#fff;box-shadow:0 3px 8px rgba(160,70,40,.3)}
+.emo{font-family:'Noto Color Emoji';line-height:1}
+#sub{position:absolute;left:12px;right:12px;top:222px;display:flex;flex-direction:column;align-items:center;gap:4px}
+.ln{background:var(--chip);border-radius:5px;padding:2px 6px;font:800 18px/1.25 MS;color:#F4EAD8;white-space:nowrap;letter-spacing:-.1px}
+.ln span{border-radius:4px;padding:0 3px;margin:0 -3px}
+.ln span.act{background:var(--acc);color:#fff}
+#prog{position:absolute;left:0;bottom:0;height:5px;background:var(--acc)}
+#cw{position:absolute;inset:0;transform-origin:180px 636px;transform:scale(1.1)}
+</style></head><body><div id="stage"><div id="grid"></div>
+<div id="panel"><div class="blob" id="b1" style="width:130px;height:130px;left:-20px;top:40px"></div><div class="blob" id="b2" style="width:110px;height:110px;left:110px;top:-40px"></div><div class="arc" id="a1" style="width:260px;height:260px;left:180px;top:-60px"></div><div id="scenes"></div></div>
+<div id="sub"></div>
+<div id="cw"><svg id="person" viewBox="0 0 360 640" width="360" height="640" stroke="#2B211C" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" style="position:absolute;left:0;top:0">
+ <ellipse cx="180" cy="632" rx="62" ry="6" fill="#2B211C" opacity=".12" stroke="none"/>
+ <g id="pall">
+ <g id="pfx" style="display:none" fill="none" stroke="#E8B84A" stroke-width="2.6"><path d="M128 372 L118 366 M126 388 L114 388 M134 358 L128 348"/><path d="M232 372 L242 366 M234 388 L246 388 M226 358 L232 348"/></g>
+ <path d="M150 536 L210 536 L223 623 L184 623 L180 574 L176 623 L137 623Z" fill="#4A2E24"/><path d="M160 560 L156 620 M200 560 L204 620" fill="none" stroke="#6b4536" stroke-width="2"/>
+ <path d="M180 566 L180 600" fill="none" stroke-width="2" opacity=".5"/>
+ <path d="M136 621 H176 Q181 628 176 634 H136 Q130 628 136 621Z" fill="#2B211C"/>
+ <path d="M184 621 H224 Q230 628 224 634 H184 Q179 628 184 621Z" fill="#2B211C"/>
+ <path d="M172 432 V452 Q180 458 188 452 V432Z" fill="#F3C9A8"/>
+ <path d="M146 459 Q180 444 214 459 Q224 472 222 502 Q220 528 215 543 Q180 551 145 543 Q140 528 138 502 Q136 472 146 459Z" fill="#B85C3E"/>
+ <path d="M143 533 Q180 542 217 533" fill="none" stroke-width="2.4"/>
+ <path d="M166 451 Q180 462 194 451" fill="none" stroke-width="2.6"/>
+ <g opacity=".35" stroke="#5a2a1a" stroke-width="1.6" fill="none"><path d="M156 462 V540 M170 452 V546 M190 452 V546 M204 462 V540 M142 480 H218 M140 500 H220 M141 520 H219"/></g>
+ <g id="phead">
+  <g id="ptail"><path d="M200 366 C236 360 244 400 232 440 C226 462 214 474 206 478 C216 446 216 414 198 390Z" fill="#2B1E1B"/></g>
+  <ellipse cx="180" cy="400" rx="33" ry="37" fill="#2B1E1B"/>
+  <ellipse cx="150" cy="410" rx="5.5" ry="7.5" fill="#F3C9A8"/><ellipse cx="210" cy="410" rx="5.5" ry="7.5" fill="#F3C9A8"/>
+  <circle cx="149" cy="421" r="3" fill="#F7C948" stroke-width="2"/><circle cx="211" cy="421" r="3" fill="#F7C948" stroke-width="2"/>
+  <ellipse cx="180" cy="407" rx="29" ry="32" fill="#F3C9A8"/>
+  <path d="M150 404 C144 370 168 360 186 362 C206 362 218 378 211 404 C206 388 194 378 178 378 C170 392 160 398 150 404Z" fill="#2B1E1B"/>
+  <path d="M160 372 Q172 364 186 366" fill="none" stroke="#fff" stroke-width="2.6" opacity=".3"/>
+  <circle cx="203" cy="369" r="5" fill="#E5322D" stroke-width="2.4"/>
+  <path d="M162 394 Q168 390 174 393 M186 393 Q192 390 198 394" fill="none" stroke-width="2.6"/>
+  <g id="peyes"><g class="ppup"><ellipse cx="168" cy="405" rx="4.4" ry="5.6" fill="#2B211C" stroke="none"/><circle cx="169.4" cy="403.2" r="1.3" fill="#fff" stroke="none"/>
+   <ellipse cx="192" cy="405" rx="4.4" ry="5.6" fill="#2B211C" stroke="none"/><circle cx="193.4" cy="403.2" r="1.3" fill="#fff" stroke="none"/></g></g>
+  <path d="M163 401 L160 398 M197 401 L200 398" fill="none" stroke-width="2.2"/>
+  <path id="plids" d="M164 406 Q168 409 172 406 M188 406 Q192 409 196 406" fill="none" stroke-width="2.4" style="display:none"/>
+  <ellipse cx="161" cy="417" rx="5.5" ry="3.2" fill="#F28B7D" stroke="none" opacity=".6"/><ellipse cx="199" cy="417" rx="5.5" ry="3.2" fill="#F28B7D" stroke="none" opacity=".6"/>
+  <path d="M180 408 Q177.5 414 181.5 415" fill="none" stroke-width="2"/>
+  <path id="pmouth" d="M172 423 Q180 428 188 423Z" fill="#C42A3B" stroke-width="2.4"/>
+ </g>
+ <g id="pL"><path class="aO" d="" fill="none" stroke-width="18"/><path class="aF" d="" fill="none" stroke="#B85C3E" stroke-width="11.5"/>
+  <g class="hand">
+   <g class="hPhone"><rect x="-9" y="-2" width="18" height="30" rx="4" fill="#2B211C" stroke-width="2"/><rect x="-6" y="2" width="12" height="21" rx="2" fill="#E5322D" stroke="none"/><path d="M-2.5 9 L3.5 12.5 L-2.5 16Z" fill="#fff" stroke="none"/></g>
+   <g class="hOpen"><path d="M-5.5 4 L-8.5 14 M0 5 L0 16 M5.5 4 L8.5 14" fill="none" stroke-width="6.5"/><path d="M-5.5 4 L-8.5 14 M0 5 L0 16 M5.5 4 L8.5 14" fill="none" stroke-width="2" stroke="#F3C9A8"/></g>
+   <g class="hPoint"><path class="stick" d="M0 2 L0 70" stroke="#2B211C" stroke-width="2.6"/><circle cx="0" cy="70" r="2.4" fill="#2B211C"/><rect x="-2.8" y="2" width="5.6" height="16" rx="2.8" fill="#F3C9A8" stroke-width="2.4"/></g>
+   <g class="hThumb"><rect x="-2.8" y="-16" width="5.6" height="14" rx="2.8" fill="#F3C9A8" stroke-width="2.4"/></g>
+   <circle class="palm" cx="0" cy="0" r="7.5" fill="#F3C9A8" stroke-width="2.8"/>
+   <g class="hPhoneF"><ellipse cx="-7" cy="6" rx="3.2" ry="4.2" fill="#F3C9A8" stroke-width="2.2"/></g>
+  </g></g>
+ <g id="pR"><path class="aO" d="" fill="none" stroke-width="18"/><path class="aF" d="" fill="none" stroke="#B85C3E" stroke-width="11.5"/>
+  <g class="hand">
+   <g class="hPhone"><rect x="-9" y="-2" width="18" height="30" rx="4" fill="#2B211C" stroke-width="2"/><rect x="-6" y="2" width="12" height="21" rx="2" fill="#E5322D" stroke="none"/><path d="M-2.5 9 L3.5 12.5 L-2.5 16Z" fill="#fff" stroke="none"/></g>
+   <g class="hOpen"><path d="M-5.5 4 L-8.5 14 M0 5 L0 16 M5.5 4 L8.5 14" fill="none" stroke-width="6.5"/><path d="M-5.5 4 L-8.5 14 M0 5 L0 16 M5.5 4 L8.5 14" fill="none" stroke-width="2" stroke="#F3C9A8"/></g>
+   <g class="hPoint"><path class="stick" d="M0 2 L0 70" stroke="#2B211C" stroke-width="2.6"/><circle cx="0" cy="70" r="2.4" fill="#2B211C"/><rect x="-2.8" y="2" width="5.6" height="16" rx="2.8" fill="#F3C9A8" stroke-width="2.4"/></g>
+   <g class="hThumb"><rect x="-2.8" y="-16" width="5.6" height="14" rx="2.8" fill="#F3C9A8" stroke-width="2.4"/></g>
+   <circle class="palm" cx="0" cy="0" r="7.5" fill="#F3C9A8" stroke-width="2.8"/>
+   <g class="hPhoneF"><ellipse cx="-7" cy="6" rx="3.2" ry="4.2" fill="#F3C9A8" stroke-width="2.2"/></g>
+  </g></g>
+ </g>
+</svg></div>
+<div id="prog"></div>
+</div>
+<script>
+const $=(s,r=document)=>r.querySelector(s);
+const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const eob=x=>{const c1=1.7,c3=c1+1;return 1+c3*Math.pow(x-1,3)+c1*Math.pow(x-1,2)};
+const eo=x=>1-Math.pow(1-x,3);
+let D=null;
+const T=(h)=>`<div class="ttl">${h}</div>`;
+const tt=(s,step)=>{let em=false;const ws=s.split(' ').map(w=>{let st=w.startsWith('*');if(st){em=true;w=w.slice(1)}let en=w.includes('*');w=w.replace('*','');const r=`<span class="tw">${em?`<b>${w}</b>`:w}</span>`;if(en)em=false;return r});
+ return (step?`<div class="step">${step}</div>`:'')+`<div class="tt">${ws.join(' ')}</div>`;};
+const PH=(inner,w=78,h=132,x=40,y=22)=>`<div class="el card" id="ph" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px;border-radius:14px;border:3px solid #2B211C;padding:6px;display:flex;flex-direction:column;gap:5px;overflow:hidden">${inner}</div>`;
+function card(kind){
+ switch(kind){
+ case 'views': return [PH(`<div class="el" id="v1" style="position:relative;flex:1;border-radius:6px;background:#EBD9C8;display:flex;align-items:center;justify-content:center"><span class="emo" style="font-size:16px">🎬</span></div>
+   <div class="el" id="v2" style="position:relative;flex:1;border-radius:6px;background:#F0C9BC;display:flex;align-items:center;justify-content:center"><span class="emo" style="font-size:16px">💬</span></div>
+   <div class="el" id="v3" style="position:relative;flex:1;border-radius:6px;background:#E7DCCB;display:flex;align-items:center;justify-content:center"><span class="emo" style="font-size:16px">🎥</span></div>`)+
+  `<div class="el card" id="vc" style="left:96px;top:30px;padding:5px 8px;font:800 13px MS;white-space:nowrap"><span class="emo">👁</span> <span id="vn">312</span></div>
+   <div class="el emo" id="vd" style="left:100px;top:110px;font-size:30px">📉</div>`+T(tt('Қаралым *өспей* жүр ме?')),
+  [['#ph',0.0],['#v1',0.35],['#v2',0.6],['#v3',0.85],['#vc','қаралым'],['#vd','өспей']]];
+ case 'content': return [`<div class="el emo" id="c1" style="left:30px;top:36px;font-size:74px">🎬</div>
+   <div class="el" id="c2" style="left:94px;top:96px;width:38px;height:38px;border-radius:50%;background:#3E9A62;color:#fff;font:900 22px/38px MS;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,.2)">✓</div>`+T(tt('Мәселе *контентте* емес','себебі')),
+  [['#c1',0.0],['#c2','контент']]];
+ case 'deliver': return [`<div class="el card" id="d1" style="left:14px;top:50px;width:54px;height:72px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font:600 8px MS"><span class="emo" style="font-size:24px">🎬</span>видео</div>
+   <div class="el" id="d2" style="left:72px;top:76px;font:800 20px MS">➜</div>
+   <div class="el card" id="d3" style="left:94px;top:50px;width:54px;height:72px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font:600 8px MS"><span class="emo" style="font-size:24px">👀</span>көрермен</div>`+T(tt('*Жеткізу* тәсілі','мәселе қайда?')),
+  [['#d1',0.0],['#d2','қалай'],['#d3','жеткізіп']]];
+ case 'swipe': return [PH(`<div id="feed" style="position:absolute;left:6px;right:6px;top:6px">
+    <div style="height:114px;border-radius:7px;background:linear-gradient(160deg,#EBD9C8,#C98E74);display:flex;align-items:center;justify-content:center"><span class="emo" style="font-size:26px">😴</span></div>
+    <div style="height:6px"></div>
+    <div style="height:114px;border-radius:7px;background:linear-gradient(160deg,#F0C9BC,#C0583B);display:flex;align-items:center;justify-content:center"><span class="emo" style="font-size:26px">🔥</span></div></div>`,78,132,36,22)+
+   `<div class="el emo" id="sw" style="left:90px;top:110px;font-size:28px">👆</div>`+T(tt('Көру ме, *өткізу* ме?')),
+  [['#ph',0.0],['#sw','өткізіп','swipe']]];
+ case 'timer': return [`<div class="el" id="tm" style="left:30px;top:26px;width:120px;height:120px">
+   <svg width="120" height="120" viewBox="0 0 120 120" style="position:absolute;inset:0"><circle cx="60" cy="60" r="50" fill="#FBF6EF" stroke="#E5D6C5" stroke-width="10"/>
+   <circle id="tr" cx="60" cy="60" r="50" fill="none" stroke="#C0583B" stroke-width="10" stroke-linecap="round" stroke-dasharray="314" stroke-dashoffset="314" transform="rotate(-90 60 60)"/></svg>
+   <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center"><div id="tn" style="font:800 40px/1 MS">0</div><div style="font:600 9px MS;color:#8b7d72">секунд</div></div></div>`+T(tt('Алғашқы *1–3* секунд','шешім осында')),
+  [['#tm',0.0]]];
+ case 'anim': return [`<div class="el" id="tl" style="left:14px;top:46px;width:140px;height:90px">
+   <div class="chip" id="r1" style="position:absolute;left:0;top:0;width:124px;background:#C0583B">✨ анимация</div>
+   <div class="chip" id="r2" style="position:absolute;left:0;top:28px;width:96px">✂️ монтаж</div>
+   <div class="chip" id="r3" style="position:absolute;left:0;top:56px;width:104px;background:#7A5A48">⚡ динамика</div>
+   <div id="ph2" style="position:absolute;top:-6px;height:84px;width:2px;background:#C0583B;left:20px"></div></div>`+T(tt('*Анимация* + монтаж','не керек?')),
+  [['#tl',0.0],['#r1','анимация','row'],['#r2','динамикалық','row'],['#r3','монтаж','row']]];
+ case 'visual': return [`<div class="el emo" id="e1" style="left:26px;top:40px;font-size:70px">👀</div>
+   <div class="el emo" id="e2" style="left:110px;top:30px;font-size:24px">✨</div><div class="el emo" id="e3" style="left:16px;top:118px;font-size:20px">✨</div>`+T(tt('*Көз тартатын* визуал')),
+  [['#e1','көз'],['#e2','тартатын'],['#e3','визуал']]];
+ case 'claude': return [`<div class="el" id="ast" style="left:14px;top:52px;font:300 64px/1 MS;color:#C0583B">✳</div>`+
+   PH(`<div class="el chip" id="m1" style="position:relative;align-self:flex-end;font-size:7.5px">Монтажда 🎬</div>
+   <div class="el card" id="m2" style="position:relative;padding:4px 6px;font:600 7.5px MS">Дайын ✓<br>reels.mp4</div>
+   <div class="el" id="m3" style="position:relative;flex:1;border-radius:6px;background:linear-gradient(135deg,#E8B84A,#C0583B);display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px">▶</div>`,84,132,70,22)+T(tt('Claude *AI* тек телефонмен')),
+  [['#ast',0.0],['#ph',0.15],['#m1','claude'],['#m2','телефонмен'],['#m3','жасауға']]];
+ case 'price': return [`<div class="el" id="pt" style="left:18px;top:44px;width:128px;height:84px">
+   <svg width="128" height="84" viewBox="0 0 128 84" style="position:absolute;inset:0;overflow:visible"><path d="M28 4 H124 V80 H28 L4 42Z" fill="#E8B84A" stroke="#2B211C" stroke-width="2.6" stroke-linejoin="round"/><circle cx="24" cy="42" r="5" fill="#F5EFE9" stroke="#2B211C" stroke-width="2.2"/></svg>
+   <div style="position:absolute;left:34px;right:4px;top:0;bottom:0;display:flex;align-items:center;justify-content:center;font:800 23px MS;color:#2B211C">3 990 ₸</div></div>
+   <div class="el emo" id="p2" style="left:112px;top:24px;font-size:26px">💸</div>`+T(tt('Қолжетімді *баға*','курс')),
+  [['#pt','небәрі','price'],['#p2','3990']]];
+ case 'standout': return [`<div class="el" id="gr" style="left:16px;top:34px;width:130px;display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
+   ${[0,1,2,3,4,5].map(i=>`<div id="g${i}" style="height:48px;border-radius:6px;background:#D2C3B3"></div>`).join('')}</div>`+T(tt('*Ерекше* монтаж үйреніңіз')),
+  [['#gr',0.0]]];
+ case 'kurs': return [`<div class="el card" id="k1" style="left:14px;top:52px;width:58px;height:72px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font:600 8px MS"><span class="emo" style="font-size:24px">📱</span>телефон</div>
+   <div class="el" id="k2" style="left:76px;top:76px;font:800 20px MS">➜</div>
+   <div class="el card" id="k3" style="left:96px;top:52px;width:58px;height:72px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font:600 8px MS"><span class="emo" style="font-size:24px">🎬</span>Reels</div>`+
+   T(`<div class="tt"><span class="tw">Курс</span> <span class="tw"><b>3 990 ₸</b></span></div><div class="el pill" id="btn" style="position:relative;margin-top:10px">${D.button||'Толығырақ'} ›</div>`)+
+   `<div class="el emo" id="hand" style="left:280px;top:128px;font-size:26px">👆</div>`,
+  [['#k1',0.0],['#k2',0.15],['#k3',0.3],['#btn',(D.button_key||'толығырақ'),'btn'],['#hand','батырмасын','tap']]];
+ }
+}
+function wtime(s,key){ if(typeof key==='number') return s.t0+key; for(const w of s.words){ if(w.w.toLowerCase().includes(key)) return w.t; } return s.t0+0.2; }
+function chunks(ws){const out=[];let cur=[],len=0;ws.forEach((w,j)=>{const L=(w.w+(w.p||'')).length;if(cur.length&&len+L+1>24){out.push(cur);cur=[];len=0}cur.push(j);len+=L+1;
+ if(/[.,?!]$/.test(w.w+(w.p||''))&&len>12){out.push(cur);cur=[];len=0}});if(cur.length)out.push(cur);return out;}
+const BL=[[[-20,40],[110,-40],[180,-60]],[[200,60],[20,-50],[-90,20]],[[60,80],[230,-30],[150,40]]];
+function setup(data){
+ D=data; const root=$('#scenes');
+ D.scenes.forEach((s,i)=>{
+  const div=document.createElement('div'); div.className='scene'; div.style.display='none';
+  const [html,els]=card(s.card); div.innerHTML=html; root.appendChild(div);
+  s.div=div; s.tws=[...div.querySelectorAll('.tw')];
+  s.els=els.map(([sel,key,kind])=>({el:div.querySelector(sel),t:wtime(s,key),kind:kind||'pop'}));
+  div.querySelectorAll('.step').forEach(e=>s.els.push({el:e,t:s.t0+0.05,kind:'fade'}));
+  s.ch=chunks(s.words);
+ });
+ window.READY=true;
+}
+function env(t){const i=Math.floor(t*D.fps);return D.env[Math.max(0,Math.min(D.env.length-1,i))]||0}
+const POSE={ // [upperR, foreR, upperL, foreL, handR, handL]
+ talk:[-22,-72,10,-118,'open','phone'], point:[-150,-12,10,-118,'point','phone'], wave:[-128,-30,10,-118,'open','phone'],
+ thumb:[-24,-100,10,-118,'thumb','phone'], wow:[-32,-128,32,128,'open','open'], down:[-28,-22,10,-118,'point','phone']};
+function hands(g,k){['Open','Point','Thumb','Phone'].forEach(n=>g.querySelectorAll('.h'+n).forEach(e=>e.style.display=(k===n.toLowerCase())?'':'none'));}
+function drawArm(id,sx,sy,u,f,hk){const g=$(id),r=Math.PI/180;
+ const ex=sx-38*Math.sin(u*r), ey=sy+38*Math.cos(u*r), a2=u+f, hx=ex-32*Math.sin(a2*r), hy=ey+32*Math.cos(a2*r);
+ const d=`M${sx} ${sy} L${ex} ${ey} L${hx} ${hy}`; g.querySelector('.aO').setAttribute('d',d); g.querySelector('.aF').setAttribute('d',d);
+ const h=g.querySelector('.hand'); h.setAttribute('transform',`translate(${hx-4*Math.sin(a2*r)} ${hy+4*Math.cos(a2*r)}) rotate(${hk==='thumb'||hk==='phone'?0:a2})`);
+ ['Open','Point','Thumb','Phone','PhoneF'].forEach(n=>h.querySelectorAll('.h'+n).forEach(e=>e.style.display=(hk===n.toLowerCase()||(n==='PhoneF'&&hk==='phone'))?'':'none'));}
+function drawPerson(t,si,sceneT){
+ const a=env(t), a2=env(t-0.05), m=Math.max(a,a2*0.8), open=0.5+9*m;
+ $('#pmouth').setAttribute('d',`M172 423 Q180 ${426+open} 188 423 Q180 ${424+open*0.15} 172 423Z`);
+ const blink=((t+0.7)%3.3)<0.12; $('#peyes').style.display=blink?'none':''; $('#plids').style.display=blink?'':'none';
+ const pose=D.scenes[si].pose||'talk', prev=si?(D.scenes[si-1].pose||'talk'):pose;
+ const P1=POSE[pose]||POSE.talk, P0=POSE[prev]||POSE.talk, k=si?eob(clamp(sceneT/0.45)):1;
+ const L=(i)=>P0[i]+(P1[i]-P0[i])*k;
+ let uR=L(0),fR=L(1),uL=L(2),fL=L(3);
+ if(pose==='wave'){fR+=Math.sin(t*9)*22;}
+ if(pose==='talk'){fR+=Math.sin(t*3.2)*10-a*12; uR+=Math.sin(t*1.7)*4;}
+ if(pose==='point'||pose==='down'){uR+=Math.sin(t*4)*2;}
+ if(pose==='thumb'){fR+=Math.sin(t*5)*4;}
+ if(pose==='wow'){fR+=Math.sin(t*7)*8; fL-=Math.sin(t*7)*8;}
+ drawArm('#pR',212,464,uR,fR,k<0.5?P0[4]:P1[4]); drawArm('#pL',148,464,uL,fL,k<0.5?P0[5]:P1[5]);
+ const hr=Math.sin(t*2.1)*3+(a-0.3)*4, hy=Math.sin(t*4.2)*0.8-a*2;
+ $('#phead').setAttribute('transform',`translate(0 ${hy}) rotate(${hr} 180 440)`);
+ $('#ptail').setAttribute('transform',`rotate(${Math.sin(t*2.6)*5-hr*0.6} 204 372)`);
+ const jump=si&&sceneT<0.35?Math.sin(sceneT/0.35*Math.PI)*5:0;
+ $('#pall').setAttribute('transform',`translate(0 ${Math.sin(t*1.6)*1.2-jump}) rotate(${Math.sin(t*1.3)*1.2} 180 630)`);
+}
+
+function draw(t){
+ let cur=0; D.scenes.forEach((s,i)=>{ if(t>=s.t0) cur=i; });
+ $('#prog').style.width=(clamp(t/D.dur)*360)+'px';
+ const S=D.scenes[cur];
+ // blobs drift
+ const bl=BL[cur%3], bp=eo(clamp((t-S.t0)/0.6)), pb=BL[(cur+2)%3];
+ ['#b1','#b2','#a1'].forEach((id,k)=>{const x=pb[k][0]+(bl[k][0]-pb[k][0])*(cur?bp:1)+Math.sin(t*0.6+k)*6, y=pb[k][1]+(bl[k][1]-pb[k][1])*(cur?bp:1)+Math.cos(t*0.5+k)*5;$(id).style.left=x+'px';$(id).style.top=y+'px';});
+ const pin=eob(clamp(t/0.5)); $('#panel').style.transform=`translateY(${(1-pin)*-30}px) scale(${0.9+0.1*pin})`; $('#panel').style.opacity=clamp(t/0.2);
+ D.scenes.forEach((s,i)=>{
+  if(i!==cur){s.div.style.display='none';return}
+  s.div.style.display='';
+  const xo=clamp((t-(s.t1-0.18))/0.18), xi=clamp((t-s.t0)/0.25);
+  s.div.style.opacity=(1-xo)*(i?eo(xi):1); s.div.style.transform=`translateX(${(1-eo(xi))*(i?18:0)-xo*18}px)`;
+  // title words pop sequentially
+  s.tws.forEach((w,j)=>{const p=clamp((t-s.t0-0.08-j*0.07)/0.3);w.style.opacity=clamp(p*2.5);w.style.transform=`translateY(${(1-eob(p))*12}px) scale(${0.85+0.15*eob(p)})`;});
+  s.els.forEach(o=>{
+   const p=clamp((t-o.t)/0.4);
+   if(t<o.t){o.el.style.opacity=0;return}
+   if(o.kind==='fade'){o.el.style.opacity=eo(p);return}
+   if(o.kind==='row'){o.el.style.opacity=eo(p);o.el.style.transform=`translateX(${(1-eo(p))*-30}px)`;return}
+   if(o.kind==='swipe'){const c=((t-o.t)%1.4)/1.4,up=c<0.45?eo(c/0.45):1;o.el.style.opacity=c<0.85?1:1-(c-0.85)/0.15;o.el.style.transform=`translateY(${-up*60}px)`;
+     s.div.querySelector('#feed').style.transform=`translateY(${-up*120}px)`;return}
+   if(o.kind==='btn'){o.el.style.opacity=clamp(p*3);o.el.style.transform=`scale(${(0.6+0.4*eob(p))*(1+0.05*Math.sin(t*7))})`;return}
+   if(o.kind==='tap'){const c=((t-o.t)%1.0),pr=c<0.15?c/0.15:c<0.3?1-(c-0.15)/0.15:0;o.el.style.opacity=eo(p);o.el.style.transform=`translate(${-pr*4}px,${-pr*8+(1-eo(p))*30}px) scale(${1-pr*0.1})`;return}
+   if(o.kind==='price'){o.el.style.opacity=clamp(p*3);o.el.style.transform=`scale(${0.5+0.5*eob(p)}) rotate(${-6+Math.sin((t-o.t)*5)*2}deg)`;return}
+   o.el.style.opacity=clamp(p*3); o.el.style.transform=`scale(${0.5+0.5*eob(p)})`;
+  });
+  if(s.card==='views'){const tc=wtime(s,'өспей');s.div.querySelector('#vn').textContent=Math.round(312-(312-48)*eo(clamp((t-tc)/0.8)));}
+  if(s.card==='timer'){const q=clamp((t-s.t0-0.1)/1.5);s.div.querySelector('#tr').style.strokeDashoffset=314*(1-q);s.div.querySelector('#tn').textContent=Math.min(3,Math.floor(q*3.02));}
+  if(s.card==='anim'){s.div.querySelector('#ph2').style.left=(10+((t-s.t0)*50)%110)+'px';}
+  if(s.card==='visual'){const u=t-s.t0;['#e2','#e3'].forEach((q,k)=>{const e=s.div.querySelector(q);if(e.style.opacity>0)e.style.transform+=` rotate(${Math.sin(u*4+k)*15}deg)`;});}
+  if(s.card==='standout'){const te=wtime(s,'ерекшелендіретін'),q=eob(clamp((t-te)/0.4));
+   for(let k=0;k<6;k++){const e=s.div.querySelector('#g'+k),ap=clamp((t-s.t0-0.06*k)/0.3);
+    if(k===4&&t>=te){e.style.background='linear-gradient(135deg,#E8B84A,#C0583B)';e.style.transform=`scale(${1+0.25*q})`;e.style.boxShadow='0 4px 10px rgba(160,70,40,.35)';e.style.opacity=1;e.style.position='relative';e.style.zIndex=2;}
+    else{e.style.background='#D2C3B3';e.style.boxShadow='none';e.style.transform=`scale(${0.6+0.4*eob(ap)})`;e.style.opacity=(t>=te?0.6:1)*ap;}}}
+ });
+ // subtitles
+ const sub=$('#sub'); let html='';
+ const ws=S.words; let ci=0; S.ch.forEach((c,k)=>{if(t>=ws[c[0]].t-0.05) ci=k;});
+ const c=S.ch[ci];
+ if(t>=ws[c[0]].t-0.12 && t<S.t1-0.05){
+  html='<div class="ln">'+c.map(j=>{const w=ws[j],nx=ws[j+1];const act=t>=w.t&&(!nx||t<nx.t)&&t<w.t+1.0;return `<span class="${act?'act':''}">${w.w}${w.p||''}</span>`;}).join(' ')+'</div>';
+ }
+ if(sub.innerHTML!==html) sub.innerHTML=html;
+ const lp=clamp((t-ws[c[0]].t+0.12)/0.2); sub.style.transform=`scale(${0.9+0.1*eob(lp)})`;
+ drawPerson(t,cur,t-S.t0);
+ $('#pfx').style.display=(S.pose==='wow'&&Math.floor(t*4)%2===0)?'':'none';
+}
+function events(){const ev=[];D.scenes.forEach((s,i)=>{if(i)ev.push([s.t0,'whoosh']);
+ s.els.forEach(o=>{if(o.t>=s.t1-0.05)return;const k=o.kind==='row'?'tick':o.kind==='price'?'cash':o.kind==='tap'?'click':o.kind==='swipe'?'swish':o.kind==='fade'?null:'pop';if(k)ev.push([o.t,k]);});
+ if(s.card==='timer'){for(let k=1;k<=3;k++)ev.push([s.t0+0.1+1.5*k/3,'tick']);}
+ if(s.card==='standout')ev.push([wtime(s,'ерекшелендіретін'),'sparkle']);});return ev.sort((a,b)=>a[0]-b[0]);}
+window.events=events;window.setup=setup;window.draw=draw;
+</script></body></html>
