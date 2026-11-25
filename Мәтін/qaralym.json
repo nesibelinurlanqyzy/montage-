@@ -5,8 +5,8 @@
  "audio": ".matin/qaralym/voice.wav",
  "audio_orig": ".matin/qaralym/voice.wav",
  "voice": {"engine": "file", "file": ".matin/qaralym/daus_orig.mp3"},
- "button": "Подробнее",
- "button_key": "подробнее",
+ "button": "Толығырақ",
+ "button_key": "толығырақ",
  "sfx": true,
  "scenes": [
   {"card": "views", "label": "қаралым", "pose": "wow", "text": "Қанша видео салсаңыз да, *қаралымыңыз өспей* жүр ме?"},
@@ -19,6 +19,6 @@
   {"card": "claude", "label": "07 · телефоннан", "pose": "point", "text": "Ал осындай видеоларды *Claude арқылы* тек *телефонмен* жасауға болады."},
   {"card": "price", "label": "08 · баға", "pose": "wow", "text": "Небәрі *3990 теңгеге*"},
   {"card": "standout", "label": "09 · ерекшелен", "pose": "thumb", "text": "контентіңізді басқалардан *ерекшелендіретін* монтаж жасауды үйреніңіз."},
-  {"card": "kurs", "label": "толығырақ", "pose": "down", "text": "Курс туралы толық ақпарат алу үшін *«Подробнее»* батырмасын басыңыз."}
+  {"card": "kurs", "label": "толығырақ", "pose": "down", "text": "Курс туралы толық ақпарат алу үшін *«Толығырақ»* батырмасын басыңыз."}
  ]
 }
